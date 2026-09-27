@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
+  { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
@@ -16,6 +17,7 @@ export function NavBar() {
   const pathname = usePathname();
   const hasDarkBackground = ["/", "/about", "/services", "/portfolio", "/contact", "/blog"].includes(pathname) || pathname.startsWith("/blog/");
   const [scrolled, setScrolled] = useState(false);
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -65,7 +67,12 @@ export function NavBar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`transition-colors ${hasDarkBackground ? "hover:text-gold-light" : "hover:text-foreground"}`}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                className={`relative py-1 transition-colors after:absolute after:inset-x-0 after:-bottom-1 after:mx-auto after:h-px after:bg-gold after:transition-all after:duration-500 ${
+                  isActive(link.href)
+                    ? `after:w-full ${hasDarkBackground ? "text-gold-light" : "text-foreground"}`
+                    : `after:w-0 ${hasDarkBackground ? "hover:text-gold-light" : "hover:text-foreground"}`
+                }`}
               >
                 {link.label}
               </Link>
@@ -75,7 +82,10 @@ export function NavBar() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="btn-gold hidden rounded-full px-6 py-2.5 text-sm font-medium tracking-wide sm:inline-flex"
+              aria-current={isActive("/contact") ? "page" : undefined}
+              className={`btn-gold hidden rounded-full px-6 py-2.5 text-sm font-medium tracking-wide sm:inline-flex ${
+                isActive("/contact") ? "outline outline-1 outline-offset-4 outline-gold-light/70" : ""
+              }`}
             >
               Contact
             </Link>
@@ -104,23 +114,20 @@ export function NavBar() {
         }`}
       >
         <nav className="flex flex-col gap-6">
-          {[
-            { href: "/", label: "Home" },
-            ...LINKS,
-            { href: "/contact", label: "Contact" },
-          ].map((link) => (
+          {[...LINKS, { href: "/contact", label: "Contact" }].map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="font-heading text-4xl font-light text-ivory"
+              aria-current={isActive(link.href) ? "page" : undefined}
+              className={`font-heading text-4xl font-light ${isActive(link.href) ? "text-gold-light" : "text-ivory"}`}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <p className="mt-14 text-xs font-medium uppercase tracking-[0.3em] text-gold">
-          Heal Within • Awaken • Transform
+        <p className="mt-14 text-sm text-gold-light">
+          Heal Within. Awaken. Transform.
         </p>
       </div>
     </>

@@ -32,8 +32,7 @@ export function ContactForm() {
 
   return (
     <div className="page-reveal glass min-w-0 p-6 sm:p-10 lg:p-12">
-      <p className="text-xs uppercase tracking-[0.2em] text-gold">Your First Step</p>
-      <h2 id="inquiry-title" className="mt-5 font-heading text-2xl leading-snug sm:text-3xl">Tell us what brings<br />you here.</h2>
+      <h2 id="inquiry-title" className="font-heading text-2xl leading-snug sm:text-3xl">Tell us what brings<br />you here.</h2>
       <p className="mt-4 text-sm leading-relaxed text-lavender">A few details are all you need to start. Fields marked * are required.</p>
       <form onSubmit={handleSubmit} aria-labelledby="inquiry-title" className="mt-9 flex flex-col gap-7">
         <div>
@@ -53,7 +52,7 @@ export function ContactForm() {
         <div>
           <label htmlFor="contact-interest" className={labelClass}>What Would You Like to Explore?</label>
           <select id="contact-interest" name="interest" defaultValue="Not Sure Yet" className={`${fieldClass} [color-scheme:dark]`}>
-            <option className="bg-ink" value="Not Sure Yet">Not sure yet — I&apos;d like some guidance</option>
+            <option className="bg-ink" value="Not Sure Yet">Not sure yet, I&apos;d like some guidance</option>
             {SERVICES.map(service => <option className="bg-ink" key={service.id} value={service.title}>{service.title}</option>)}
           </select>
         </div>

@@ -5,7 +5,7 @@ import { gsap, useGSAP } from "@/features/shared/lib/gsap";
 
 const LEAD = "A calm, supportive and spiritually oriented space";
 const REST =
-  "for learning, self-reflection, meditation and complementary healing — where you can slow down, turn inward and grow at your own pace.";
+  "for learning, self-reflection, meditation and complementary healing. Slow down, turn inward and grow at your own pace.";
 
 export function Manifesto() {
   const ref = useRef<HTMLElement>(null);
@@ -37,11 +37,7 @@ export function Manifesto() {
     <section ref={ref} className="relative text-ivory">
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[45vh] bg-gradient-to-b from-ink to-transparent" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_60%_50%,rgb(14_6_33/0.7),transparent_75%)]" />
-      <div className="relative mx-auto grid w-[90%] gap-12 py-40 lg:grid-cols-[14rem_1fr] lg:py-56">
-        <div className="flex flex-col gap-6">
-          <span className="eyebrow">Our Mission</span>
-          <span className="hidden font-heading text-sm font-light text-lavender lg:block">HEX Healing Hub</span>
-        </div>
+      <div className="relative mx-auto w-[90%] py-40 lg:py-56">
         <p className="max-w-5xl font-heading text-3xl leading-[1.28] sm:text-5xl lg:text-[3.6rem]">
           {words(LEAD, "font-semibold")}
           {words(REST, "font-normal text-ivory/75")}

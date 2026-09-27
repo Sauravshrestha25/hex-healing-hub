@@ -21,21 +21,17 @@ export function Centers() {
         </Reveal>
 
         <Reveal className="glass p-8 sm:p-14">
-          <span className="eyebrow">Our Centers</span>
           <h2 data-split className="mt-8 font-heading text-4xl leading-[1.05] sm:text-6xl">
-            Three homes <span className="font-light italic text-gold-metal">across Nepal.</span>
+            Three homes <span className="text-gold-light">across Nepal.</span>
           </h2>
           <ul className="mt-16 border-t hairline-gold">
-            {LOCATIONS.map((l, i) => (
+            {LOCATIONS.map((l) => (
               <li key={l.city}>
                 <a
                   href={`tel:${l.phone}`}
                   className="group flex items-center justify-between gap-6 border-b hairline-gold py-8"
                 >
                   <span className="flex items-baseline gap-6">
-                    <span className="font-heading text-xs font-semibold tracking-[0.3em] text-gold">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
                     <span className="font-heading text-3xl transition-colors duration-500 group-hover:text-gold-light sm:text-4xl">
                       {l.city}
                     </span>

@@ -18,7 +18,6 @@ export default function ServicesPage() {
       <ServicesHero />
       <ServiceList services={services} />
       <PageClosing
-        eyebrow="Here to Help"
         title="Not sure where"
         emphasis="to begin?"
         body="Tell us what you're looking for and we'll help you understand the options."

@@ -5,7 +5,7 @@ import { gsap, useGSAP } from "@/features/shared/lib/gsap";
 
 const WORDS = [
   { w: "Heal Within", c: "font-medium text-ivory" },
-  { w: "Awaken", c: "font-light italic text-gold-metal" },
+  { w: "Awaken", c: "text-gold-light" },
   { w: "Transform", c: "font-medium text-ivory" },
 ];
 
@@ -35,7 +35,7 @@ export function Tagline() {
             </p>
           </div>
         ))}
-        <p className="eyebrow mt-14">Butwal · Pokhara · Kapilvastu</p>
+        <p className="mt-12 text-base text-lavender">Butwal, Pokhara and Kapilvastu</p>
       </div>
     </section>
   );

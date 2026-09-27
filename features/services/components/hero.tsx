@@ -6,9 +6,8 @@ export function ServicesHero() {
       <div className="mx-auto w-[90%] pb-16 pt-36 sm:pt-44 lg:pb-24">
         <div className="page-reveal grid items-end gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:gap-20">
           <div>
-            <p className="eyebrow">Our Services</p>
             <h1 id="services-title" className="mt-8 font-heading text-5xl font-bold leading-[1.08] tracking-tight sm:text-6xl xl:text-7xl">
-              Many ways inward.<br /><span className="font-light italic text-gold-metal">A path of your own.</span>
+              Many ways inward.<br /><span className="text-gold-light">A path of your own.</span>
             </h1>
           </div>
           <div className="max-w-md">
@@ -25,7 +24,6 @@ export function ServicesHero() {
           <Image src="/images/spiritual-awakening.jpg" alt="A person welcoming the morning light over a misty landscape" fill preload sizes="90vw" className="object-cover object-[center_45%]" />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
           <div aria-hidden="true" className="absolute inset-4 border border-white/20 sm:inset-6" />
-          <p className="absolute bottom-8 left-8 right-8 text-xs uppercase tracking-[0.25em] text-white/85 sm:bottom-10 sm:left-10">Reflect. Reconnect. Learn.</p>
         </div>
       </div>
     </section>

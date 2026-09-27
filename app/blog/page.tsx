@@ -17,7 +17,7 @@ export default function BlogPage() {
     <PageMotion>
       <BlogHero />
       <BlogList blogs={blogs} />
-      <PageClosing eyebrow="From Reading to Reflection" title="Let curiosity be" emphasis="your starting point." body="Explore our sessions and classes, or reach out with a question. Your journey can begin at your own pace." href="/services" label="Explore Our Services" />
+      <PageClosing title="Let curiosity be" emphasis="your starting point." body="Explore our sessions and classes, or reach out with a question. Your journey can begin at your own pace." href="/services" label="Explore Our Services" />
     </PageMotion>
   );
 }

@@ -14,7 +14,6 @@ const poppins = Poppins({
 const montserrat = Montserrat({
   variable: "--font-display",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -27,7 +26,8 @@ export const metadata: Metadata = {
   description:
     "HEX Healing Hub is a spiritual wellness and learning center offering meditation, energy-focused practices, hypnotherapy and spiritual education.",
   icons: {
-    icon: "/favicon.png",
+    icon: "/colorful_logo.png",
+    apple: "/colorful_logo.png",
   },
 };
 

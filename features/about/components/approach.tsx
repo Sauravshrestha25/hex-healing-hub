@@ -17,19 +17,17 @@ export function Approach() {
             <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/75 to-transparent" />
             <div aria-hidden="true" className="absolute inset-5 border border-white/25" />
             <p className="absolute bottom-10 left-10 right-10 font-heading text-2xl leading-snug text-white sm:text-3xl">
-              Grounded in care.<br /><span className="font-light italic">Guided by awareness.</span>
+              Grounded in care.<br /><span className="font-light text-gold-light">Guided by awareness.</span>
             </p>
           </div>
         </div>
         <div className="page-reveal">
-          <p className="eyebrow">Our Approach</p>
           <h2 id="approach-title" className="mt-7 font-heading text-4xl leading-tight sm:text-5xl">
-            Your journey.<br /><span className="font-light italic text-gold-metal">Thoughtful support.</span>
+            Your journey.<br /><span className="text-gold-light">Thoughtful support.</span>
           </h2>
           <ol className="mt-10 divide-y divide-gold/20">
-            {APPROACH.map((item, index) => (
+            {APPROACH.map((item) => (
               <li key={item.title} className="flex gap-5 py-6">
-                <span aria-hidden="true" className="pt-1 font-heading text-xs tracking-widest text-gold">0{index + 1}</span>
                 <div>
                   <h3 className="font-heading text-xl font-semibold">{item.title}</h3>
                   <p className="mt-2 max-w-lg text-sm leading-relaxed text-lavender">{item.body}</p>

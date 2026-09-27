@@ -34,8 +34,7 @@ export function Gallery() {
       <section id="gallery" aria-labelledby="gallery-title" className="mx-auto w-[90%] scroll-mt-24 py-20 lg:py-28">
         <div className="page-reveal flex flex-col justify-between gap-5 border-b hairline-gold pb-8 sm:flex-row sm:items-end">
           <div>
-            <p className="eyebrow">The Collection</p>
-            <h2 id="gallery-title" className="mt-5 font-heading text-3xl sm:text-4xl">Moments that invite <span className="font-light italic text-gold-metal">a pause.</span></h2>
+            <h2 id="gallery-title" className="mt-5 font-heading text-3xl sm:text-4xl">Moments that invite <span className="text-gold-light">a pause.</span></h2>
           </div>
           <p className="text-xs text-lavender">06 images · Select an image to explore</p>
         </div>
@@ -58,7 +57,6 @@ export function Gallery() {
                   <p className="mb-2 text-[0.65rem] uppercase tracking-[0.2em] text-gold">{item.category}</p>
                   <h3 className="font-heading text-xl sm:text-2xl">{item.title}</h3>
                 </div>
-                <span aria-hidden="true" className="pt-1 font-heading text-xs text-lavender">0{index + 1}</span>
               </figcaption>
             </figure>
           ))}

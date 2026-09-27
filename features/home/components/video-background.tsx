@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger, useGSAP } from "@/features/shared/lib/gsap";
 
-// Same scenes and order as Aviyan: dawn → green night → sunset → dusk → purple night.
-const PHASES = ["/videos/phase-1.mp4", "/videos/phase-5.mp4", "/videos/phase-2.mp4", "/videos/phase-3.mp4", "/videos/phase-4.mp4"];
+// Dusk → night → dawn. Mixkit clips (Stock Video Free License): 3350, 4148, 4281, 4040, 4999.
+const PHASES = ["/videos/scene-1.mp4", "/videos/scene-2.mp4", "/videos/scene-3.mp4", "/videos/scene-4.mp4", "/videos/scene-5.mp4"];
 
 /** Fixed full-screen scene; each `[data-phase="n"]` section cross-fades to video n. */
 export function VideoBackground() {
@@ -57,7 +57,7 @@ export function VideoBackground() {
       ))}
       {/* readability: gentle vignette + darker base, keeps the scene visible */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgb(14_6_33/0.55)_100%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-ink/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/25 to-ink/70" />
     </div>
   );
 }

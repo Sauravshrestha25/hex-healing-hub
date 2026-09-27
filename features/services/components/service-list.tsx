@@ -8,8 +8,7 @@ export function ServiceList({ services }: { services: Service[] }) {
       <div className="mx-auto w-[90%] py-20 lg:py-28">
         <div className="page-reveal flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
-            <p className="eyebrow">Explore the Possibilities</p>
-            <h2 id="offerings-title" className="mt-6 font-heading text-3xl sm:text-4xl">Support that meets you <span className="font-light italic text-gold-metal">where you are.</span></h2>
+            <h2 id="offerings-title" className="mt-6 font-heading text-3xl sm:text-4xl">Support that meets you <span className="text-gold-light">where you are.</span></h2>
           </div>
           <p className="max-w-xs text-sm leading-relaxed text-lavender">Choose a practice below, or get in touch if you would like help exploring the options.</p>
         </div>

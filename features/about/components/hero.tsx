@@ -6,11 +6,10 @@ export function AboutHero() {
     <section aria-labelledby="about-title" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,#243B8F55,transparent_65%)]">
       <div className="mx-auto grid w-[90%] items-center gap-14 pb-16 pt-36 sm:pt-44 lg:min-h-[90svh] lg:grid-cols-[1.15fr_0.85fr] lg:gap-20 lg:pb-24">
         <div className="page-reveal relative z-10">
-          <p className="eyebrow">About HEX Healing Hub</p>
           <h1 id="about-title" className="mt-8 max-w-3xl font-heading text-5xl font-bold leading-[1.08] tracking-tight sm:text-6xl xl:text-7xl">
             A little stillness.
             <br />
-            A deeper <span className="font-light italic text-gold-metal">connection.</span>
+            A deeper <span className="text-gold-light">connection.</span>
           </h1>
           <p className="mt-8 max-w-lg text-base leading-relaxed text-lavender sm:text-lg">
             We are a spiritual wellness and learning center. A calm place to pause, explore your inner
@@ -37,16 +36,8 @@ export function AboutHero() {
                 className="object-cover object-[65%_center]"
               />
               <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
-              <p className="absolute inset-x-6 bottom-8 text-center text-xs uppercase tracking-[0.24em] text-white/85">
-                Heal Within • Awaken • Transform
-              </p>
             </div>
           </div>
-          <figcaption className="mt-5 flex items-center justify-between gap-4 text-[0.65rem] uppercase tracking-[0.2em] text-lavender">
-            <span>Rooted in awareness</span>
-            <span aria-hidden="true" className="h-px w-12 bg-gold/40" />
-            <span>Open to possibility</span>
-          </figcaption>
         </figure>
       </div>
     </section>

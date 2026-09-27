@@ -6,8 +6,6 @@ import Link from "next/link";
 import type { Service } from "@/features/shared/lib/data";
 import { ScrollTrigger, useGSAP } from "@/features/shared/lib/gsap";
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
 export function ServicesShowcase({ services }: { services: Service[] }) {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
@@ -32,19 +30,14 @@ export function ServicesShowcase({ services }: { services: Service[] }) {
     <section ref={ref} className="text-ivory">
       <div className="mx-auto flex w-[90%] flex-col justify-between gap-10 border-b hairline-gold pb-16 pt-36 lg:flex-row lg:items-end">
         <div>
-          <span className="eyebrow">Core Services</span>
           <h2
             data-split
             className="mt-8 max-w-3xl font-heading text-4xl leading-[1.05] sm:text-6xl"
           >
             Six paths toward{" "}
-            <span className="font-light italic text-gold-metal">inner balance.</span>
+            <span className="text-gold-light">inner balance.</span>
           </h2>
         </div>
-        <p className="max-w-sm font-light leading-relaxed text-lavender">
-          Each practice is offered as a complementary, supportive experience —
-          guided with care, never with pressure or promises.
-        </p>
       </div>
 
       <div className="mx-auto grid w-[90%] gap-20 pb-36 lg:grid-cols-[1fr_1.15fr]">
@@ -72,13 +65,7 @@ export function ServicesShowcase({ services }: { services: Service[] }) {
                 />
               </div>
               <div className="glass p-8 sm:p-12">
-                <span className="font-heading text-xs font-semibold tracking-[0.3em] text-gold">
-                  {pad(i + 1)}{" "}
-                  <span className="text-lavender/60">
-                    / {pad(services.length)}
-                  </span>
-                </span>
-                <h3 className="mt-5 font-heading text-4xl sm:text-5xl">
+                <h3 className="font-heading text-4xl sm:text-5xl">
                   {s.title}
                 </h3>
                 <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-lavender">
@@ -118,10 +105,7 @@ export function ServicesShowcase({ services }: { services: Service[] }) {
             ))}
             <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-ink/30" />
             <div className="pointer-events-none absolute inset-5 border hairline-gold" />
-            <div className="absolute inset-x-12 bottom-12 flex items-end justify-between">
-              <p className="font-heading text-5xl font-light italic text-gold-metal">
-                {pad(active + 1)}
-              </p>
+            <div className="absolute bottom-12 right-12">
               <div className="flex gap-2">
                 {services.map((s, i) => (
                   <span

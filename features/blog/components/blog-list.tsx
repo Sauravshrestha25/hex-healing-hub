@@ -34,7 +34,7 @@ export function BlogList({ blogs }: { blogs: Blog[] }) {
           {remaining.length > 0 && (
             <div className="mt-20 lg:mt-28">
               <div className="page-reveal mb-10 flex flex-col justify-between gap-5 border-b hairline-gold pb-8 sm:flex-row sm:items-end">
-                <div><p className="eyebrow">Keep Exploring</p><h2 className="mt-5 font-heading text-3xl sm:text-4xl">A moment to read.<br /><span className="font-light italic text-gold-metal">Something to carry with you.</span></h2></div>
+                <div><h2 className="mt-5 font-heading text-3xl sm:text-4xl">A moment to read.<br /><span className="text-gold-light">Something to carry with you.</span></h2></div>
                 <p className="text-xs text-lavender">Mindfulness · Learning · Inner awareness</p>
               </div>
               <div className="grid gap-x-12 gap-y-14 md:grid-cols-2 lg:gap-x-20 lg:gap-y-20">

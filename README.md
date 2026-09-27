@@ -39,3 +39,7 @@ pm2 start "pnpm start" --name hex-healing-frontend
 ```
 
 Point Nginx at the app's port (3000 by default) and set up SSL with certbot.
+
+## Media licensing
+
+Homepage background videos (`public/videos/scene-1..5.mp4`) are from [Mixkit](https://mixkit.co), clips 3350, 4148, 4281, 4040 and 4999, all under the **Mixkit Stock Video Free License** (free for commercial use, no attribution required). They were re-encoded as forward-and-reverse seamless loops. Mixkit items under the *Restricted* license were deliberately avoided.

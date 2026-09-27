@@ -22,7 +22,7 @@ export default function ContactPage() {
       </section>
       <section className="border-t hairline-gold bg-purple/30">
         <div className="page-reveal mx-auto flex w-[90%] flex-col justify-between gap-8 py-14 sm:flex-row sm:items-center">
-          <div><p className="eyebrow">Take Your Time</p><h2 className="mt-5 font-heading text-2xl sm:text-3xl">Still finding your <span className="font-light italic text-gold-metal">starting point?</span></h2></div>
+          <div><h2 className="mt-5 font-heading text-2xl sm:text-3xl">Still finding your <span className="text-gold-light">starting point?</span></h2></div>
           <Link href="/services" className="btn-ghost w-fit shrink-0 rounded-full px-7 py-4 text-sm">Explore Our Services <span aria-hidden="true" className="ml-3">↗</span></Link>
         </div>
       </section>

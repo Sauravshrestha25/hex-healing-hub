@@ -44,7 +44,7 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
             {blog.content.split(/\n\s*\n/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
           </div>
           <div className="page-reveal mt-10 flex flex-col justify-between gap-4 border-t hairline-gold pt-7 sm:flex-row sm:items-center">
-            <p className="text-xs uppercase tracking-[0.15em] text-lavender">HEX Healing Hub · Heal Within</p>
+            <p className="text-sm text-lavender">Written by the HEX Healing Hub team</p>
             <Link href="/contact" className="w-fit py-2 text-sm text-gold-light">Continue the Conversation <span aria-hidden="true" className="ml-3">↗</span></Link>
           </div>
         </div>
@@ -53,7 +53,7 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
         <section aria-labelledby="related-title" className="border-t hairline-gold bg-purple/20">
           <div className="mx-auto w-[90%] py-20 lg:py-28">
             <div className="page-reveal mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-              <div><p className="eyebrow">Keep Reading</p><h2 id="related-title" className="mt-5 font-heading text-3xl sm:text-4xl">A little more <span className="font-light italic text-gold-metal">to reflect on.</span></h2></div>
+              <div><h2 id="related-title" className="mt-5 font-heading text-3xl sm:text-4xl">A little more <span className="text-gold-light">to reflect on.</span></h2></div>
               <Link href="/blog" className="w-fit py-3 text-sm text-gold-light underline decoration-gold/40 underline-offset-8">View All Blogs <span aria-hidden="true" className="ml-3">↗</span></Link>
             </div>
             <div className="grid gap-12 md:grid-cols-2 lg:gap-20">{related.map(post => <BlogCard key={post.id} blog={post} />)}</div>

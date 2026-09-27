@@ -20,7 +20,7 @@ export function Footer() {
           <div className="sm:col-span-2">
             <Image src="/white_logo.png" alt="HEX Healing Hub" width={40} height={40} className="rounded-full mb-4" />
             <p className="font-heading text-lg mb-1">HEX Healing Hub</p>
-            <p className="eyebrow mb-5">Heal Within • Awaken • Transform</p>
+            <p className="mb-5 text-sm text-gold-light">Heal Within. Awaken. Transform.</p>
             <p className="text-sm text-lavender max-w-xs">
               A spiritual wellness and learning center offering meditation, energy-focused practices, hypnotherapy
               and spiritual education.
@@ -65,7 +65,7 @@ export function Footer() {
           </div>
           <div className="flex shrink-0 items-center justify-end gap-3 self-end">
             <span>Designed &amp; Developed by :</span>
-            <WebxLogoSparkles width={100} className="shrink-0" />
+            <WebxLogoSparkles width={64} particleDensity={260} className="shrink-0" />
           </div>
         </div>
       </div>

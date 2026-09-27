@@ -12,8 +12,7 @@ export function PageMotion({ children }: { children: ReactNode }) {
       gsap.utils.toArray<HTMLElement>(".page-reveal", root.current).forEach((element) => {
         gsap.from(element, {
           opacity: 0,
-          y: 24,
-          duration: 0.9,
+          duration: 0.7,
           ease: "power2.out",
           scrollTrigger: { trigger: element, start: "top 92%", once: true },
         });

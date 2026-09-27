@@ -10,8 +10,7 @@ export function Reveal({ children, className }: { children: React.ReactNode; cla
     () => {
       gsap.from(ref.current!.children, {
         opacity: 0,
-        y: 28,
-        duration: 1.1,
+        duration: 0.8,
         stagger: 0.12,
         ease: "power2.out",
         scrollTrigger: { trigger: ref.current, start: "top 80%", once: true },
