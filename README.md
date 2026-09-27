@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hex Healing Hub — Frontend
 
-## Getting Started
+Single Next.js app (App Router). Feature-based structure:
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+app/            routes only — pages compose feature components
+features/
+  home/         homepage sections
+  about/        about page sections
+  services/     portfolio & services page sections + data
+  contact/      contact form
+  blog/         blog listing/detail sections
+  shared/       nav, footer, cta, shared lib
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Content (services, portfolio items, blog posts) is static, defined in `features/shared/lib/data.ts` and `features/services/data.ts` — no backend/CMS. Edit those files directly to update content.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The contact form has no backend either — on submit it opens the visitor's email client via a pre-filled `mailto:` link to `Hexhealinghub@gmail.com`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup
 
-## Learn More
+```bash
+pnpm install
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm build
+pnpm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## VPS deployment
 
-## Deploy on Vercel
+```bash
+pnpm install && pnpm build
+pm2 start "pnpm start" --name hex-healing-frontend
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Point Nginx at the app's port (3000 by default) and set up SSL with certbot.
