@@ -1,11 +1,11 @@
 import { loadEnvConfig } from "@next/env";
 import { PrismaClient } from "@prisma/client";
-import { databaseUrl } from "./database-url";
+import { requireDatabaseUrl } from "./database-url";
 import { BLOGS, GALLERY, SERVICES } from "./seed-content";
 
 // Same env loading as Next.js, so `\$` escapes in the password hash resolve identically.
 loadEnvConfig(process.cwd());
-const prisma = new PrismaClient({ datasourceUrl: databaseUrl() });
+const prisma = new PrismaClient({ datasourceUrl: requireDatabaseUrl() });
 
 /**
  * The owner account exists only here: the dashboard can never create, list (for admins) or delete it.

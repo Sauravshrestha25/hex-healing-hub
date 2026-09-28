@@ -7,11 +7,12 @@ export const SESSION_MAX_AGE = 60 * 60 * 8;
 export type SessionClaims = { userId: string; version: number };
 
 export class SessionCodec {
-  private readonly key: Uint8Array;
+  constructor(private readonly secret: string | undefined) {}
 
-  constructor(secret: string | undefined) {
-    if (!secret || secret.length < 32) throw new Error("SESSION_SECRET must be set to at least 32 characters.");
-    this.key = new TextEncoder().encode(secret);
+  // Checked on use, not construction: `next build` sets up services without runtime env.
+  private get key() {
+    if (!this.secret || this.secret.length < 32) throw new Error("SESSION_SECRET must be set to at least 32 characters.");
+    return new TextEncoder().encode(this.secret);
   }
 
   sign({ userId, version }: SessionClaims) {
@@ -25,8 +26,9 @@ export class SessionCodec {
 
   async verify(token: string | undefined): Promise<SessionClaims | null> {
     if (!token) return null;
+    const key = this.key; // outside the try: a missing secret is a config error, not "signed out"
     try {
-      const { payload } = await jwtVerify(token, this.key, { algorithms: ["HS256"] });
+      const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
       if (!payload.sub || typeof payload.v !== "number") return null;
       return { userId: payload.sub, version: payload.v };
     } catch {

@@ -11,12 +11,13 @@ import { BlogService } from "@/features/content/server/blog.service";
 import { GalleryService } from "@/features/content/server/gallery.service";
 import { ServiceCatalogService } from "@/features/content/server/service-catalog.service";
 import { UserService } from "@/features/users/server/user.service";
-import { db } from "./db";
+import { getDb } from "./db";
 import { MemoryRateLimiter, RedisRateLimiter } from "./rate-limiter";
 import { redisFromEnv } from "./redis";
 
 /** Composition root: every server-side service, wired once with its dependencies. */
 function createContainer() {
+  const db = getDb();
   const redis = redisFromEnv();
   const limiter = (name: string, limit: number, windowMs: number) =>
     redis ? new RedisRateLimiter(redis, name, limit, windowMs) : new MemoryRateLimiter(limit, windowMs);

@@ -2,9 +2,11 @@ import "server-only";
 import { PrismaClient } from "@prisma/client";
 import { databaseUrl } from "@/prisma/database-url";
 
-// Reuse one client across hot reloads in development.
+// One client per process (also across dev hot reloads). Created on first use, not at import:
+// `next build` imports server modules without any database env available.
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-export const db = globalForPrisma.prisma ?? new PrismaClient({ datasourceUrl: databaseUrl() });
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+export function getDb() {
+  globalForPrisma.prisma ??= new PrismaClient({ datasourceUrl: databaseUrl() });
+  return globalForPrisma.prisma;
+}
