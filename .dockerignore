@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.github
+.env
+.env.*
+!.env.example
+!.env.production
+Dockerfile
+docker-compose.yml
+deploy
+*.tsbuildinfo
+npm-debug.log*
+.claude

@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getBlogs } from "@/features/shared/lib/data";
+import { getPublishedBlogs } from "@/features/content/server/queries";
 
 const SITE_URL = process.env.SITE_URL ?? "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogs = await getBlogs();
+  const blogs = await getPublishedBlogs();
 
   const staticRoutes = ["", "/about", "/services", "/portfolio", "/contact", "/blog"].map((path) => ({
     url: `${SITE_URL}${path}`,

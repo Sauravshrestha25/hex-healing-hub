@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 /* Brand hues (Deep Purple, Royal Blue, Spiritual Gold) refined into premium shades */
 :root {
@@ -38,6 +42,32 @@
   --color-gold-deep: var(--gold-deep);
   --color-ivory: var(--ivory);
   --color-lavender: var(--lavender);
+  /* shadcn/ui colour names; values are defined only under the admin scope below */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
   --font-sans: var(--font-body);
   --font-heading: var(--font-display);
 }
@@ -188,4 +218,136 @@
   -webkit-backdrop-filter: blur(16px) saturate(120%);
   border: 1px solid rgb(201 165 92 / 0.18);
   box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.6);
+}
+
+/*
+ * Admin dashboard theme (shadcn/ui). Scoped with :root:has() so these variables apply
+ * only while an .admin-theme element is mounted, including portalled dialogs/menus,
+ * and never leak into the public site, which shares token names like --background.
+ */
+:root {
+  --radius: 0.625rem;
+}
+:root:has(.admin-theme) {
+  --background: oklch(0.985 0.003 300);
+  --foreground: oklch(0.2 0.03 295);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.03 295);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.03 295);
+  --primary: oklch(0.28 0.1 295);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0.008 300);
+  --secondary-foreground: oklch(0.28 0.1 295);
+  --muted: oklch(0.96 0.008 300);
+  --muted-foreground: oklch(0.5 0.02 295);
+  --accent: oklch(0.95 0.015 300);
+  --accent-foreground: oklch(0.28 0.1 295);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 0.01 300);
+  --input: oklch(0.91 0.01 300);
+  --ring: oklch(0.72 0.11 80);
+  --sidebar: oklch(0.2 0.06 295);
+  --sidebar-foreground: oklch(0.93 0.01 300);
+  --sidebar-primary: oklch(0.76 0.11 80);
+  --sidebar-primary-foreground: oklch(0.2 0.06 295);
+  --sidebar-accent: oklch(0.27 0.07 295);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
+  --sidebar-border: oklch(0.3 0.06 295);
+  --sidebar-ring: oklch(0.76 0.11 80);
+  --font-body: var(--font-geist);
+  --font-display: var(--font-geist);
+}
+:root:has(.admin-theme) body {
+  background: var(--background);
+  color: var(--foreground);
+}
+.admin-theme *,
+.admin-theme *::before,
+.admin-theme *::after {
+  border-color: var(--border);
+  outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+}
+
+
+/* Rich-text blog bodies (HTML from the admin editor) */
+.blog-body > * + * {
+  margin-top: 1.5rem;
+}
+.blog-body h2,
+.blog-body h3 {
+  font-family: var(--font-display), ui-sans-serif, sans-serif;
+  color: var(--ivory);
+  line-height: 1.25;
+  margin-top: 2.5rem;
+}
+.blog-body h2 {
+  font-size: 1.75rem;
+}
+.blog-body h3 {
+  font-size: 1.35rem;
+}
+.blog-body a {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.blog-body ul,
+.blog-body ol {
+  padding-left: 1.4rem;
+}
+.blog-body ul {
+  list-style: disc;
+}
+.blog-body ol {
+  list-style: decimal;
+}
+.blog-body li + li {
+  margin-top: 0.5rem;
+}
+.blog-body blockquote {
+  border-left: 2px solid var(--gold);
+  padding-left: 1.25rem;
+  color: var(--ivory);
+}
+.blog-body img {
+  width: 100%;
+  height: auto;
+}
+.blog-body hr {
+  border-color: rgb(201 165 92 / 0.28);
+}
+
+/* Admin rich-text editor content */
+.admin-theme .rich-text > * + * {
+  margin-top: 0.85em;
+}
+.admin-theme .rich-text h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.admin-theme .rich-text h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.admin-theme .rich-text ul {
+  list-style: disc;
+  padding-left: 1.4rem;
+}
+.admin-theme .rich-text ol {
+  list-style: decimal;
+  padding-left: 1.4rem;
+}
+.admin-theme .rich-text blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+}
+.admin-theme .rich-text a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.admin-theme .rich-text img {
+  max-width: 100%;
+  border-radius: 0.5rem;
 }

@@ -1,0 +1,36 @@
+services:
+  web:
+    image: webxnepal/hex-healing-frontend:latest
+    pull_policy: always
+    container_name: hex-healing-frontend
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DB_HOST: webx-postgres
+      DB_PORT: 5432
+      REDIS_HOST: webx-redis
+      REDIS_PORT: 6379
+    ports:
+      # Nginx on the host proxies to this. Localhost only, so the app isn't reachable around Nginx.
+      - "127.0.0.1:3010:3000"
+    networks:
+      - webx-net
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').connect({ host: '127.0.0.1', port: 3000 }).once('connect', () => process.exit(0)).once('error', () => process.exit(1));",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+networks:
+  webx-net:
+    external: true
+    name: webx-net

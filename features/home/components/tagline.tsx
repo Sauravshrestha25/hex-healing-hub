@@ -27,15 +27,15 @@ export function Tagline() {
 
   return (
     <section ref={ref} className="relative h-[110vh] overflow-hidden text-ivory">
-      <div className="relative flex h-full flex-col items-center justify-center text-center">
+      <div className="relative mx-auto flex h-full w-[90%] flex-col items-start justify-center text-left">
         {WORDS.map(({ w, c }) => (
           <div key={w} className="overflow-hidden pb-2">
-            <p className={`tg-word font-heading text-6xl uppercase leading-[1.02] tracking-tight sm:text-8xl lg:text-[7.5rem] ${c}`}>
+            <p className={`tg-word font-heading text-[2.6rem] uppercase min-[380px]:text-5xl leading-[1.02] tracking-tight sm:text-8xl lg:text-[7.5rem] ${c}`}>
               {w}
             </p>
           </div>
         ))}
-        <p className="mt-12 text-base text-lavender">Butwal, Pokhara and Kapilvastu</p>
+        <p className="mt-10 max-w-sm self-end text-right text-base text-lavender">Three centers across Nepal, in Butwal, Pokhara and Kapilvastu.</p>
       </div>
     </section>
   );

@@ -1,0 +1,115 @@
+name: CI/CD - HEX Healing Frontend
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  IMAGE_NAME: webxnepal/hex-healing-frontend
+  SOURCE_COMPOSE: ./docker-compose.yml
+  REMOTE_DIR: /var/www/hex-healing-frontend
+  PROJECT_NAME: hex-healing
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck & lint
+        run: |
+          pnpm exec next typegen
+          pnpm exec tsc --noEmit
+          pnpm lint
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensure remote directory exists
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p "${{ env.REMOTE_DIR }}"
+
+      - name: Upload docker-compose to VPS
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "${{ env.SOURCE_COMPOSE }}"
+          target: "${{ env.REMOTE_DIR }}/"
+          strip_components: 0
+          overwrite: true
+
+      - name: SSH and deploy on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+
+            APP_DIR="${{ env.REMOTE_DIR }}"
+            COMPOSE_FILE="$APP_DIR/$(basename '${{ env.SOURCE_COMPOSE }}')"
+            test -f "$APP_DIR/.env" || { echo "Missing $APP_DIR/.env on the VPS"; exit 1; }
+
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+            if docker compose version >/dev/null 2>&1; then
+              COMPOSE_BIN="docker compose"
+            else
+              COMPOSE_BIN="docker-compose"
+            fi
+
+            $COMPOSE_BIN -p "${{ env.PROJECT_NAME }}" -f "$COMPOSE_FILE" pull web
+            $COMPOSE_BIN -p "${{ env.PROJECT_NAME }}" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate web
+            docker ps

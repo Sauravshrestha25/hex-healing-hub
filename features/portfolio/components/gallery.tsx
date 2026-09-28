@@ -2,21 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import type { GalleryItem } from "@/features/shared/lib/data";
 
-const GALLERY = [
-  { image: "/images/meditation-classes.jpg", title: "A Moment of Stillness", category: "Mindfulness", alt: "A young monk sitting in meditation outdoors" },
-  { image: "/images/himalaya.jpg", title: "Space to Reflect", category: "Nature", alt: "A stupa and prayer flags beneath snow-covered Himalayan peaks" },
-  { image: "/images/spiritual-healing.jpg", title: "A Quiet Resonance", category: "Spiritual tradition", alt: "A collection of golden singing bowls" },
-  { image: "/images/prayer-flags.jpg", title: "Carried by the Wind", category: "Spiritual heritage", alt: "Colorful prayer flags above a green mountain valley" },
-  { image: "/images/contact.jpg", title: "The Slower Path", category: "Nature", alt: "Sunlight falling on a quiet path through a green forest" },
-  { image: "/images/spiritual-classes.jpg", title: "Rooted in Tradition", category: "Spiritual heritage", alt: "A white stupa with a golden spire and colorful prayer flags" },
-];
 
-export function Gallery() {
+export function Gallery({ items }: { items: GalleryItem[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [active, setActive] = useState<number | null>(null);
   const isOpen = active !== null;
-  const selected = active === null ? null : GALLERY[active];
+  const selected = active === null ? null : items[active];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -26,7 +19,7 @@ export function Gallery() {
   }, [isOpen]);
 
   function step(direction: number) {
-    setActive(current => current === null ? null : (current + direction + GALLERY.length) % GALLERY.length);
+    setActive(current => current === null ? null : (current + direction + items.length) % items.length);
   }
 
   return (
@@ -39,7 +32,7 @@ export function Gallery() {
           <p className="text-xs text-lavender">06 images · Select an image to explore</p>
         </div>
         <div className="grid items-start gap-x-12 gap-y-12 pt-12 md:grid-cols-2 lg:gap-x-24">
-          {GALLERY.map((item, index) => (
+          {items.map((item, index) => (
             <figure key={item.image} className={`page-reveal ${index % 2 === 1 ? "md:pt-24" : ""}`}>
               <button
                 type="button"
@@ -86,7 +79,7 @@ export function Gallery() {
         {selected && <div className="relative h-[58dvh]"><Image src={selected.image} alt={selected.alt} fill sizes="90vw" className="object-contain" /></div>}
         <div className="mt-4 flex items-center justify-between gap-3">
           <button type="button" onClick={() => step(-1)} className="min-h-11 px-3 text-sm text-gold-light">← Previous</button>
-          <p aria-live="polite" className="text-xs text-lavender">{active === null ? 0 : active + 1} / {GALLERY.length}</p>
+          <p aria-live="polite" className="text-xs text-lavender">{active === null ? 0 : active + 1} / {items.length}</p>
           <button type="button" onClick={() => step(1)} className="min-h-11 px-3 text-sm text-gold-light">Next →</button>
         </div>
       </dialog>

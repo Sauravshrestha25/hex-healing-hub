@@ -1,0 +1,56 @@
+# Shared WebX data services: webx-postgres + webx-redis on the external "webx-net" network,
+# the same names slv-backend and this app connect to. Skip this if they already run on the VPS.
+#
+#   docker network create webx-net     # once per VPS
+#   cd deploy && cp .env.example .env  # fill in, then:
+#   docker compose up -d
+#
+# No host ports: only containers on webx-net can reach them (use `docker exec` for admin work).
+name: webx-data
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: webx-postgres
+    restart: always
+    environment:
+      # Server superuser. Each app gets its own database + user (see README).
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in deploy/.env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [webx-net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: webx-redis
+    restart: always
+    environment:
+      # Optional. Empty = no auth (reachable only inside webx-net). If set, every app needs REDIS_PASSWORD.
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDISCLI_AUTH: ${REDIS_PASSWORD:-}
+    command: >
+      sh -c 'exec redis-server --requirepass "$$REDIS_PASSWORD" --appendonly yes
+      --maxmemory 256mb --maxmemory-policy volatile-lru'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [webx-net]
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  webx-net:
+    external: true
+    name: webx-net

@@ -7,6 +7,7 @@ export function formatBlogDate(date: string) {
   }).format(new Date(date));
 }
 
-export function readingTime(content: string) {
-  return `${Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200))} min read`;
+export function readingTime(html: string) {
+  const words = html.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min read`;
 }

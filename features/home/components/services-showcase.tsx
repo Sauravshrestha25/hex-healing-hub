@@ -1,120 +1,91 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Service } from "@/features/shared/lib/data";
-import { ScrollTrigger, useGSAP } from "@/features/shared/lib/gsap";
 
 export function ServicesShowcase({ services }: { services: Service[] }) {
-  const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
 
-  useGSAP(
-    () => {
-      ref
-        .current!.querySelectorAll<HTMLElement>("[data-service]")
-        .forEach((el, i) => {
-          ScrollTrigger.create({
-            trigger: el,
-            start: "top 55%",
-            end: "bottom 55%",
-            onToggle: (self) => self.isActive && setActive(i),
-          });
-        });
-    },
-    { scope: ref },
-  );
-
   return (
-    <section ref={ref} className="text-ivory">
-      <div className="mx-auto flex w-[90%] flex-col justify-between gap-10 border-b hairline-gold pb-16 pt-36 lg:flex-row lg:items-end">
-        <div>
-          <h2
-            data-split
-            className="mt-8 max-w-3xl font-heading text-4xl leading-[1.05] sm:text-6xl"
-          >
-            Six paths toward{" "}
-            <span className="text-gold-light">inner balance.</span>
+    <section className="text-ivory">
+      <div className="mx-auto grid w-[90%] grid-cols-1 items-start gap-14 py-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-20 lg:py-40">
+        <div className="glass p-8 sm:p-12">
+          <h2 data-split className="max-w-xl font-heading text-4xl leading-[1.05] sm:text-5xl">
+            Six paths toward <span className="text-gold-light">inner balance.</span>
           </h2>
-        </div>
-      </div>
 
-      <div className="mx-auto grid w-[90%] gap-20 pb-36 lg:grid-cols-[1fr_1.15fr]">
-        <ol>
-          {services.map((s, i) => (
-            <li
-              key={s.id}
-              data-service
-              className={`relative flex min-h-[72vh] flex-col justify-center py-16 transition-opacity duration-700 lg:pl-10 ${
-                active === i ? "" : "lg:opacity-25"
-              }`}
-            >
-              <span
-                className={`absolute left-0 top-1/2 hidden h-24 w-px -translate-y-1/2 bg-gradient-to-b from-transparent via-gold to-transparent transition-opacity duration-700 lg:block ${
-                  active === i ? "opacity-100" : "opacity-0"
-                }`}
-              />
-              <div className="relative mb-10 aspect-[4/3] overflow-hidden lg:hidden">
-                <Image
-                  src={s.image}
-                  alt={s.title}
-                  fill
-                  sizes="90vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="glass p-8 sm:p-12">
-                <h3 className="font-heading text-4xl sm:text-5xl">
-                  {s.title}
-                </h3>
-                <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-lavender">
-                  {s.description}
-                </p>
-                <Link
-                  href={`/services#${s.slug}`}
-                  className="group mt-10 inline-flex w-fit items-center gap-3 text-sm font-medium tracking-wide text-gold-light"
+          <ul className="mt-12 border-t hairline-gold">
+            {services.map((s, i) => {
+              const isActive = active === i;
+              return (
+                <li
+                  key={s.id}
+                  onMouseEnter={() => setActive(i)}
+                  onFocus={() => setActive(i)}
+                  className="border-b hairline-gold"
                 >
-                  Explore {s.title}
-                  <span className="h-px w-8 bg-gold transition-all duration-500 group-hover:w-14" />
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ol>
+                  <Link href={`/services#${s.slug}`} className="flex items-center gap-5 py-5">
+                    <span className="relative h-14 w-14 shrink-0 overflow-hidden lg:hidden">
+                      <Image src={s.image} alt="" fill sizes="56px" className="object-cover" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className={`block font-heading text-2xl transition-colors duration-300 sm:text-3xl ${
+                          isActive ? "lg:text-gold-light" : "lg:text-ivory/60"
+                        }`}
+                      >
+                        {s.title}
+                      </span>
+                      <span
+                        className={`grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out ${
+                          isActive ? "lg:grid-rows-[1fr]" : "lg:grid-rows-[0fr]"
+                        }`}
+                      >
+                        <span className="overflow-hidden">
+                          <span className="block pt-2 text-sm leading-relaxed text-lavender sm:text-base">
+                            {s.description}
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`hidden text-gold transition-all duration-300 lg:block ${
+                        isActive ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"
+                      }`}
+                    >
+                      →
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
 
-        <div className="hidden lg:block">
-          <div className="sticky top-[12vh] h-[76vh] overflow-hidden">
+          <Link
+            href="/services"
+            className="mt-10 inline-block text-sm text-gold-light underline decoration-gold/40 underline-offset-8 transition-colors hover:text-ivory"
+          >
+            See all services
+          </Link>
+        </div>
+
+        <div className="hidden lg:sticky lg:top-28 lg:block">
+          <div className="relative aspect-[4/5] overflow-hidden">
             {services.map((s, i) => (
               <div
                 key={s.id}
-                className={`absolute inset-0 transition-all duration-[1400ms] ease-out ${
-                  active === i
-                    ? "scale-100 opacity-100"
-                    : "scale-[1.06] opacity-0"
+                className={`absolute inset-0 transition-all duration-700 ease-out ${
+                  active === i ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"
                 }`}
               >
-                <Image
-                  src={s.image}
-                  alt={s.title}
-                  fill
-                  sizes="50vw"
-                  className="object-cover"
-                />
+                <Image src={s.image} alt={s.title} fill sizes="45vw" className="object-cover" />
               </div>
             ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-ink/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
             <div className="pointer-events-none absolute inset-5 border hairline-gold" />
-            <div className="absolute bottom-12 right-12">
-              <div className="flex gap-2">
-                {services.map((s, i) => (
-                  <span
-                    key={s.id}
-                    className={`h-px transition-all duration-700 ${active === i ? "w-10 bg-gold" : "w-4 bg-ivory/30"}`}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

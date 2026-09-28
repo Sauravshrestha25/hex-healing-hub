@@ -5,7 +5,7 @@ import { Reveal } from "@/features/shared/components/reveal";
 export function Centers() {
   return (
     <section className="text-ivory">
-      <div className="mx-auto grid w-[90%] items-center gap-16 py-36 lg:grid-cols-[0.85fr_1.15fr] lg:gap-28">
+      <div className="mx-auto grid w-[90%] grid-cols-1 items-center gap-16 py-36 lg:grid-cols-[0.85fr_1.15fr] lg:gap-28">
         <Reveal>
           <div className="relative aspect-[3/4] overflow-hidden">
             <Image
@@ -29,7 +29,7 @@ export function Centers() {
               <li key={l.city}>
                 <a
                   href={`tel:${l.phone}`}
-                  className="group flex items-center justify-between gap-6 border-b hairline-gold py-8"
+                  className="group flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b hairline-gold py-8"
                 >
                   <span className="flex items-baseline gap-6">
                     <span className="font-heading text-3xl transition-colors duration-500 group-hover:text-gold-light sm:text-4xl">
@@ -46,7 +46,7 @@ export function Centers() {
           </ul>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="mt-10 inline-block text-sm font-light tracking-wide text-lavender transition-colors hover:text-gold-light"
+            className="break-all mt-10 inline-block text-sm font-light tracking-wide text-lavender transition-colors hover:text-gold-light"
           >
             {CONTACT_EMAIL}
           </a>
