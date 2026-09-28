@@ -61,7 +61,7 @@ See `.env.example` for every variable with a description. Required: the `DB_*` c
 
 ## VPS deployment (Docker)
 
-Same setup as slv-backend: GitHub Actions builds the image, pushes it to Docker Hub (`webxnepal/hex-healing-frontend`), then SSHes into the VPS and restarts the container. The app joins the shared `webx-net` network and talks to `webx-postgres` / `webx-redis`.
+Same setup as slv-backend: GitHub Actions builds the image, pushes it to Docker Hub (`webxnepal/hex-healing-hub`), then SSHes into the VPS and restarts the container. The app joins the shared `webx-net` network and talks to `webx-postgres` / `webx-redis`.
 
 ### 1. Shared Postgres + Redis (once per VPS; skip if slv-backend's are already running)
 
@@ -89,7 +89,7 @@ SQL
 
 ### 3. App env on the VPS
 
-Create `/var/www/hex-healing-frontend/.env` from `.env.example` (`DB_USER=hex_user`, `DB_PASSWORD`, `DB_NAME=hexdb`, `SESSION_SECRET`, `SUPERADMIN_*`, R2, SMTP). `DB_HOST` / `REDIS_HOST` are set by `docker-compose.yml`.
+Create `/var/www/hex-healing-hub/.env` from `.env.example` (`DB_USER=hex_user`, `DB_PASSWORD`, `DB_NAME=hexdb`, `SESSION_SECRET`, `SUPERADMIN_*`, R2, SMTP). `DB_HOST` / `REDIS_HOST` are set by `docker-compose.yml`.
 
 Docker reads this file, not Next.js, so put values containing `$` (the password hash, passwords) in **single quotes, unescaped**: `SUPERADMIN_PASSWORD_HASH='$2b$12$...'`.
 

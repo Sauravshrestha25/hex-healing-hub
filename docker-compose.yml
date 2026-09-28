@@ -1,8 +1,8 @@
 services:
   web:
-    image: webxnepal/hex-healing-frontend:latest
+    image: webxnepal/hex-healing-hub:latest
     pull_policy: always
-    container_name: hex-healing-frontend
+    container_name: hex-healing-hub
     env_file:
       - .env
     environment:

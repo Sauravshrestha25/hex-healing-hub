@@ -1,14 +1,14 @@
-name: CI/CD - HEX Healing Frontend
+name: CI/CD - HEX Healing Hub
 
 on:
   push:
     branches: ["main"]
 
 env:
-  IMAGE_NAME: webxnepal/hex-healing-frontend
+  IMAGE_NAME: webxnepal/hex-healing-hub
   SOURCE_COMPOSE: ./docker-compose.yml
-  REMOTE_DIR: /var/www/hex-healing-frontend
-  PROJECT_NAME: hex-healing
+  REMOTE_DIR: /var/www/hex-healing-hub
+  PROJECT_NAME: hex-healing-hub
 
 jobs:
   build-and-push:
