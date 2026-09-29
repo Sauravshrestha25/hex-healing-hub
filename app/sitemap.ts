@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getPublishedBlogs } from "@/features/content/server/queries";
+import { getPublishedBlogs, getServices } from "@/features/content/server/queries";
 
 const SITE_URL = process.env.SITE_URL ?? "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogs = await getPublishedBlogs();
+  const [blogs, services] = await Promise.all([getPublishedBlogs(), getServices()]);
 
   const staticRoutes = ["", "/about", "/services", "/portfolio", "/contact", "/blog"].map((path) => ({
     url: `${SITE_URL}${path}`,
@@ -16,5 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: blog.publishedAt ? new Date(blog.publishedAt) : new Date(),
   }));
 
-  return [...staticRoutes, ...blogRoutes];
+  const serviceRoutes = services.map((service) => ({ url: `${SITE_URL}/services/${service.slug}`, lastModified: new Date() }));
+
+  return [...staticRoutes, ...serviceRoutes, ...blogRoutes];
 }

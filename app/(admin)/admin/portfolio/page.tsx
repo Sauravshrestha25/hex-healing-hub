@@ -9,30 +9,30 @@ import { deleteGalleryItem } from "@/features/admin/server/gallery";
 import { getViewer } from "@/features/admin/server/viewer";
 import { container } from "@/features/shared/server/container";
 
-export const metadata = { title: "Gallery" };
+export const metadata = { title: "Portfolio" };
 
-export default async function AdminGalleryPage() {
+export default async function AdminPortfolioPage() {
   const [viewer, items] = await Promise.all([getViewer(), container().gallery.listForAdmin()]);
   const addButton = viewer.isVerified && (
-    <Link href="/admin/gallery/new" className={buttonVariants()}>
+    <Link href="/admin/portfolio/new" className={buttonVariants()}>
       <ImagePlus /> Add photo
     </Link>
   );
 
   return (
     <>
-      <PageHeader title="Gallery" description="Photos on the Portfolio page, in display order.">
+      <PageHeader title="Portfolio" description="The photo gallery on the website's Portfolio page, in display order.">
         {addButton}
       </PageHeader>
       {items.length === 0 ? (
         <Panel>
-          <EmptyState icon={Images} title="No photos yet" description="Upload photos of your space, sessions and events." action={addButton} />
+          <EmptyState icon={Images} title="No photos yet" description="Upload photos of your space, sessions and events for the Portfolio page." action={addButton} />
         </Panel>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           {items.map((item) => (
             <li key={item.id} className="group overflow-hidden rounded-xl border bg-card">
-              <Link href={`/admin/gallery/${item.id}`} className="relative block aspect-square overflow-hidden bg-muted">
+              <Link href={`/admin/portfolio/${item.id}`} className="relative block aspect-square overflow-hidden bg-muted">
                 <Image src={item.image} alt={item.alt} fill sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
                 <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-10">
                   <span className="block truncate text-sm font-medium text-white">{item.title}</span>
@@ -44,7 +44,7 @@ export default async function AdminGalleryPage() {
                   <span className="pl-1 text-xs text-muted-foreground tabular-nums">#{item.order}</span>
                   <RowActions
                     canEdit
-                    editHref={`/admin/gallery/${item.id}`}
+                    editHref={`/admin/portfolio/${item.id}`}
                     remove={{ id: item.id, itemName: item.title, action: deleteGalleryItem }}
                   />
                 </div>

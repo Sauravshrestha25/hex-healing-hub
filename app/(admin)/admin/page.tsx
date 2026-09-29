@@ -12,7 +12,7 @@ export const metadata = { title: "Overview" };
 
 const QUICK_LINKS = [
   { href: "/admin/blogs/new", label: "Write a post" },
-  { href: "/admin/gallery/new", label: "Add a photo" },
+  { href: "/admin/portfolio/new", label: "Add a photo" },
   { href: "/admin/services/new", label: "Add a service" },
   { href: "/admin/users/new", label: "Add a user" },
 ];
@@ -25,7 +25,7 @@ export default async function AdminOverviewPage() {
     { label: "New inquiries", value: stats.newInquiries, href: "/admin/inquiries", attention: stats.newInquiries > 0 },
     { label: "Published posts", value: stats.publishedPosts, href: "/admin/blogs", note: stats.draftPosts ? `${stats.draftPosts} draft${stats.draftPosts === 1 ? "" : "s"}` : undefined },
     { label: "Services", value: stats.services, href: "/admin/services" },
-    { label: "Gallery photos", value: stats.galleryImages, href: "/admin/gallery" },
+    { label: "Portfolio photos", value: stats.galleryImages, href: "/admin/portfolio" },
   ];
 
   return (

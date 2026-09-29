@@ -18,6 +18,8 @@ export type Service = {
   image: string;
 };
 
+export type ServiceDetail = Service & { content: string };
+
 export type GalleryItem = {
   id: string;
   image: string;

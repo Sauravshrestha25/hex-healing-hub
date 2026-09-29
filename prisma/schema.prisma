@@ -12,6 +12,8 @@ model Service {
   title       String
   slug        String   @unique
   description String
+  /// Sanitised HTML for the service's own page (/services/[slug]).
+  content     String   @default("")
   image       String
   order       Int      @default(0)
   createdAt   DateTime @default(now())

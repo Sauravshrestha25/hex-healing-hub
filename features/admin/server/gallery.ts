@@ -14,7 +14,7 @@ export async function saveGalleryItem(_prev: FormState, formData: FormData): Pro
   });
   if (result.error) return result;
   revalidatePath("/", "layout");
-  redirect("/admin/gallery");
+  redirect("/admin/portfolio");
 }
 
 export async function deleteGalleryItem(id: string): Promise<FormState> {

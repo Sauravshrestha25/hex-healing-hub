@@ -26,7 +26,7 @@ export function ServicesShowcase({ services }: { services: Service[] }) {
                   onFocus={() => setActive(i)}
                   className="border-b hairline-gold"
                 >
-                  <Link href={`/services#${s.slug}`} className="flex items-center gap-5 py-5">
+                  <Link href={`/services/${s.slug}`} className="flex items-center gap-5 py-5">
                     <span className="relative h-14 w-14 shrink-0 overflow-hidden lg:hidden">
                       <Image src={s.image} alt="" fill sizes="56px" className="object-cover" />
                     </span>

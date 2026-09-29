@@ -33,7 +33,7 @@ const GROUPS: { label?: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin/blogs", label: "Blogs", icon: Newspaper },
       { href: "/admin/services", label: "Services", icon: Sparkles },
-      { href: "/admin/gallery", label: "Gallery", icon: Images },
+      { href: "/admin/portfolio", label: "Portfolio", icon: Images },
     ],
   },
   { label: "Team", items: [{ href: "/admin/users", label: "Users", icon: Users }] },

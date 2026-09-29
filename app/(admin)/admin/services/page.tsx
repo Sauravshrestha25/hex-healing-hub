@@ -42,9 +42,10 @@ export default async function AdminServicesPage() {
                 <Link href={`/admin/services/${service.id}`} className="font-semibold hover:text-brand hover:underline">{service.title}</Link>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{service.description}</p>
                 <div className="mt-auto flex items-center justify-between pt-3">
-                  <span className="truncate font-mono text-xs text-muted-foreground">/{service.slug}</span>
+                  <span className="truncate font-mono text-xs text-muted-foreground">/services/{service.slug}</span>
                   <RowActions
                     canEdit={viewer.isVerified}
+                    viewHref={`/services/${service.slug}`}
                     editHref={`/admin/services/${service.id}`}
                     remove={{ id: service.id, itemName: service.title, action: deleteService }}
                   />

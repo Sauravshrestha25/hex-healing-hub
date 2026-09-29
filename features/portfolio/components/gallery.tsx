@@ -29,11 +29,11 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
           <div>
             <h2 id="gallery-title" className="mt-5 font-heading text-3xl sm:text-4xl">Moments that invite <span className="text-gold-light">a pause.</span></h2>
           </div>
-          <p className="text-xs text-lavender">06 images · Select an image to explore</p>
+          <p className="text-xs text-lavender">{String(items.length).padStart(2, "0")} {items.length === 1 ? "image" : "images"} · Select an image to explore</p>
         </div>
         <div className="grid items-start gap-x-12 gap-y-12 pt-12 md:grid-cols-2 lg:gap-x-24">
           {items.map((item, index) => (
-            <figure key={item.image} className={`page-reveal ${index % 2 === 1 ? "md:pt-24" : ""}`}>
+            <figure key={item.id} className={`page-reveal ${index % 2 === 1 ? "md:pt-24" : ""}`}>
               <button
                 type="button"
                 aria-label={`View ${item.title}`}

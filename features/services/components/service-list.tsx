@@ -14,23 +14,30 @@ export function ServiceList({ services }: { services: Service[] }) {
         </div>
         <nav aria-label="Jump to a service" className="page-reveal mt-10 flex flex-wrap gap-3">
           {services.map(service => (
-            <a key={service.id} href={`#${service.slug}`} className="rounded-full border border-gold/25 px-4 py-2.5 text-xs text-ivory/80 transition-colors hover:border-gold hover:text-gold-light">{service.title}</a>
+            <Link key={service.id} href={`/services/${service.slug}`} className="rounded-full border border-gold/25 px-4 py-2.5 text-xs text-ivory/80 transition-colors hover:border-gold hover:text-gold-light">{service.title}</Link>
           ))}
         </nav>
         <div className="mt-14 grid gap-x-12 gap-y-16 md:grid-cols-2 lg:gap-x-20 lg:gap-y-24">
           {services.map((service, index) => (
             <article key={service.id} id={service.slug} className="page-reveal scroll-mt-28">
-              <div className="relative aspect-[3/2] overflow-hidden bg-purple">
-                <Image src={service.image} alt="" fill sizes="(min-width: 768px) 43vw, 90vw" className="object-cover" />
+              <Link href={`/services/${service.slug}`} tabIndex={-1} aria-hidden="true" className="group relative block aspect-[3/2] overflow-hidden bg-purple">
+                <Image src={service.image} alt="" fill sizes="(min-width: 768px) 43vw, 90vw" className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" />
                 <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />
-                <span className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-ink/60 font-heading text-xs text-gold-light backdrop-blur-sm">0{index + 1}</span>
-              </div>
+                <span className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-ink/60 font-heading text-xs text-gold-light backdrop-blur-sm">{String(index + 1).padStart(2, "0")}</span>
+              </Link>
               <div className="border-b hairline-gold pb-7 pt-7">
-                <h3 className="font-heading text-2xl font-semibold sm:text-3xl">{service.title}</h3>
+                <h3 className="font-heading text-2xl font-semibold sm:text-3xl">
+                  <Link href={`/services/${service.slug}`} className="hover:text-gold-light">{service.title}</Link>
+                </h3>
                 <p className="mt-4 max-w-xl text-sm leading-loose text-lavender sm:text-base">{service.description}</p>
-                <Link href="/contact" aria-label={`Ask about ${service.title}`} className="mt-6 inline-flex items-center gap-6 py-2 text-sm text-gold-light transition-colors hover:text-white">
-                  Ask About This Practice <span aria-hidden="true">↗</span>
-                </Link>
+                <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2">
+                  <Link href={`/services/${service.slug}`} aria-label={`Learn more about ${service.title}`} className="inline-flex items-center gap-4 py-2 text-sm text-gold-light transition-colors hover:text-white">
+                    Learn More <span aria-hidden="true">→</span>
+                  </Link>
+                  <Link href="/contact" aria-label={`Ask about ${service.title}`} className="inline-flex items-center gap-4 py-2 text-sm text-ivory/70 transition-colors hover:text-white">
+                    Ask About This Practice <span aria-hidden="true">↗</span>
+                  </Link>
+                </div>
               </div>
             </article>
           ))}

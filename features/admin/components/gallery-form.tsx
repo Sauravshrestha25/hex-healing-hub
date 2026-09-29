@@ -18,7 +18,7 @@ export function GalleryForm({ item, readOnly }: { item?: GalleryValues; readOnly
     <form action={formAction} onSubmit={onSubmit}>
       {item && <input type="hidden" name="id" value={item.id} />}
       <fieldset disabled={readOnly} className="grid min-w-0 gap-8">
-        <FormSection title="Photo" description="Portrait or square photos look best in the gallery.">
+        <FormSection title="Photo" description="Portrait or square photos look best on the Portfolio page.">
           <div className="max-w-sm">
             <ImageUploadField name="image" label="Image" defaultValue={item?.image} aspect="aspect-[4/5]" readOnly={readOnly} />
           </div>
@@ -40,7 +40,7 @@ export function GalleryForm({ item, readOnly }: { item?: GalleryValues; readOnly
           </Field>
         </FormSection>
       </fieldset>
-      <FormActions pending={pending} cancelHref="/admin/gallery" error={state.error} readOnly={readOnly} label={item ? "Save changes" : "Add photo"} />
+      <FormActions pending={pending} cancelHref="/admin/portfolio" error={state.error} readOnly={readOnly} label={item ? "Save changes" : "Add photo"} />
     </form>
   );
 }
