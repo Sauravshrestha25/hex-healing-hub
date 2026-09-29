@@ -19,6 +19,7 @@ proxy.ts          redirects signed-out visitors away from /admin
 - **Contact form** saves each inquiry to the database and emails `INQUIRY_NOTIFY_TO`. If email fails, the inquiry is still saved.
 - **Images** upload from the dashboard straight to Cloudflare R2 using short-lived signed URLs.
 - **Auth**: users live in the database; sessions are a signed, HTTP-only cookie (8 hours) re-checked against the database on every request, so removing a user or changing a password takes effect immediately.
+- **Forgot password**: `/forgot-password` emails a single-use link (30 minutes) via the SMTP settings. Without SMTP in development, the link is printed in the server log.
 - **Users**: the owner (superadmin) account is created only by `pnpm db:seed` from `SUPERADMIN_*` env vars. It is invisible to other admins and can't be deleted from the dashboard. Any signed-in user can add admins at `/admin/users`; everyone changes their own password at `/admin/account`.
 
 ## Local setup

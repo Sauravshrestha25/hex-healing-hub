@@ -77,9 +77,22 @@ model User {
   passwordHash   String
   /// Unverified users can sign in and view, but every change is refused server-side.
   isVerified     Boolean  @default(false)
+  resetTokens    PasswordResetToken[]
   role           Role     @default(ADMIN)
   /// Bumped on password change or removal so existing session cookies stop working.
   sessionVersion Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+/// One-time "forgot password" links. Only a SHA-256 of the token is stored.
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

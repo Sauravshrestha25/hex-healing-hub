@@ -6,7 +6,8 @@ import { AuthService } from "@/features/auth/server/auth.service";
 import { PasswordHasher } from "@/features/auth/server/password";
 import { SessionService } from "@/features/auth/server/session.service";
 import { InquiryService } from "@/features/contact/server/inquiry.service";
-import { SmtpInquiryNotifier } from "@/features/contact/server/inquiry-notifier";
+import { InquiryNotifier } from "@/features/contact/server/inquiry-notifier";
+import { PasswordResetService } from "@/features/auth/server/password-reset.service";
 import { BlogService } from "@/features/content/server/blog.service";
 import { GalleryService } from "@/features/content/server/gallery.service";
 import { ImageJanitor } from "@/features/content/server/image-janitor.service";
@@ -14,6 +15,7 @@ import { ServiceCatalogService } from "@/features/content/server/service-catalog
 import { UserService } from "@/features/users/server/user.service";
 import { getDb } from "./db";
 import { MemoryRateLimiter, RedisRateLimiter } from "./rate-limiter";
+import { mailerFromEnv } from "./mailer";
 import { redisFromEnv } from "./redis";
 
 /** Composition root: every server-side service, wired once with its dependencies. */
@@ -25,6 +27,8 @@ function createContainer() {
   const hasher = new PasswordHasher();
   const storage = R2StorageService.fromEnv();
   const images = new ImageJanitor(db, storage);
+  const mailer = mailerFromEnv();
+  const siteUrl = (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
   const sessions = new SessionService(db, new SessionCodec(process.env.SESSION_SECRET));
 
   return {
@@ -34,7 +38,12 @@ function createContainer() {
     blogs: new BlogService(db, images),
     services: new ServiceCatalogService(db, images),
     gallery: new GalleryService(db, images),
-    inquiries: new InquiryService(db, SmtpInquiryNotifier.fromEnv(), limiter("inquiry", 5, 10 * 60 * 1000)),
+    passwordResets: new PasswordResetService(db, hasher, mailer, limiter("password-reset", 5, 60 * 60 * 1000), siteUrl),
+    inquiries: new InquiryService(
+      db,
+      new InquiryNotifier(mailer, process.env.INQUIRY_NOTIFY_TO, `${siteUrl}/admin/inquiries`),
+      limiter("inquiry", 5, 10 * 60 * 1000),
+    ),
     storage,
     dashboard: new DashboardService(db),
   };

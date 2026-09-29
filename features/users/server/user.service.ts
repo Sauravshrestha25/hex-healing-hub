@@ -46,7 +46,7 @@ const changePasswordSchema = z
 /**
  * Accounts and their visibility rules:
  * - The superadmin is created only by `pnpm db:seed` from env vars, never through the UI.
- * - Admins never see, find or delete the superadmin; it is excluded from every query they reach.
+ * - Nobody sees, finds or deletes the superadmin in the dashboard; it is excluded from every user query.
  * - Anyone signed in can create users, and new users are always ADMIN.
  */
 export class UserService {
@@ -55,23 +55,14 @@ export class UserService {
     private readonly hasher: PasswordHasher,
   ) {}
 
-  /** Users the actor may see. Admins get admin accounts only. */
-  private visibleTo(actor: SessionUser): Prisma.UserWhereInput {
-    return actor.role === "SUPERADMIN" ? {} : { role: "ADMIN" };
-  }
-
+  /** Dashboard user list: admin accounts only. The owner account is never listed, not even to itself. */
   async list(actor: SessionUser): Promise<UserListItem[]> {
     const users = await this.db.user.findMany({
-      where: this.visibleTo(actor),
+      where: { role: "ADMIN" },
       orderBy: { createdAt: "asc" },
-      select: { id: true, name: true, email: true, phone: true, isVerified: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, phone: true, isVerified: true, createdAt: true },
     });
-    // role is only used here (the owner always counts as verified); it never leaves this method.
-    return users.map(({ role, ...user }) => ({
-      ...user,
-      isVerified: role === "SUPERADMIN" || user.isVerified,
-      isSelf: user.id === actor.id,
-    }));
+    return users.map((user) => ({ ...user, isSelf: user.id === actor.id }));
   }
 
   async create(_actor: SessionUser, input: Record<string, unknown>) {

@@ -41,6 +41,13 @@ export default async function AdminUsersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {people.length === 0 && (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={5} className="py-12 text-center text-sm text-muted-foreground">
+                  No other users yet.
+                </TableCell>
+              </TableRow>
+            )}
             {people.map((person) => (
               <TableRow key={person.id}>
                 <TableCell className="pl-5">

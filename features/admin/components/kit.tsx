@@ -1,6 +1,5 @@
-import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { ArrowUpRight, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { cn } from "cn";
 import { initials } from "@/features/admin/lib/format";
 
@@ -21,7 +20,7 @@ export function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn("rounded-xl border bg-card shadow-[0_1px_2px_oklch(0.3_0.05_295/0.04)]", className)}>
+    <section className={cn("rounded-lg border bg-card", className)}>
       {(title || action) && (
         <div className="flex items-start justify-between gap-4 border-b px-5 py-4">
           <div className="min-w-0">
@@ -33,51 +32,6 @@ export function Panel({
       )}
       <div className={cn("p-5", bodyClassName)}>{children}</div>
     </section>
-  );
-}
-
-export function StatCard({
-  label,
-  value,
-  note,
-  icon: Icon,
-  href,
-  highlight,
-}: {
-  label: string;
-  value: number;
-  note?: string;
-  icon: LucideIcon;
-  href: string;
-  highlight?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "group relative flex flex-col gap-4 overflow-hidden rounded-xl border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-[0_8px_24px_-12px_oklch(0.3_0.11_295/0.25)]",
-        highlight && "border-brand-gold/60 bg-[linear-gradient(135deg,oklch(0.99_0.02_85),oklch(1_0_0))]",
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <span
-          className={cn(
-            "grid size-9 place-items-center rounded-lg bg-accent text-brand",
-            highlight && "bg-brand-gold/20 text-[oklch(0.45_0.09_75)]",
-          )}
-        >
-          <Icon className="size-[18px]" />
-        </span>
-        <ArrowUpRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-      </div>
-      <div>
-        <p className="text-3xl font-semibold tracking-tight tabular-nums">{value}</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {label}
-          {note && <span className="text-muted-foreground/80"> · {note}</span>}
-        </p>
-      </div>
-    </Link>
   );
 }
 
@@ -133,7 +87,7 @@ export function InitialsAvatar({ name, className }: { name: string; className?: 
     <span
       aria-hidden="true"
       className={cn(
-        "grid size-9 shrink-0 place-items-center rounded-full bg-[linear-gradient(135deg,oklch(0.36_0.12_295),oklch(0.26_0.09_290))] text-xs font-semibold text-[oklch(0.92_0.06_85)]",
+        "grid size-9 shrink-0 place-items-center rounded-full bg-accent text-xs font-semibold text-brand",
         className,
       )}
     >
