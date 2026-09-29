@@ -93,6 +93,10 @@ export class R2StorageService {
       region: "auto",
       endpoint: `https://${this.config.accountId}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId: this.config.accessKeyId, secretAccessKey: this.config.secretAccessKey },
+      // The SDK otherwise signs a CRC32 of the (empty) request into presigned URLs, and R2 then
+      // rejects the browser's real upload as a checksum mismatch. Only send checksums when required.
+      requestChecksumCalculation: "WHEN_REQUIRED",
+      responseChecksumValidation: "WHEN_REQUIRED",
     });
     return this.client;
   }
