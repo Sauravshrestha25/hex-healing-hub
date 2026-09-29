@@ -9,6 +9,7 @@ import { InquiryService } from "@/features/contact/server/inquiry.service";
 import { SmtpInquiryNotifier } from "@/features/contact/server/inquiry-notifier";
 import { BlogService } from "@/features/content/server/blog.service";
 import { GalleryService } from "@/features/content/server/gallery.service";
+import { ImageJanitor } from "@/features/content/server/image-janitor.service";
 import { ServiceCatalogService } from "@/features/content/server/service-catalog.service";
 import { UserService } from "@/features/users/server/user.service";
 import { getDb } from "./db";
@@ -22,17 +23,19 @@ function createContainer() {
   const limiter = (name: string, limit: number, windowMs: number) =>
     redis ? new RedisRateLimiter(redis, name, limit, windowMs) : new MemoryRateLimiter(limit, windowMs);
   const hasher = new PasswordHasher();
+  const storage = R2StorageService.fromEnv();
+  const images = new ImageJanitor(db, storage);
   const sessions = new SessionService(db, new SessionCodec(process.env.SESSION_SECRET));
 
   return {
     sessions,
     auth: new AuthService(db, sessions, hasher, limiter("login", 5, 15 * 60 * 1000)),
     users: new UserService(db, hasher),
-    blogs: new BlogService(db),
-    services: new ServiceCatalogService(db),
-    gallery: new GalleryService(db),
+    blogs: new BlogService(db, images),
+    services: new ServiceCatalogService(db, images),
+    gallery: new GalleryService(db, images),
     inquiries: new InquiryService(db, SmtpInquiryNotifier.fromEnv(), limiter("inquiry", 5, 10 * 60 * 1000)),
-    storage: R2StorageService.fromEnv(),
+    storage,
     dashboard: new DashboardService(db),
   };
 }

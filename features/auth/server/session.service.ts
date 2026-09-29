@@ -3,9 +3,9 @@ import type { PrismaClient, Role } from "@prisma/client";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, SESSION_MAX_AGE, type SessionCodec } from "@/features/auth/lib/session-codec";
-import { UnauthorizedError } from "@/features/shared/server/errors";
+import { ForbiddenError, UnauthorizedError } from "@/features/shared/server/errors";
 
-export type SessionUser = { id: string; email: string; name: string; role: Role };
+export type SessionUser = { id: string; email: string; name: string; role: Role; isVerified: boolean };
 
 export class SessionService {
   constructor(
@@ -21,17 +21,30 @@ export class SessionService {
 
     const user = await this.db.user.findUnique({
       where: { id: claims.userId },
-      select: { id: true, email: true, name: true, role: true, sessionVersion: true },
+      select: { id: true, email: true, name: true, role: true, isVerified: true, sessionVersion: true },
     });
     if (!user || user.sessionVersion !== claims.version) return null;
 
-    return { id: user.id, email: user.email, name: user.name, role: user.role };
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      isVerified: user.role === "SUPERADMIN" || user.isVerified,
+    };
   }
 
   /** For server actions and route handlers: rendering guards are not a security boundary. */
   async require() {
     const user = await this.current();
     if (!user) throw new UnauthorizedError();
+    return user;
+  }
+
+  /** For anything that changes data: signed in AND verified. */
+  async requireEditor() {
+    const user = await this.require();
+    if (!user.isVerified) throw new ForbiddenError();
     return user;
   }
 

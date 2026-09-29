@@ -7,17 +7,22 @@ import { attempt, formFields, type FormState } from "@/features/shared/server/fo
 
 export async function saveGalleryItem(_prev: FormState, formData: FormData): Promise<FormState> {
   const { sessions, gallery } = container();
-  await sessions.require();
   const { id, fields } = formFields(formData);
-  const result = await attempt(() => gallery.save(id, fields));
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await gallery.save(id, fields);
+  });
   if (result.error) return result;
   revalidatePath("/", "layout");
   redirect("/admin/gallery");
 }
 
-export async function deleteGalleryItem(id: string) {
+export async function deleteGalleryItem(id: string): Promise<FormState> {
   const { sessions, gallery } = container();
-  await sessions.require();
-  await gallery.remove(id);
-  revalidatePath("/", "layout");
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await gallery.remove(id);
+  });
+  if (!result.error) revalidatePath("/", "layout");
+  return result;
 }

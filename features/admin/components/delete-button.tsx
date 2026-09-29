@@ -24,7 +24,7 @@ export function DeleteButton({
 }: {
   id: string;
   itemName: string;
-  action: (id: string) => Promise<void>;
+  action: (id: string) => Promise<{ error?: string }>;
   onDeleted?: () => void;
 }) {
   const [pending, startTransition] = useTransition();
@@ -37,7 +37,7 @@ export function DeleteButton({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete {itemName}?</AlertDialogTitle>
-          <AlertDialogDescription>This removes it from the website permanently. It can&apos;t be undone.</AlertDialogDescription>
+          <AlertDialogDescription>This is permanent and can&apos;t be undone.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -47,8 +47,9 @@ export function DeleteButton({
             onClick={() =>
               startTransition(async () => {
                 try {
-                  await action(id);
-                  toast.success(`${itemName} deleted`);
+                  const { error } = await action(id);
+                  if (error) return void toast.error(error);
+                  toast.success(`${itemName.charAt(0).toUpperCase()}${itemName.slice(1)} deleted`);
                   onDeleted?.();
                 } catch {
                   toast.error("Couldn't delete. Please try again.");

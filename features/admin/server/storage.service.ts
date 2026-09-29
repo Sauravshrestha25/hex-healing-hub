@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectsCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { z } from "zod";
 import { AppError, ValidationError } from "@/features/shared/server/errors";
@@ -64,6 +64,27 @@ export class R2StorageService {
       { expiresIn: 60 },
     );
     return { uploadUrl, publicUrl: `${this.config.publicUrl}/${key}` };
+  }
+
+  /**
+   * Deletes uploaded files by their public URL. Anything that isn't one of our uploads
+   * (site images under /images, other hosts) is ignored. Never throws: a leftover file is
+   * harmless, a failed save is not.
+   */
+  async removeImages(urls: Iterable<string>) {
+    if (!this.config) return;
+    const prefix = `${this.config.publicUrl}/`;
+    const keys = [...new Set(urls)]
+      .filter((url) => url.startsWith(`${prefix}uploads/`))
+      .map((url) => decodeURIComponent(url.slice(prefix.length).split(/[?#]/)[0]!));
+    if (keys.length === 0) return;
+    try {
+      await this.s3().send(
+        new DeleteObjectsCommand({ Bucket: this.config.bucket, Delete: { Objects: keys.map((Key) => ({ Key })), Quiet: true } }),
+      );
+    } catch (error) {
+      console.error("Couldn't delete images from R2", keys, error);
+    }
   }
 
   private s3() {

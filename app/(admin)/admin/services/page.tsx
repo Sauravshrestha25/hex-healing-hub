@@ -1,55 +1,59 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DeleteButton } from "@/features/admin/components/delete-button";
+import { Plus, Sparkles } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { EmptyState, Panel } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
+import { RowActions } from "@/features/admin/components/row-actions";
 import { deleteService } from "@/features/admin/server/services";
+import { getViewer } from "@/features/admin/server/viewer";
 import { container } from "@/features/shared/server/container";
 
 export const metadata = { title: "Services" };
 
 export default async function AdminServicesPage() {
-  const services = await container().services.listForAdmin();
+  const [viewer, services] = await Promise.all([getViewer(), container().services.listForAdmin()]);
+  const addButton = viewer.isVerified && (
+    <Link href="/admin/services/new" className={buttonVariants()}>
+      <Plus /> New service
+    </Link>
+  );
 
   return (
     <>
-      <PageHeader title="Services" description="The practices shown on the homepage and the Services page." action={{ href: "/admin/services/new", label: "New service" }} />
-      <Card className="py-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-20">Image</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead className="hidden lg:table-cell">Description</TableHead>
-              <TableHead className="w-16">Order</TableHead>
-              <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {services.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">No services yet.</TableCell>
-              </TableRow>
-            )}
-            {services.map((service) => (
-              <TableRow key={service.id}>
-                <TableCell>
-                  <div className="relative size-12 overflow-hidden rounded-md bg-muted">
-                    <Image src={service.image} alt="" fill sizes="48px" className="object-cover" />
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">
-                  <Link href={`/admin/services/${service.id}`} className="hover:text-primary hover:underline">{service.title}</Link>
-                </TableCell>
-                <TableCell className="hidden max-w-md truncate text-muted-foreground lg:table-cell">{service.description}</TableCell>
-                <TableCell className="tabular-nums">{service.order}</TableCell>
-                <TableCell><DeleteButton id={service.id} itemName={service.title} action={deleteService} /></TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+      <PageHeader title="Services" description="The practices shown on the homepage and the Services page, in display order.">
+        {addButton}
+      </PageHeader>
+      {services.length === 0 ? (
+        <Panel>
+          <EmptyState icon={Sparkles} title="No services yet" description="Add the healing practices you offer." action={addButton} />
+        </Panel>
+      ) : (
+        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {services.map((service, index) => (
+            <li key={service.id} className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-[0_8px_24px_-12px_oklch(0.3_0.11_295/0.25)]">
+              <Link href={`/admin/services/${service.id}`} className="relative aspect-[16/10] overflow-hidden bg-muted">
+                <Image src={service.image} alt="" fill sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                <span className="absolute top-3 left-3 grid size-7 place-items-center rounded-full bg-black/55 text-xs font-semibold text-white backdrop-blur-sm tabular-nums">
+                  {index + 1}
+                </span>
+              </Link>
+              <div className="flex flex-1 flex-col p-4">
+                <Link href={`/admin/services/${service.id}`} className="font-semibold hover:text-brand hover:underline">{service.title}</Link>
+                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{service.description}</p>
+                <div className="mt-auto flex items-center justify-between pt-3">
+                  <span className="truncate font-mono text-xs text-muted-foreground">/{service.slug}</span>
+                  <RowActions
+                    canEdit={viewer.isVerified}
+                    editHref={`/admin/services/${service.id}`}
+                    remove={{ id: service.id, itemName: service.title, action: deleteService }}
+                  />
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }

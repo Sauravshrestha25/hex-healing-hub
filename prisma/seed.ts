@@ -27,12 +27,12 @@ async function seedSuperAdmin() {
 
   const existing = await prisma.user.findFirst({ where: { role: "SUPERADMIN" } });
   if (!existing) {
-    await prisma.user.create({ data: { email, name, passwordHash, role: "SUPERADMIN" } });
+    await prisma.user.create({ data: { email, name, passwordHash, role: "SUPERADMIN", isVerified: true } });
     console.log("Owner account created.");
   } else if (process.env.SUPERADMIN_RESET === "1") {
     await prisma.user.update({
       where: { id: existing.id },
-      data: { email, name, passwordHash, sessionVersion: { increment: 1 } },
+      data: { email, name, passwordHash, isVerified: true, sessionVersion: { increment: 1 } },
     });
     console.log("Owner account reset from env.");
   } else {

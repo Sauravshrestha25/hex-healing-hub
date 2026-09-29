@@ -22,10 +22,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { uploadImage } from "./image-upload-field";
 
-export function RichTextEditor({ name, defaultValue }: { name: string; defaultValue?: string }) {
+export function RichTextEditor({ name, defaultValue, readOnly }: { name: string; defaultValue?: string; readOnly?: boolean }) {
   const [html, setHtml] = useState(defaultValue ?? "");
   const editor = useEditor({
     immediatelyRender: false,
+    editable: !readOnly,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
@@ -36,7 +37,7 @@ export function RichTextEditor({ name, defaultValue }: { name: string; defaultVa
     content: defaultValue ?? "",
     editorProps: {
       attributes: {
-        class: "rich-text min-h-80 px-4 py-3 focus:outline-none",
+        class: "rich-text min-h-96 px-5 py-4 focus:outline-none",
         "aria-label": "Article body",
       },
     },
@@ -44,9 +45,9 @@ export function RichTextEditor({ name, defaultValue }: { name: string; defaultVa
   });
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-card focus-within:ring-3 focus-within:ring-ring/50">
+    <div className="overflow-clip rounded-lg border bg-card focus-within:ring-3 focus-within:ring-ring/50">
       <input type="hidden" name={name} value={html} />
-      {editor && <Toolbar editor={editor} />}
+      {editor && !readOnly && <Toolbar editor={editor} />}
       <EditorContent editor={editor} />
     </div>
   );
@@ -105,7 +106,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   ];
 
   return (
-    <div role="toolbar" aria-label="Formatting" className="flex flex-wrap items-center gap-1 border-b bg-muted/50 p-1.5">
+    <div role="toolbar" aria-label="Formatting" className="sticky top-16 z-10 flex flex-wrap items-center gap-1 border-b bg-card/95 p-1.5 backdrop-blur">
       {tools.map(({ label, icon: Icon, active, run }) => (
         <Button
           key={label}

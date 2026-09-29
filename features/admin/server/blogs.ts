@@ -7,17 +7,22 @@ import { attempt, formFields, type FormState } from "@/features/shared/server/fo
 
 export async function saveBlog(_prev: FormState, formData: FormData): Promise<FormState> {
   const { sessions, blogs } = container();
-  await sessions.require();
   const { id, fields } = formFields(formData);
-  const result = await attempt(() => blogs.save(id, fields));
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await blogs.save(id, fields);
+  });
   if (result.error) return result;
   revalidatePath("/", "layout");
   redirect("/admin/blogs");
 }
 
-export async function deleteBlog(id: string) {
+export async function deleteBlog(id: string): Promise<FormState> {
   const { sessions, blogs } = container();
-  await sessions.require();
-  await blogs.remove(id);
-  revalidatePath("/", "layout");
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await blogs.remove(id);
+  });
+  if (!result.error) revalidatePath("/", "layout");
+  return result;
 }

@@ -21,17 +21,20 @@ export function PasswordForm() {
   }, [state]);
 
   return (
-    <form ref={form} action={formAction} onSubmit={onSubmit} className="grid max-w-md gap-6">
+    <form ref={form} action={formAction} onSubmit={onSubmit} className="grid gap-5">
       <Field id="currentPassword" label="Current password">
         <Input id="currentPassword" name="currentPassword" type="password" required autoComplete="current-password" />
       </Field>
-      <Field id="newPassword" label="New password" hint={`At least ${MIN_PASSWORD_LENGTH} characters.`}>
-        <Input id="newPassword" name="newPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} maxLength={200} autoComplete="new-password" />
-      </Field>
-      <Field id="confirmPassword" label="Confirm new password">
-        <Input id="confirmPassword" name="confirmPassword" type="password" required maxLength={200} autoComplete="new-password" />
-      </Field>
-      <div className="flex flex-col gap-3 border-t pt-6">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field id="newPassword" label="New password" hint={`At least ${MIN_PASSWORD_LENGTH} characters.`}>
+          <Input id="newPassword" name="newPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} maxLength={200} autoComplete="new-password" />
+        </Field>
+        <Field id="confirmPassword" label="Confirm new password">
+          <Input id="confirmPassword" name="confirmPassword" type="password" required maxLength={200} autoComplete="new-password" />
+        </Field>
+      </div>
+      <div className="flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-muted-foreground">Other devices signed in to this account will be signed out.</p>
         {state.error && <p role="alert" className="text-sm text-destructive">{state.error}</p>}
         <Button type="submit" disabled={pending} className="w-fit">{pending ? "Saving…" : "Change password"}</Button>
       </div>

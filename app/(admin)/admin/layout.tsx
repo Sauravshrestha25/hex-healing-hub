@@ -1,22 +1,25 @@
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
+import { AdminTopbar } from "@/features/admin/components/admin-topbar";
+import { ReadOnlyBanner } from "@/features/admin/components/kit";
+import { getViewer } from "@/features/admin/server/viewer";
 import { container } from "@/features/shared/server/container";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
-  const { sessions, inquiries } = container();
-  const user = await sessions.requirePage();
-  const newInquiries = await inquiries.countNew();
+  const user = await getViewer();
+  const newInquiries = await container().inquiries.countNew();
 
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AdminSidebar newInquiries={newInquiries} user={{ name: user.name, email: user.email }} />
-        <SidebarInset>
-          <header className="flex h-14 items-center gap-2 border-b px-4">
-            <SidebarTrigger />
-          </header>
-          <div className="flex-1 p-4 sm:p-6 lg:p-8">{children}</div>
+        <AdminSidebar newInquiries={newInquiries} />
+        <SidebarInset className="bg-background">
+          <AdminTopbar user={{ name: user.name, email: user.email, isVerified: user.isVerified }} />
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+            {!user.isVerified && <ReadOnlyBanner />}
+            {children}
+          </main>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>

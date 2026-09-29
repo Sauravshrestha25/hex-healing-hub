@@ -4,7 +4,9 @@ import { AppError } from "@/features/shared/server/errors";
 
 export async function POST(request: Request) {
   const { sessions, storage } = container();
-  if (!(await sessions.current())) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await sessions.current();
+  if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user.isVerified) return Response.json({ error: "Your account isn't verified yet." }, { status: 403 });
 
   try {
     return Response.json(await storage.createImageUpload(await request.json().catch(() => null)));

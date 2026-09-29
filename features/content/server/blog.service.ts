@@ -5,6 +5,7 @@ import { sanitizeBlogHtml } from "@/features/content/lib/sanitize";
 import { slugify } from "@/features/shared/lib/slugify";
 import type { Blog } from "@/features/shared/lib/data";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
+import { type ImageJanitor, imagesInHtml } from "./image-janitor.service";
 import { imageField, parseOrThrow, withUniqueGuard } from "./validation";
 
 const blogSchema = z.object({
@@ -29,7 +30,10 @@ const publicFields = {
 } as const;
 
 export class BlogService {
-  constructor(private readonly db: PrismaClient) {}
+  constructor(
+    private readonly db: PrismaClient,
+    private readonly images: ImageJanitor,
+  ) {}
 
   async listPublished(): Promise<Blog[]> {
     const rows = await this.db.blog.findMany({ where: { published: true }, orderBy: { publishedAt: "desc" }, select: publicFields });
@@ -44,7 +48,7 @@ export class BlogService {
   listForAdmin() {
     return this.db.blog.findMany({
       orderBy: [{ published: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }],
-      select: { id: true, title: true, category: true, published: true, publishedAt: true, updatedAt: true },
+      select: { id: true, title: true, category: true, coverImage: true, published: true, publishedAt: true, updatedAt: true },
     });
   }
 
@@ -59,7 +63,9 @@ export class BlogService {
     const content = sanitizeBlogHtml(fields.content);
     if (!content.replace(/<[^>]+>/g, "").trim()) throw new ValidationError("Write the article before saving.");
 
-    const existing = id ? await this.db.blog.findUnique({ where: { id }, select: { publishedAt: true } }) : null;
+    const existing = id
+      ? await this.db.blog.findUnique({ where: { id }, select: { publishedAt: true, coverImage: true, content: true } })
+      : null;
     if (id && !existing) throw new NotFoundError("That post no longer exists.");
 
     const isPublished = published === "on";
@@ -76,11 +82,18 @@ export class BlogService {
       () => (id ? this.db.blog.update({ where: { id }, data }) : this.db.blog.create({ data })),
       "Another post already uses that slug.",
     );
+
+    if (existing) {
+      const kept = new Set([data.coverImage, ...imagesInHtml(content)]);
+      await this.images.release([existing.coverImage, ...imagesInHtml(existing.content)].filter((url) => !kept.has(url)));
+    }
   }
 
   async remove(id: string) {
+    const blog = await this.db.blog.findUnique({ where: { id }, select: { coverImage: true, content: true } });
     const { count } = await this.db.blog.deleteMany({ where: { id } });
-    if (count === 0) throw new NotFoundError("That post no longer exists.");
+    if (count === 0 || !blog) throw new NotFoundError("That post no longer exists.");
+    await this.images.release([blog.coverImage, ...imagesInHtml(blog.content)]);
   }
 
   private static toPublic({ coverImage, publishedAt, ...rest }: {

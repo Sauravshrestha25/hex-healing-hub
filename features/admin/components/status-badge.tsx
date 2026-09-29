@@ -1,16 +1,16 @@
-import { Badge } from "@/components/ui/badge";
+import { Pill } from "./kit";
 
-const INQUIRY_STYLES = {
-  NEW: { label: "New", variant: "default" },
-  READ: { label: "Read", variant: "secondary" },
-  RESOLVED: { label: "Resolved", variant: "outline" },
+const INQUIRY = {
+  NEW: { label: "New", tone: "gold" },
+  READ: { label: "In progress", tone: "blue" },
+  RESOLVED: { label: "Resolved", tone: "green" },
 } as const;
 
-export function InquiryStatusBadge({ status }: { status: keyof typeof INQUIRY_STYLES }) {
-  const { label, variant } = INQUIRY_STYLES[status];
-  return <Badge variant={variant}>{label}</Badge>;
+export function InquiryStatusBadge({ status }: { status: keyof typeof INQUIRY }) {
+  const { label, tone } = INQUIRY[status];
+  return <Pill tone={tone}>{label}</Pill>;
 }
 
 export function PublishedBadge({ published }: { published: boolean }) {
-  return <Badge variant={published ? "default" : "secondary"}>{published ? "Published" : "Draft"}</Badge>;
+  return published ? <Pill tone="green">Published</Pill> : <Pill tone="grey">Draft</Pill>;
 }

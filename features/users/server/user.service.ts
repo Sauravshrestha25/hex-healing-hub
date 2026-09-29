@@ -5,7 +5,15 @@ import { MIN_PASSWORD_LENGTH, type PasswordHasher } from "@/features/auth/server
 import type { SessionUser } from "@/features/auth/server/session.service";
 import { ConflictError, NotFoundError, ValidationError } from "@/features/shared/server/errors";
 
-export type UserListItem = { id: string; name: string; email: string; createdAt: Date; isSelf: boolean };
+export type UserListItem = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  isVerified: boolean;
+  createdAt: Date;
+  isSelf: boolean;
+};
 
 const passwordField = z
   .string()
@@ -16,6 +24,15 @@ const newUserSchema = z.object({
   name: z.string().trim().min(1, "Add a name.").max(120),
   email: z.string().trim().toLowerCase().email("Add a valid email address.").max(200),
   password: passwordField,
+  phone: z
+    .string()
+    .trim()
+    .max(30)
+    .regex(/^[+\d\s()-]*$/, "Use only digits, spaces and + ( ) - in the phone number.")
+    .optional()
+    .transform((v) => v || null),
+  // Checkbox: present ("on") when ticked, absent otherwise.
+  isVerified: z.literal("on").optional().transform(Boolean),
 });
 
 const changePasswordSchema = z
@@ -47,9 +64,14 @@ export class UserService {
     const users = await this.db.user.findMany({
       where: this.visibleTo(actor),
       orderBy: { createdAt: "asc" },
-      select: { id: true, name: true, email: true, createdAt: true },
+      select: { id: true, name: true, email: true, phone: true, isVerified: true, role: true, createdAt: true },
     });
-    return users.map((user) => ({ ...user, isSelf: user.id === actor.id }));
+    // role is only used here (the owner always counts as verified); it never leaves this method.
+    return users.map(({ role, ...user }) => ({
+      ...user,
+      isVerified: role === "SUPERADMIN" || user.isVerified,
+      isSelf: user.id === actor.id,
+    }));
   }
 
   async create(_actor: SessionUser, input: Record<string, unknown>) {
@@ -61,6 +83,8 @@ export class UserService {
         data: {
           name: parsed.data.name,
           email: parsed.data.email,
+          phone: parsed.data.phone,
+          isVerified: parsed.data.isVerified,
           passwordHash: await this.hasher.hash(parsed.data.password),
           role: "ADMIN",
         },
@@ -77,6 +101,13 @@ export class UserService {
     if (id === actor.id) throw new ValidationError("You can't remove your own account.");
     // Only ADMIN accounts are removable, by anyone. The superadmin is never matched, so it reads as "not found".
     const { count } = await this.db.user.deleteMany({ where: { id, role: "ADMIN" } });
+    if (count === 0) throw new NotFoundError("That user doesn't exist.");
+  }
+
+  async setVerified(actor: SessionUser, id: string, verified: boolean) {
+    if (id === actor.id) throw new ValidationError("You can't change your own verification.");
+    // Same visibility rule as remove(): the owner is never matched.
+    const { count } = await this.db.user.updateMany({ where: { id, role: "ADMIN" }, data: { isVerified: verified } });
     if (count === 0) throw new NotFoundError("That user doesn't exist.");
   }
 

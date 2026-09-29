@@ -3,17 +3,24 @@
 import type { InquiryStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { container } from "@/features/shared/server/container";
+import { attempt, type FormState } from "@/features/shared/server/form-action";
 
-export async function setInquiryStatus(id: string, status: InquiryStatus) {
+export async function setInquiryStatus(id: string, status: InquiryStatus): Promise<FormState> {
   const { sessions, inquiries } = container();
-  await sessions.require();
-  await inquiries.setStatus(id, status);
-  revalidatePath("/admin", "layout");
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await inquiries.setStatus(id, status);
+  });
+  if (!result.error) revalidatePath("/admin", "layout");
+  return result;
 }
 
-export async function deleteInquiry(id: string) {
+export async function deleteInquiry(id: string): Promise<FormState> {
   const { sessions, inquiries } = container();
-  await sessions.require();
-  await inquiries.remove(id);
-  revalidatePath("/admin", "layout");
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await inquiries.remove(id);
+  });
+  if (!result.error) revalidatePath("/admin", "layout");
+  return result;
 }

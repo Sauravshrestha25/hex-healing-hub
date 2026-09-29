@@ -64,6 +64,14 @@ export class InquiryService {
     return this.db.inquiry.findMany({ orderBy: { createdAt: "desc" }, take });
   }
 
+  async counts() {
+    const [open, resolved] = await Promise.all([
+      this.db.inquiry.count({ where: { status: { in: ["NEW", "READ"] } } }),
+      this.db.inquiry.count({ where: { status: "RESOLVED" } }),
+    ]);
+    return { open, resolved, all: open + resolved };
+  }
+
   countNew() {
     return this.db.inquiry.count({ where: { status: "NEW" } });
   }

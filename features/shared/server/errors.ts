@@ -25,3 +25,10 @@ export class UnauthorizedError extends AppError {
     super(message);
   }
 }
+
+/** Signed in, but not allowed to do this (e.g. an unverified user trying to make a change). */
+export class ForbiddenError extends AppError {
+  constructor(message = "Your account isn't verified yet, so you can view but not make changes.") {
+    super(message);
+  }
+}

@@ -73,7 +73,10 @@ model User {
   id             String   @id @default(cuid())
   email          String   @unique
   name           String
+  phone          String?
   passwordHash   String
+  /// Unverified users can sign in and view, but every change is refused server-side.
+  isVerified     Boolean  @default(false)
   role           Role     @default(ADMIN)
   /// Bumped on password change or removal so existing session cookies stop working.
   sessionVersion Int      @default(0)

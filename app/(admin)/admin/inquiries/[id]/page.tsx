@@ -1,51 +1,78 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Mail, Phone, Reply } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { InquiryActions } from "@/features/admin/components/inquiry-actions";
+import { InitialsAvatar, Panel } from "@/features/admin/components/kit";
+import { PageHeader } from "@/features/admin/components/page-header";
 import { InquiryStatusBadge } from "@/features/admin/components/status-badge";
-import { formatDateTime } from "@/features/admin/lib/format";
+import { formatDateTime, timeAgo } from "@/features/admin/lib/format";
+import { getViewer } from "@/features/admin/server/viewer";
 import { container } from "@/features/shared/server/container";
 
 export const metadata = { title: "Inquiry" };
 
 export default async function InquiryPage(props: PageProps<"/admin/inquiries/[id]">) {
   const { id } = await props.params;
-  const inquiry = await container().inquiries.findById(id);
+  const [viewer, inquiry] = await Promise.all([getViewer(), container().inquiries.findById(id)]);
   if (!inquiry) notFound();
 
-  const details = [
-    { label: "Email", value: <a href={`mailto:${inquiry.email}`} className="text-primary underline">{inquiry.email}</a> },
-    { label: "Phone", value: inquiry.phone ? <a href={`tel:${inquiry.phone}`} className="text-primary underline">{inquiry.phone}</a> : "—" },
-    { label: "Interested in", value: inquiry.interest ?? "—" },
-    { label: "Received", value: formatDateTime(inquiry.createdAt) },
-  ];
+  const replyHref = `mailto:${inquiry.email}?subject=${encodeURIComponent("Re: Your inquiry to HEX Healing Hub")}`;
 
   return (
-    <div className="max-w-3xl">
-      <Link href="/admin/inquiries" className="text-sm text-muted-foreground hover:text-foreground">← All inquiries</Link>
-      <div className="mt-3 mb-6 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">{inquiry.name}</h1>
-        <InquiryStatusBadge status={inquiry.status} />
-      </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Message</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-6">
-          <p className="whitespace-pre-wrap leading-relaxed">{inquiry.message}</p>
-          <dl className="grid gap-3 border-t pt-4 text-sm sm:grid-cols-2">
-            {details.map((d) => (
-              <div key={d.label}>
-                <dt className="text-muted-foreground">{d.label}</dt>
-                <dd className="mt-0.5">{d.value}</dd>
+    <>
+      <PageHeader
+        title={inquiry.name}
+        back={{ href: "/admin/inquiries", label: "Inquiries" }}
+        meta={<InquiryStatusBadge status={inquiry.status} />}
+        description={`Received ${timeAgo(inquiry.createdAt)} · ${formatDateTime(inquiry.createdAt)}`}
+      />
+
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <Panel
+          title="Message"
+          action={inquiry.interest && <span className="rounded-md bg-accent px-2 py-1 text-xs font-medium text-brand">{inquiry.interest}</span>}
+        >
+          <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{inquiry.message}</p>
+        </Panel>
+
+        <div className="flex flex-col gap-6">
+          <Panel title="Contact">
+            <div className="flex items-center gap-3">
+              <InitialsAvatar name={inquiry.name} className="size-11 text-sm" />
+              <div className="min-w-0">
+                <p className="truncate font-medium">{inquiry.name}</p>
+                <p className="truncate text-sm text-muted-foreground">{inquiry.email}</p>
               </div>
-            ))}
-          </dl>
-        </CardContent>
-      </Card>
-      <div className="mt-6">
-        <InquiryActions id={inquiry.id} status={inquiry.status} />
+            </div>
+            <dl className="mt-5 grid gap-3 text-sm">
+              <div className="flex items-center gap-2.5">
+                <dt><Mail className="size-4 text-muted-foreground" aria-label="Email" /></dt>
+                <dd className="min-w-0 truncate"><a href={`mailto:${inquiry.email}`} className="hover:text-brand hover:underline">{inquiry.email}</a></dd>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <dt><Phone className="size-4 text-muted-foreground" aria-label="Phone" /></dt>
+                <dd>{inquiry.phone ? <a href={`tel:${inquiry.phone}`} className="hover:text-brand hover:underline">{inquiry.phone}</a> : <span className="text-muted-foreground">Not given</span>}</dd>
+              </div>
+            </dl>
+            <div className="mt-5 grid gap-2">
+              <a href={replyHref} className={buttonVariants({ className: "w-full" })}>
+                <Reply /> Reply by email
+              </a>
+              {inquiry.phone && (
+                <a href={`tel:${inquiry.phone}`} className={buttonVariants({ variant: "outline", className: "w-full" })}>
+                  <Phone /> Call
+                </a>
+              )}
+            </div>
+          </Panel>
+
+          {viewer.isVerified && (
+            <Panel title="Status" description="Track where this conversation is.">
+              <InquiryActions id={inquiry.id} status={inquiry.status} />
+            </Panel>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
