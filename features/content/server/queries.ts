@@ -21,6 +21,11 @@ export async function getGallery() {
   return container().gallery.list();
 }
 
+export async function getTestimonials() {
+  await connection();
+  return container().testimonials.listPublished();
+}
+
 // cache(): generateMetadata and the page share one query per request.
 export const getService = cache(async (slug: string) => {
   await connection();

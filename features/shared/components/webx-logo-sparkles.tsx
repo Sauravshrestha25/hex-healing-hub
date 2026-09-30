@@ -12,6 +12,8 @@ type WebxLogoSparklesProps = {
   logoSrc?: string;
   particleColor?: string;
   particleDensity?: number;
+  /** Colour of the logo's "web" letters. */
+  textColor?: string;
 };
 
 /** WebX logo with an animated sparkle field for dark surfaces. */
@@ -21,6 +23,7 @@ export const WebxLogoSparkles = ({
   logoSrc,
   particleColor = "#FFFFFF",
   particleDensity = 520,
+  textColor,
 }: WebxLogoSparklesProps) => {
   const height = Math.round((width * 74) / 238);
 
@@ -55,7 +58,7 @@ export const WebxLogoSparkles = ({
           draggable={false}
         />
       ) : (
-        <WebxLogo width={width} height={height} className="relative select-none" />
+        <WebxLogo width={width} height={height} textColor={textColor} className="relative select-none" />
       )}
     </div>
   );

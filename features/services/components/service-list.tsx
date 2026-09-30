@@ -4,48 +4,89 @@ import type { Service } from "@/features/shared/lib/data";
 
 export function ServiceList({ services }: { services: Service[] }) {
   return (
-    <section id="our-services" aria-labelledby="offerings-title" className="scroll-mt-24 border-t hairline-gold">
-      <div className="mx-auto w-[90%] py-20 lg:py-28">
+    <section
+      id="our-services"
+      aria-labelledby="offerings-title"
+      className="scroll-mt-24"
+    >
+      <div className="mx-auto w-[90%] pb-24 pt-14 lg:pb-32 lg:pt-20">
         <div className="page-reveal flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <h2 id="offerings-title" className="mt-6 font-heading text-3xl sm:text-4xl">Support that meets you <span className="text-gold-light">where you are.</span></h2>
-          </div>
-          <p className="max-w-xs text-sm leading-relaxed text-lavender">Choose a practice below, or get in touch if you would like help exploring the options.</p>
+          <h2
+            id="offerings-title"
+            className="font-heading text-3xl text-brand-cream"
+          >
+            Support that meets you where you are.
+          </h2>
         </div>
-        <nav aria-label="Jump to a service" className="page-reveal mt-10 flex flex-wrap gap-3">
-          {services.map(service => (
-            <Link key={service.id} href={`/services/${service.slug}`} className="rounded-full border border-gold/25 px-4 py-2.5 text-xs text-ivory/80 transition-colors hover:border-gold hover:text-gold-light">{service.title}</Link>
+
+        <nav
+          aria-label="Jump to a service"
+          className="page-reveal mt-8 flex flex-wrap gap-2"
+        >
+          {services.map((service) => (
+            <Link
+              key={service.id}
+              href={`/services/${service.slug}`}
+              className="rounded-full bg-ivory/5 px-4 py-2 text-sm text-ivory/85 transition-colors hover:bg-brand-cream hover:text-brand-purple"
+            >
+              {service.title}
+            </Link>
           ))}
         </nav>
-        <div className="mt-14 grid gap-x-12 gap-y-16 md:grid-cols-2 lg:gap-x-20 lg:gap-y-24">
+
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => (
-            <article key={service.id} id={service.slug} className="page-reveal scroll-mt-28">
-              <Link href={`/services/${service.slug}`} tabIndex={-1} aria-hidden="true" className="group relative block aspect-[3/2] overflow-hidden bg-purple">
-                <Image src={service.image} alt="" fill sizes="(min-width: 768px) 43vw, 90vw" className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" />
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />
-                <span className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-ink/60 font-heading text-xs text-gold-light backdrop-blur-sm">{String(index + 1).padStart(2, "0")}</span>
+            <article
+              key={service.id}
+              id={service.slug}
+              className="page-reveal card-hover-cream flex scroll-mt-28 flex-col p-3"
+            >
+              <Link
+                href={`/services/${service.slug}`}
+                tabIndex={-1}
+                aria-hidden="true"
+                className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-purple"
+              >
+                <Image
+                  src={service.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                  className="object-cover"
+                />
               </Link>
-              <div className="border-b hairline-gold pb-7 pt-7">
-                <h3 className="font-heading text-2xl font-semibold sm:text-3xl">
-                  <Link href={`/services/${service.slug}`} className="hover:text-gold-light">{service.title}</Link>
-                </h3>
-                <p className="mt-4 max-w-xl text-sm leading-loose text-lavender sm:text-base">{service.description}</p>
-                <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2">
-                  <Link href={`/services/${service.slug}`} aria-label={`Learn more about ${service.title}`} className="inline-flex items-center gap-4 py-2 text-sm text-gold-light transition-colors hover:text-white">
-                    Learn More <span aria-hidden="true">→</span>
+              <div className="flex flex-1 flex-col px-3 pb-3 pt-5">
+                <span className="font-heading text-sm text-lavender">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-2 font-heading text-xl font-semibold">
+                  <Link href={`/services/${service.slug}`}>
+                    {service.title}
                   </Link>
-                  <Link href="/contact" aria-label={`Ask about ${service.title}`} className="inline-flex items-center gap-4 py-2 text-sm text-ivory/70 transition-colors hover:text-white">
-                    Ask About This Practice <span aria-hidden="true">↗</span>
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-lavender">
+                  {service.description}
+                </p>
+                <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-1 pt-6">
+                  <Link
+                    href={`/services/${service.slug}`}
+                    aria-label={`Learn more about ${service.title}`}
+                    className="inline-flex items-center gap-3 py-1 text-sm font-medium"
+                  >
+                    Learn more <span aria-hidden="true">→</span>
+                  </Link>
+                  <Link
+                    href={`/book?service=${service.slug}`}
+                    aria-label={`Book ${service.title}`}
+                    className="inline-flex items-center gap-3 py-1 text-sm text-lavender"
+                  >
+                    Book now <span aria-hidden="true">↗</span>
                   </Link>
                 </div>
               </div>
             </article>
           ))}
         </div>
-        <p className="page-reveal mt-16 max-w-3xl border-l border-gold/40 pl-6 text-sm leading-relaxed text-lavender">
-          Our services are complementary and supportive. They do not replace professional medical or
-          psychological care, and individual experiences vary. Please seek appropriate professional care when needed.
-        </p>
       </div>
     </section>
   );

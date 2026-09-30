@@ -1,16 +1,17 @@
 import { Pill } from "./kit";
 
-const INQUIRY = {
+const BOOKING = {
   NEW: { label: "New", tone: "gold" },
-  READ: { label: "In progress", tone: "blue" },
-  RESOLVED: { label: "Resolved", tone: "green" },
+  CONFIRMED: { label: "Confirmed", tone: "blue" },
+  COMPLETED: { label: "Completed", tone: "plum" },
+  CANCELLED: { label: "Cancelled", tone: "grey" },
 } as const;
 
-export function InquiryStatusBadge({ status }: { status: keyof typeof INQUIRY }) {
-  const { label, tone } = INQUIRY[status];
+export function BookingStatusBadge({ status }: { status: keyof typeof BOOKING }) {
+  const { label, tone } = BOOKING[status];
   return <Pill tone={tone}>{label}</Pill>;
 }
 
 export function PublishedBadge({ published }: { published: boolean }) {
-  return published ? <Pill tone="green">Published</Pill> : <Pill tone="grey">Draft</Pill>;
+  return published ? <Pill tone="plum">Published</Pill> : <Pill tone="grey">Draft</Pill>;
 }

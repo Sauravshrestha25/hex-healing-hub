@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Images, Inbox, LayoutDashboard, Newspaper, Sparkles, Users, type LucideIcon } from "lucide-react";
+import { CalendarCheck, Images, LayoutDashboard, MessageSquareQuote, Newspaper, Sparkles, Users, type LucideIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +25,7 @@ const GROUPS: { label?: string; items: NavItem[] }[] = [
   {
     items: [
       { href: "/admin", label: "Overview", icon: LayoutDashboard },
-      { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
+      { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
     ],
   },
   {
@@ -34,12 +34,13 @@ const GROUPS: { label?: string; items: NavItem[] }[] = [
       { href: "/admin/blogs", label: "Blogs", icon: Newspaper },
       { href: "/admin/services", label: "Services", icon: Sparkles },
       { href: "/admin/portfolio", label: "Portfolio", icon: Images },
+      { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
     ],
   },
   { label: "Team", items: [{ href: "/admin/users", label: "Users", icon: Users }] },
 ];
 
-export function AdminSidebar({ newInquiries }: { newInquiries: number }) {
+export function AdminSidebar({ newBookings }: { newBookings: number }) {
   const pathname = usePathname();
   const isActive = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href));
 
@@ -86,9 +87,9 @@ export function AdminSidebar({ newInquiries }: { newInquiries: number }) {
                         <Icon className={active ? "text-sidebar-primary" : undefined} />
                         <span>{label}</span>
                       </SidebarMenuButton>
-                      {href === "/admin/inquiries" && newInquiries > 0 && (
+                      {href === "/admin/bookings" && newBookings > 0 && (
                         <SidebarMenuBadge className="rounded-full bg-sidebar-primary px-1.5 text-[11px] font-semibold text-sidebar-primary-foreground">
-                          {newInquiries}
+                          {newBookings}
                         </SidebarMenuBadge>
                       )}
                     </SidebarMenuItem>

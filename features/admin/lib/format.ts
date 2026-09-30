@@ -6,6 +6,11 @@ export function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat("en", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(date);
 }
 
+/** A calendar day stored as a DATE column (midnight UTC), shown without shifting across time zones. */
+export function formatDay(date: Date) {
+  return new Intl.DateTimeFormat("en", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(date);
+}
+
 const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
 /** "2 hours ago", "yesterday"; falls back to a date after a week. */

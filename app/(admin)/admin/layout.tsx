@@ -8,12 +8,12 @@ import { container } from "@/features/shared/server/container";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const user = await getViewer();
-  const newInquiries = await container().inquiries.countNew();
+  const newBookings = await container().bookings.countNew();
 
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AdminSidebar newInquiries={newInquiries} />
+        <AdminSidebar newBookings={newBookings} />
         <SidebarInset className="bg-background">
           <AdminTopbar user={{ name: user.name, email: user.email, isVerified: user.isVerified }} />
           <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-10 lg:py-10">

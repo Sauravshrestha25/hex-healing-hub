@@ -1,30 +1,59 @@
 const VALUES = [
-  { title: "Compassion", body: "Meet every person with warmth, patience and care." },
-  { title: "Respect", body: "Honor individual beliefs, boundaries and personal journeys." },
-  { title: "Inner Awareness", body: "Make room to notice, reflect and connect with yourself." },
-  { title: "Learning", body: "Stay curious and deepen understanding through spiritual education." },
-  { title: "Discipline", body: "Nurture growth through steady, thoughtful practice." },
-  { title: "Privacy", body: "Treat personal experiences with sensitivity and discretion." },
-  { title: "Service", body: "Support others with sincerity and a spirit of contribution." },
+  {
+    title: "Compassion",
+    body: "Meet every person with warmth, patience and care.",
+  },
+  {
+    title: "Respect",
+    body: "Honor individual beliefs, boundaries and personal journeys.",
+  },
+  {
+    title: "Inner Awareness",
+    body: "Make room to notice, reflect and connect with yourself.",
+  },
+  {
+    title: "Learning",
+    body: "Stay curious and deepen understanding through spiritual education.",
+  },
+  {
+    title: "Discipline",
+    body: "Nurture growth through steady, thoughtful practice.",
+  },
+  {
+    title: "Privacy",
+    body: "Treat personal experiences with sensitivity and discretion.",
+  },
+  {
+    title: "Service",
+    body: "Support others with sincerity and a spirit of contribution.",
+  },
 ];
 
 export function Values() {
   return (
-    <section aria-labelledby="values-title" className="border-y hairline-gold bg-purple/35">
-      <div className="mx-auto grid w-[90%] gap-14 py-24 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24 lg:py-36">
-        <div className="page-reveal self-start lg:sticky lg:top-32">
-          <h2 id="values-title" className="max-w-md font-heading text-4xl leading-tight sm:text-5xl">
-            Seven values.<br /><span className="text-gold-light">One intention.</span>
+    <section aria-labelledby="values-title">
+      <div className="mx-auto w-[90%] pb-24 lg:pb-32">
+        <div className="page-reveal flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <h2
+            id="values-title"
+            className="font-heading text-3xl leading-tight text-brand-cream"
+          >
+            Seven values. One intention.
           </h2>
-          <p className="mt-7 max-w-sm text-base leading-relaxed text-lavender">
-            To hold a space where people feel respected, supported and free to learn.
+          <p className="max-w-sm text-sm leading-relaxed text-lavender">
+            To hold a space where people feel respected, supported and free to
+            learn.
           </p>
         </div>
-        <ul className="divide-y divide-gold/20 border-t border-gold/20">
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {VALUES.map((value) => (
-            <li key={value.title} className="page-reveal grid gap-2 py-7 sm:grid-cols-[0.8fr_1fr] sm:gap-6">
-              <h3 className="font-heading text-xl font-semibold">{value.title}</h3>
-              <p className="text-sm leading-relaxed text-lavender">{value.body}</p>
+            <li key={value.title} className="page-reveal card-plain p-6">
+              <h3 className="font-heading text-lg font-semibold">
+                {value.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-lavender">
+                {value.body}
+              </p>
             </li>
           ))}
         </ul>

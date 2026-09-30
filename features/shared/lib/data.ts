@@ -41,3 +41,21 @@ export const LOCATIONS: Location[] = [
 ];
 
 export const CONTACT_EMAIL = "Hexhealinghub@gmail.com";
+
+export const SOCIAL_LINKS = [
+  { label: "Facebook", href: "https://www.facebook.com/BYouphotog/" },
+  { label: "Instagram", href: "https://www.instagram.com/hexhealinghubpokhara/" },
+  { label: "TikTok", href: "https://www.tiktok.com/@hex.healinghub.pokhara" },
+] as const;
+
+export const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"] as const;
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  quote: string;
+  photo: string | null;
+  service: string | null;
+  centre: string | null;
+  rating: number;
+};

@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { DeleteObjectsCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { z } from "zod";
+import { uploadPrefix } from "@/features/shared/lib/upload-prefix";
 import { AppError, ValidationError } from "@/features/shared/server/errors";
 
 const EXTENSIONS = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif" } as const;
@@ -55,7 +56,7 @@ export class R2StorageService {
 
     const { contentType, size } = parsed.data;
     const now = new Date();
-    const key = `uploads/${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, "0")}/${randomUUID()}.${EXTENSIONS[contentType]}`;
+    const key = `${uploadPrefix()}${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, "0")}/${randomUUID()}.${EXTENSIONS[contentType]}`;
 
     // ContentType and ContentLength are signed, so the upload must match what was approved.
     const uploadUrl = await getSignedUrl(
@@ -67,15 +68,15 @@ export class R2StorageService {
   }
 
   /**
-   * Deletes uploaded files by their public URL. Anything that isn't one of our uploads
-   * (site images under /images, other hosts) is ignored. Never throws: a leftover file is
+   * Deletes uploaded files by their public URL. Only files in this environment's own folder
+   * (see uploadPrefix) are touched; site images, other hosts and the other environment's files are ignored. Never throws: a leftover file is
    * harmless, a failed save is not.
    */
   async removeImages(urls: Iterable<string>) {
     if (!this.config) return;
     const prefix = `${this.config.publicUrl}/`;
     const keys = [...new Set(urls)]
-      .filter((url) => url.startsWith(`${prefix}uploads/`))
+      .filter((url) => url.startsWith(`${prefix}${uploadPrefix()}`))
       .map((url) => decodeURIComponent(url.slice(prefix.length).split(/[?#]/)[0]!));
     if (keys.length === 0) return;
     try {

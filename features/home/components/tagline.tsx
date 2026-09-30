@@ -4,9 +4,9 @@ import { useRef } from "react";
 import { gsap, useGSAP } from "@/features/shared/lib/gsap";
 
 const WORDS = [
-  { w: "Heal Within", c: "font-medium text-ivory" },
+  { w: "Heal Within", c: "font-medium text-brand-purple" },
   { w: "Awaken", c: "text-gold-light" },
-  { w: "Transform", c: "font-medium text-ivory" },
+  { w: "Transform", c: "font-medium text-brand-purple" },
 ];
 
 export function Tagline() {
@@ -26,16 +26,20 @@ export function Tagline() {
   );
 
   return (
-    <section ref={ref} className="relative h-[110vh] overflow-hidden text-ivory">
-      <div className="relative mx-auto flex h-full w-[90%] flex-col items-start justify-center text-left">
+    <section
+      ref={ref}
+      className="relative h-[110vh] overflow-hidden text-brand-purple bg-brand-cream"
+    >
+      <div className="relative mx-auto flex h-full text-brand-purple w-[90%] flex-col items-start justify-center text-left">
         {WORDS.map(({ w, c }) => (
           <div key={w} className="overflow-hidden pb-2">
-            <p className={`tg-word font-heading text-[2.6rem] uppercase min-[380px]:text-5xl leading-[1.02] tracking-tight sm:text-8xl lg:text-[7.5rem] ${c}`}>
+            <p
+              className={`tg-word font-heading text-[2.6rem] text-brand-purple uppercase min-[380px]:text-5xl leading-[1.02] tracking-tight sm:text-8xl lg:text-[7.5rem] ${c}`}
+            >
               {w}
             </p>
           </div>
         ))}
-        <p className="mt-10 max-w-sm self-end text-right text-base text-lavender">Three centers across Nepal, in Butwal, Pokhara and Kapilvastu.</p>
       </div>
     </section>
   );

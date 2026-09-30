@@ -1,27 +1,28 @@
-import { LOCATIONS, CONTACT_EMAIL } from "@/features/shared/lib/data";
+import Image from "next/image";
+import { CONTACT_EMAIL, LOCATIONS } from "@/features/shared/lib/data";
 
 export function ContactInfo() {
   return (
-    <div className="page-reveal min-w-0">
-      <h2 className="mt-6 font-heading text-3xl leading-tight sm:text-4xl">Close to you.<br /><span className="text-gold-light">Here for you.</span></h2>
-      <p className="mt-6 max-w-sm text-sm leading-relaxed text-lavender">Call your nearest center to ask about available sessions, classes and visiting times.</p>
-      <ul className="mt-8 divide-y divide-gold/20 border-y hairline-gold">
-        {LOCATIONS.map((location) => (
-          <li key={location.city}>
-            <a href={`tel:${location.phone}`} className="group flex items-center justify-between gap-4 py-6">
-              <div className="flex items-start gap-5">
-                <div><h3 className="font-heading text-xl">{location.city}</h3><p className="mt-2 text-sm text-lavender transition-colors group-hover:text-gold-light">{location.phone}</p></div>
-              </div>
-              <span aria-hidden="true" className="text-xl text-gold">↗</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-9">
-        <h3 className="text-sm font-medium text-ivory">Prefer to write?</h3>
-        <a href={`mailto:${CONTACT_EMAIL}`} className="mt-3 inline-block break-all text-sm text-ivory underline decoration-gold/40 underline-offset-8 transition-colors hover:text-gold-light">{CONTACT_EMAIL}</a>
+    <aside aria-label="Call or email" className="page-reveal grid min-w-0 gap-4">
+      {LOCATIONS.map((location) => (
+        <a key={location.city} href={`tel:${location.phone}`} className="card-hover-cream group flex items-center justify-between gap-4 px-6 py-5">
+          <span>
+            <span className="block text-sm text-lavender">Call {location.city}</span>
+            <span className="mt-1 block font-heading text-xl">{location.phone}</span>
+          </span>
+          <span aria-hidden="true" className="text-xl transition-transform group-hover:translate-x-1">→</span>
+        </a>
+      ))}
+      <a href={`mailto:${CONTACT_EMAIL}`} className="card-hover-cream group flex items-center justify-between gap-4 px-6 py-5">
+        <span className="min-w-0">
+          <span className="block text-sm text-lavender">Or email us</span>
+          <span className="mt-1 block break-all font-heading text-lg">{CONTACT_EMAIL}</span>
+        </span>
+        <span aria-hidden="true" className="text-xl transition-transform group-hover:translate-x-1">→</span>
+      </a>
+      <div className="relative hidden aspect-[4/3] overflow-hidden rounded-3xl lg:block">
+        <Image src="/images/contact.jpg" alt="Soft sunlight on a quiet forest path" fill sizes="30vw" className="object-cover" />
       </div>
-      <p className="mt-9 max-w-sm border-l border-gold/40 pl-5 text-xs leading-relaxed text-lavender">Your privacy matters. Share only what you feel comfortable sharing. Your inquiry helps us understand your interests and respond with care.</p>
-    </div>
+    </aside>
   );
 }

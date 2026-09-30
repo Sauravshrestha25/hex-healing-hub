@@ -47,23 +47,47 @@ model GalleryItem {
   createdAt DateTime @default(now())
 }
 
-enum InquiryStatus {
+enum BookingStatus {
   NEW
-  READ
-  RESOLVED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
 }
 
-model Inquiry {
-  id        String        @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  interest  String?
-  message   String
-  status    InquiryStatus @default(NEW)
-  createdAt DateTime      @default(now())
+/// Booking requests from /book. Visitors ask for a day and time of day; the team confirms by phone
+/// or WhatsApp. (Formerly the contact form's Inquiry table: old rows keep their email and message.)
+model Booking {
+  id            String        @id @default(cuid())
+  name          String
+  phone         String?
+  email         String?
+  service       String?
+  centre        String?
+  preferredDate DateTime?     @db.Date
+  /// "Morning" | "Afternoon" | "Evening"
+  timeOfDay     String?
+  note          String?
+  status        BookingStatus @default(NEW)
+  createdAt     DateTime      @default(now())
 
   @@index([status, createdAt])
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  quote     String
+  photo     String?
+  service   String?
+  centre    String?
+  /// 1–5 stars.
+  rating    Int      @default(5)
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, order])
 }
 
 enum Role {

@@ -41,7 +41,7 @@ export function UserForm() {
           <div>
             <Label htmlFor="isVerified">Verified: can make changes</Label>
             <p className="mt-1 text-sm text-muted-foreground">
-              Verified users can edit content, handle inquiries and manage users. Unverified users can only view.
+              Verified users can edit content, handle bookings and manage users. Unverified users can only view.
             </p>
           </div>
           <Switch id="isVerified" name="isVerified" value="on" />

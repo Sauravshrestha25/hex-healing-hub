@@ -21,6 +21,7 @@ export default async function ServicesPage() {
         title="Not sure where"
         emphasis="to begin?"
         body="Tell us what you're looking for and we'll help you understand the options."
+        href="/contact"
         label="Talk to HEX"
       />
     </PageMotion>

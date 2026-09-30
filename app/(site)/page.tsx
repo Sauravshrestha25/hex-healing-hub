@@ -1,18 +1,19 @@
 import { Hero } from "@/features/home/components/hero";
 import { Manifesto } from "@/features/home/components/manifesto";
 import { ServicesShowcase } from "@/features/home/components/services-showcase";
-import { Tagline } from "@/features/home/components/tagline";
-import { Centers } from "@/features/home/components/centers";
-import { Closing } from "@/features/home/components/closing";
-import { VideoBackground } from "@/features/home/components/video-background";
+import { Community } from "@/features/about/components/community";
+import { BowlExperience } from "@/features/home/components/bowl-experience";
+import { PageMotion } from "@/features/shared/components/page-motion";
+// import { VideoBackground } from "@/features/home/components/video-background";
 import { SplitHeadings } from "@/features/shared/components/split-headings";
-import { getServices } from "@/features/content/server/queries";
+import { getServices, getTestimonials } from "@/features/content/server/queries";
+import { Testimonials } from "@/features/shared/components/testimonials";
 
 export default async function Home() {
-  const services = await getServices();
+  const [services, testimonials] = await Promise.all([getServices(), getTestimonials()]);
   return (
     <>
-      <VideoBackground />
+      {/* <VideoBackground /> */}
       <Hero />
       <div data-phase="0">
         <Manifesto />
@@ -21,13 +22,16 @@ export default async function Home() {
         <ServicesShowcase services={services} />
       </div>
       <div data-phase="2">
-        <Tagline />
+        <BowlExperience />
       </div>
+      <PageMotion>
+        <Testimonials items={testimonials} />
+      </PageMotion>
       <div data-phase="3">
-        <Centers />
-      </div>
-      <div data-phase="4">
-        <Closing />
+        {/* Locations + call to action, shared with the About page. */}
+        <PageMotion>
+          <Community />
+        </PageMotion>
       </div>
       <SplitHeadings />
     </>

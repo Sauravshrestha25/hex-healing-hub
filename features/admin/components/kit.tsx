@@ -35,12 +35,12 @@ export function Panel({
   );
 }
 
+// Palette only: base purple, Royal Blue and Spiritual Gold at low opacity on white.
 const PILL_TONES = {
-  gold: "bg-[oklch(0.95_0.05_85)] text-[oklch(0.42_0.09_70)] ring-[oklch(0.85_0.08_80)]",
-  green: "bg-[oklch(0.95_0.04_155)] text-[oklch(0.4_0.1_155)] ring-[oklch(0.85_0.07_155)]",
-  blue: "bg-[oklch(0.95_0.03_255)] text-[oklch(0.42_0.11_255)] ring-[oklch(0.86_0.05_255)]",
-  grey: "bg-muted text-muted-foreground ring-border",
-  plum: "bg-accent text-brand ring-[oklch(0.86_0.04_295)]",
+  gold: { pill: "bg-brand-gold/15 text-brand ring-brand-gold/60", dot: "bg-brand-gold" },
+  blue: { pill: "bg-brand-blue/8 text-brand-blue ring-brand-blue/25", dot: "bg-brand-blue" },
+  plum: { pill: "bg-brand/8 text-brand ring-brand/20", dot: "bg-brand" },
+  grey: { pill: "bg-transparent text-brand/60 ring-brand/15", dot: "bg-brand/40" },
 } as const;
 
 export type PillTone = keyof typeof PILL_TONES;
@@ -50,10 +50,10 @@ export function Pill({ tone, children, dot = true }: { tone: PillTone; children:
     <span
       className={cn(
         "inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-xs font-medium whitespace-nowrap ring-1 ring-inset",
-        PILL_TONES[tone],
+        PILL_TONES[tone].pill,
       )}
     >
-      {dot && <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />}
+      {dot && <span className={cn("size-1.5 rounded-full", PILL_TONES[tone].dot)} aria-hidden="true" />}
       {children}
     </span>
   );
@@ -98,7 +98,7 @@ export function InitialsAvatar({ name, className }: { name: string; className?: 
 
 export function ReadOnlyBanner() {
   return (
-    <div className="mb-6 flex items-start gap-3 rounded-xl border border-[oklch(0.85_0.08_80)] bg-[oklch(0.97_0.035_85)] px-4 py-3 text-sm text-[oklch(0.38_0.08_70)]">
+    <div className="mb-6 flex items-start gap-3 rounded-lg border border-brand-gold/60 bg-brand-gold/10 px-4 py-3 text-sm text-brand">
       <Lock className="mt-0.5 size-4 shrink-0" />
       <p>
         <span className="font-medium">View-only access.</span> Your account isn&apos;t verified yet, so you can look

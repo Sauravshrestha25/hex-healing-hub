@@ -4,7 +4,7 @@ import { Reveal } from "@/features/shared/components/reveal";
 
 export function Centers() {
   return (
-    <section className="text-ivory">
+    <section className="text-ivory bg-brand-cream">
       <div className="mx-auto grid w-[90%] grid-cols-1 items-center gap-16 py-36 lg:grid-cols-[0.85fr_1.15fr] lg:gap-28">
         <Reveal>
           <div className="relative aspect-[3/4] overflow-hidden">
@@ -21,7 +21,10 @@ export function Centers() {
         </Reveal>
 
         <Reveal className="glass p-8 sm:p-14">
-          <h2 data-split className="mt-8 font-heading text-4xl leading-[1.05] sm:text-6xl">
+          <h2
+            data-split
+            className="mt-8 font-heading text-4xl leading-[1.05] sm:text-6xl"
+          >
             Three homes <span className="text-gold-light">across Nepal.</span>
           </h2>
           <ul className="mt-16 border-t hairline-gold">

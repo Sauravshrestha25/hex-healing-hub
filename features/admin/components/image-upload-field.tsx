@@ -27,12 +27,15 @@ export function ImageUploadField({
   defaultValue,
   aspect = "aspect-video",
   readOnly,
+  removable,
 }: {
   name: string;
   label: string;
   defaultValue?: string;
   aspect?: string;
   readOnly?: boolean;
+  /** For optional images: shows a "Remove" action that clears the field. */
+  removable?: boolean;
 }) {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
@@ -91,7 +94,7 @@ export function ImageUploadField({
           <>
             <Image src={url} alt="" fill sizes="(min-width: 1024px) 640px, 100vw" className="object-cover" />
             {!readOnly && (
-              <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-sm font-medium text-white opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
+              <span className="absolute inset-0 flex items-center justify-center bg-brand/0 text-sm font-medium text-white opacity-0 transition-all group-hover:bg-brand/50 group-hover:opacity-100">
                 <ImagePlus className="mr-2 size-4" /> Replace image
               </span>
             )}
@@ -123,6 +126,11 @@ export function ImageUploadField({
         disabled={readOnly}
         onChange={(event) => onFile(event.target.files?.[0])}
       />
+      {removable && url && !readOnly && !status.uploading && (
+        <button type="button" onClick={() => setUrl("")} className="w-fit text-sm text-muted-foreground underline-offset-4 hover:text-destructive hover:underline">
+          Remove {label.toLowerCase()}
+        </button>
+      )}
       {status.error && (
         <p role="alert" className="text-sm text-destructive">
           {status.error}

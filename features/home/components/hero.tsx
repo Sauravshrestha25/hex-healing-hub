@@ -28,26 +28,35 @@ export function Hero() {
   );
 
   return (
-    <section ref={rootRef} className="grain relative h-screen min-h-[640px] overflow-hidden bg-ink">
+    <section
+      ref={rootRef}
+      className="grain relative h-screen min-h-[640px] overflow-hidden bg-ink"
+    >
       <div ref={imgRef} className="absolute inset-0 scale-100">
-        <Image src="/images/hero.jpg" alt="" fill priority className="object-cover" />
+        <Image
+          src="/images/hero.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+        />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-purple/50 to-ink" />
+      <div className="absolute inset-0 bg-linear-to-b from-ink/85 via-purple/50 to-ink" />
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-ivory sm:px-10">
-        <h1 className="hero-title font-heading text-6xl font-medium leading-[0.98] sm:text-7xl lg:text-[7.5rem] max-w-5xl">
-          Come Back to <span className="text-gold-light">Yourself.</span>
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-brand-cream sm:px-10">
+        <h1 className="hero-title font-heading text-6xl font-medium leading-[0.98] sm:text-7xl lg:text-7xl max-w-5xl">
+          Come Back to Yourself.
         </h1>
         <p className="hero-body mt-8 max-w-xl text-lg font-light leading-relaxed text-ivory/75">
-          A space for healing, reflection and restoration. A place to reconnect with your body, your mind and
-          yourself.
+          A space for healing, reflection and restoration. A place to reconnect
+          with your body, your mind and yourself.
         </p>
         <div className="hero-cta mt-10 flex flex-wrap justify-center gap-4">
           <Link
-            href="/contact"
+            href="/book"
             className="btn-gold rounded-full px-9 py-4 text-sm font-medium tracking-wide"
           >
-            Begin Your Journey
+            Book a Session
           </Link>
           <Link
             href="/services"

@@ -2,10 +2,9 @@ import "server-only";
 import type { PrismaClient } from "@prisma/client";
 import type { R2StorageService } from "@/features/admin/server/storage.service";
 
-/** Every <img src> in a rich-text body. */
-export function imagesInHtml(html: string) {
-  return [...html.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/gi)].map((match) => match[1]!.replace(/&amp;/g, "&"));
-}
+import { imagesInHtml } from "@/features/content/lib/images-in-html";
+
+export { imagesInHtml };
 
 /**
  * Removes image files from storage once no content refers to them any more.
@@ -27,11 +26,12 @@ export class ImageJanitor {
   }
 
   private async isInUse(url: string) {
-    const [blogs, services, gallery] = await Promise.all([
+    const [blogs, services, gallery, testimonials] = await Promise.all([
       this.db.blog.count({ where: { OR: [{ coverImage: url }, { content: { contains: url } }] } }),
       this.db.service.count({ where: { image: url } }),
       this.db.galleryItem.count({ where: { image: url } }),
+      this.db.testimonial.count({ where: { photo: url } }),
     ]);
-    return blogs + services + gallery > 0;
+    return blogs + services + gallery + testimonials > 0;
   }
 }

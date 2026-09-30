@@ -56,7 +56,7 @@ export function VideoBackground() {
         />
       ))}
       {/* readability: gentle vignette + darker base, keeps the scene visible */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgb(14_6_33/0.55)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgb(51_12_54/0.55)_100%)]" />
       <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/25 to-ink/70" />
     </div>
   );

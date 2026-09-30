@@ -34,7 +34,7 @@ export default async function AdminPortfolioPage() {
             <li key={item.id} className="group overflow-hidden rounded-xl border bg-card">
               <Link href={`/admin/portfolio/${item.id}`} className="relative block aspect-square overflow-hidden bg-muted">
                 <Image src={item.image} alt={item.alt} fill sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-10">
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand/80 to-transparent p-3 pt-10">
                   <span className="block truncate text-sm font-medium text-white">{item.title}</span>
                   <span className="block truncate text-xs text-white/75">{item.category}</span>
                 </span>

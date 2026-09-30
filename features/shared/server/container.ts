@@ -5,13 +5,14 @@ import { SessionCodec } from "@/features/auth/lib/session-codec";
 import { AuthService } from "@/features/auth/server/auth.service";
 import { PasswordHasher } from "@/features/auth/server/password";
 import { SessionService } from "@/features/auth/server/session.service";
-import { InquiryService } from "@/features/contact/server/inquiry.service";
-import { InquiryNotifier } from "@/features/contact/server/inquiry-notifier";
+import { BookingService } from "@/features/booking/server/booking.service";
+import { BookingNotifier } from "@/features/booking/server/booking-notifier";
 import { PasswordResetService } from "@/features/auth/server/password-reset.service";
 import { BlogService } from "@/features/content/server/blog.service";
 import { GalleryService } from "@/features/content/server/gallery.service";
 import { ImageJanitor } from "@/features/content/server/image-janitor.service";
 import { ServiceCatalogService } from "@/features/content/server/service-catalog.service";
+import { TestimonialService } from "@/features/content/server/testimonial.service";
 import { UserService } from "@/features/users/server/user.service";
 import { getDb } from "./db";
 import { MemoryRateLimiter, RedisRateLimiter } from "./rate-limiter";
@@ -39,11 +40,14 @@ function createContainer() {
     services: new ServiceCatalogService(db, images),
     gallery: new GalleryService(db, images),
     passwordResets: new PasswordResetService(db, hasher, mailer, limiter("password-reset", 5, 60 * 60 * 1000), siteUrl),
-    inquiries: new InquiryService(
+    testimonials: new TestimonialService(db, images),
+    // INQUIRY_NOTIFY_TO kept from the contact-form days so existing deployments keep their setting.
+    bookings: new BookingService(
       db,
-      new InquiryNotifier(mailer, process.env.INQUIRY_NOTIFY_TO, `${siteUrl}/admin/inquiries`),
-      limiter("inquiry", 5, 10 * 60 * 1000),
+      new BookingNotifier(mailer, process.env.INQUIRY_NOTIFY_TO, `${siteUrl}/admin/bookings`),
+      limiter("booking", 5, 10 * 60 * 1000),
     ),
+    siteUrl,
     storage,
     dashboard: new DashboardService(db),
   };

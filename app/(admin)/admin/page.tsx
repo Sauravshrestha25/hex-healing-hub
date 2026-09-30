@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "cn";
 import { Panel } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
-import { InquiryStatusBadge } from "@/features/admin/components/status-badge";
+import { BookingStatusBadge } from "@/features/admin/components/status-badge";
 import { formatDate, timeAgo } from "@/features/admin/lib/format";
 import { getViewer } from "@/features/admin/server/viewer";
 import { container } from "@/features/shared/server/container";
@@ -14,6 +14,7 @@ const QUICK_LINKS = [
   { href: "/admin/blogs/new", label: "Write a post" },
   { href: "/admin/portfolio/new", label: "Add a photo" },
   { href: "/admin/services/new", label: "Add a service" },
+  { href: "/admin/testimonials/new", label: "Add a testimonial" },
   { href: "/admin/users/new", label: "Add a user" },
 ];
 
@@ -22,7 +23,7 @@ export default async function AdminOverviewPage() {
   const today = new Intl.DateTimeFormat("en", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Kathmandu" }).format(new Date());
 
   const figures = [
-    { label: "New inquiries", value: stats.newInquiries, href: "/admin/inquiries", attention: stats.newInquiries > 0 },
+    { label: "New bookings", value: stats.newBookings, href: "/admin/bookings", attention: stats.newBookings > 0 },
     { label: "Published posts", value: stats.publishedPosts, href: "/admin/blogs", note: stats.draftPosts ? `${stats.draftPosts} draft${stats.draftPosts === 1 ? "" : "s"}` : undefined },
     { label: "Services", value: stats.services, href: "/admin/services" },
     { label: "Portfolio photos", value: stats.galleryImages, href: "/admin/portfolio" },
@@ -45,7 +46,7 @@ export default async function AdminOverviewPage() {
             )}
           >
             <dt className="text-sm text-muted-foreground">{figure.label}</dt>
-            <dd className={cn("text-3xl font-semibold tabular-nums", figure.attention && "text-[oklch(0.5_0.11_70)]")}>{figure.value}</dd>
+            <dd className={cn("text-3xl font-semibold tabular-nums", figure.attention && "text-brand underline decoration-brand-gold decoration-4 underline-offset-8")}>{figure.value}</dd>
             {figure.note && <dd className="text-xs text-muted-foreground">{figure.note}</dd>}
           </Link>
         ))}
@@ -53,25 +54,25 @@ export default async function AdminOverviewPage() {
 
       <div className="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <Panel
-          title="Latest inquiries"
+          title="Latest bookings"
           bodyClassName="p-0"
           action={
-            <Link href="/admin/inquiries" className="inline-flex items-center gap-1 text-sm text-brand hover:underline">
+            <Link href="/admin/bookings" className="inline-flex items-center gap-1 text-sm text-brand hover:underline">
               View all <ArrowRight className="size-3.5" />
             </Link>
           }
         >
-          {stats.recentInquiries.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-muted-foreground">No inquiries yet.</p>
+          {stats.recentBookings.length === 0 ? (
+            <p className="px-5 py-10 text-center text-sm text-muted-foreground">No bookings yet.</p>
           ) : (
             <ul className="divide-y">
-              {stats.recentInquiries.map((inquiry) => (
-                <li key={inquiry.id}>
-                  <Link href={`/admin/inquiries/${inquiry.id}`} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 px-5 py-3.5 hover:bg-muted/50">
-                    <span className={cn("truncate", inquiry.status === "NEW" ? "font-semibold" : "font-medium")}>{inquiry.name}</span>
-                    <span className="text-right text-xs whitespace-nowrap text-muted-foreground">{timeAgo(inquiry.createdAt)}</span>
-                    <span className="truncate text-sm text-muted-foreground">{inquiry.message}</span>
-                    <span className="justify-self-end"><InquiryStatusBadge status={inquiry.status} /></span>
+              {stats.recentBookings.map((booking) => (
+                <li key={booking.id}>
+                  <Link href={`/admin/bookings/${booking.id}`} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 px-5 py-3.5 hover:bg-muted/50">
+                    <span className={cn("truncate", booking.status === "NEW" ? "font-semibold" : "font-medium")}>{booking.name}</span>
+                    <span className="text-right text-xs whitespace-nowrap text-muted-foreground">{timeAgo(booking.createdAt)}</span>
+                    <span className="truncate text-sm text-muted-foreground">{[booking.service, booking.centre].filter(Boolean).join(" · ") || booking.note}</span>
+                    <span className="justify-self-end"><BookingStatusBadge status={booking.status} /></span>
                   </Link>
                 </li>
               ))}

@@ -1,92 +1,108 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import type { Service } from "@/features/shared/lib/data";
 
+const COUNT_WORDS = [
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+];
+
 export function ServicesShowcase({ services }: { services: Service[] }) {
-  const [active, setActive] = useState(0);
+  const video = useRef<HTMLVideoElement>(null);
+  // The heading counts the services, so adding one in the dashboard keeps it true.
+  const count = COUNT_WORDS[services.length] ?? String(services.length);
+
+  // Play only while on screen (saves battery and data); reduced-motion visitors see the still poster.
+  useEffect(() => {
+    const el = video.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) void el.play().catch(() => undefined);
+        else el.pause();
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="text-ivory">
-      <div className="mx-auto grid w-[90%] grid-cols-1 items-start gap-14 py-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-20 lg:py-40">
-        <div className="glass p-8 sm:p-12">
-          <h2 data-split className="max-w-xl font-heading text-4xl leading-[1.05] sm:text-5xl">
-            Six paths toward <span className="text-gold-light">inner balance.</span>
+    <section className="relative overflow-hidden bg-ink text-ivory">
+      {/* Right half: the video fills the section edge to edge, top to bottom. */}
+      <div className="absolute inset-y-0 right-0 hidden w-1/2 lg:block">
+        <video
+          ref={video}
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/videos/healing-panel.mp4"
+          poster="/videos/healing-panel-poster.jpg"
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+        {/* A light wash of the brand purple over the footage. */}
+        <div className="absolute inset-0 bg-linear-to-b from-ink/35 via-ink/10 to-ink/40" />
+      </div>
+
+      <div className="mx-auto w-[90%] py-28 lg:py-36">
+        <div className="lg:w-1/2 lg:pr-16">
+          <h2
+            data-split
+            className="max-w-xl font-heading text-brand-cream text-4xl leading-[1.05] sm:text-5xl"
+          >
+            {count} {services.length === 1 ? "path" : "paths"} toward inner
+            balance.
           </h2>
 
-          <ul className="mt-12 border-t hairline-gold">
-            {services.map((s, i) => {
-              const isActive = active === i;
-              return (
-                <li
-                  key={s.id}
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                  className="border-b hairline-gold"
+          <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4">
+            {services.map((s, i) => (
+              <li key={s.id} className="min-w-0">
+                <Link
+                  href={`/services/${s.slug}`}
+                  className="group flex h-full flex-col rounded-2xl border border-brand-cream/25 bg-transparent p-5 transition-colors duration-300 hover:border-brand-cream hover:bg-brand-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:p-6"
                 >
-                  <Link href={`/services/${s.slug}`} className="flex items-center gap-5 py-5">
-                    <span className="relative h-14 w-14 shrink-0 overflow-hidden lg:hidden">
-                      <Image src={s.image} alt="" fill sizes="56px" className="object-cover" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span
-                        className={`block font-heading text-2xl transition-colors duration-300 sm:text-3xl ${
-                          isActive ? "lg:text-gold-light" : "lg:text-ivory/60"
-                        }`}
-                      >
-                        {s.title}
-                      </span>
-                      <span
-                        className={`grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out ${
-                          isActive ? "lg:grid-rows-[1fr]" : "lg:grid-rows-[0fr]"
-                        }`}
-                      >
-                        <span className="overflow-hidden">
-                          <span className="block pt-2 text-sm leading-relaxed text-lavender sm:text-base">
-                            {s.description}
-                          </span>
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`hidden text-gold transition-all duration-300 lg:block ${
-                        isActive ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"
-                      }`}
-                    >
-                      →
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
+                  <span className="font-heading text-xs text-brand-cream/80 transition-colors duration-300 group-hover:text-brand-purple/70">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="mt-3 font-heading text-lg leading-snug transition-colors duration-300 group-hover:text-brand-purple sm:text-xl">
+                    {s.title}
+                  </span>
+                  <span className="mt-2 line-clamp-3 text-sm leading-relaxed text-lavender transition-colors duration-300 group-hover:text-brand-purple/80">
+                    {s.description}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="mt-auto pt-5 text-brand-cream transition duration-300 group-hover:translate-x-1 group-hover:text-brand-purple"
+                  >
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <Link
             href="/services"
-            className="mt-10 inline-block text-sm text-gold-light underline decoration-gold/40 underline-offset-8 transition-colors hover:text-ivory"
+            className="mt-8 inline-block text-sm text-gold-light underline decoration-gold/40 underline-offset-8 transition-colors hover:text-ivory"
           >
             See all services
           </Link>
-        </div>
-
-        <div className="hidden lg:sticky lg:top-28 lg:block">
-          <div className="relative aspect-[4/5] overflow-hidden">
-            {services.map((s, i) => (
-              <div
-                key={s.id}
-                className={`absolute inset-0 transition-all duration-700 ease-out ${
-                  active === i ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"
-                }`}
-              >
-                <Image src={s.image} alt={s.title} fill sizes="45vw" className="object-cover" />
-              </div>
-            ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-            <div className="pointer-events-none absolute inset-5 border hairline-gold" />
-          </div>
         </div>
       </div>
     </section>

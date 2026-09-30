@@ -20,7 +20,7 @@ export default async function AccountPage() {
               <p className="truncate text-lg font-semibold">{user.name}</p>
               <p className="truncate text-sm text-muted-foreground">{user.email}</p>
               <div className="mt-2">
-                {user.isVerified ? <Pill tone="green">Can make changes</Pill> : <Pill tone="gold">View only</Pill>}
+                {user.isVerified ? <Pill tone="plum">Can make changes</Pill> : <Pill tone="gold">View only</Pill>}
               </div>
             </div>
           </div>

@@ -4,25 +4,57 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Brand hues (Deep Purple, Royal Blue, Spiritual Gold) refined into premium shades */
+/* Palette (Brand Guidelines v1.0 section 4, with the base purple updated to #330c36).
+   Lighter or darker shades are one of these at an opacity, never a new colour. */
 :root {
-  --ink: #0e0621;
-  --purple: #1e0d43;
-  --plum: #2b1559;
-  --royal-blue: #1b2b6b;
-  --gold: #c9a55c;
-  --gold-light: #ecd9a6;
-  --gold-deep: #967232;
-  --ivory: #f4eee4;
-  --lavender: #aaa1c0;
+  --brand-purple: #330c36; /* base purple: primary background */
+  --brand-blue: #243b8f; /* Royal Blue: gradient / digital background */
+  --brand-gold: #d4af37; /* Spiritual Gold: logo accents, borders, headings (accent only) */
+  --brand-white: #ffffff; /* White: body text */
+  --brand-cream: #f2edbf; /* secondary: background of sections that have their own background */
 
-  --background: #faf8f4;
-  --surface: #ffffff;
-  --foreground: var(--purple);
-  --muted: #5d5670;
-  --border: #e6e0ea;
-  --accent: var(--gold);
-  --accent-soft: #f2e8d2;
+  /* Names used across the site's components, mapped onto the palette. */
+  --ink: var(--brand-purple);
+  --purple: var(--brand-purple);
+  --plum: var(--brand-blue);
+  --royal-blue: var(--brand-blue);
+  --gold: var(--brand-gold);
+  --gold-light: var(--brand-gold);
+  --gold-deep: var(--brand-gold);
+  --ivory: var(--brand-white);
+  --lavender: color-mix(in srgb, var(--brand-white) 72%, transparent);
+
+  --background: var(--brand-white);
+  --surface: var(--brand-white);
+  --foreground: var(--brand-purple);
+  --muted: color-mix(in srgb, var(--brand-purple) 70%, transparent);
+  --border: color-mix(in srgb, var(--brand-purple) 14%, transparent);
+  --accent: var(--brand-gold);
+  --accent-soft: color-mix(in srgb, var(--brand-gold) 18%, transparent);
+
+  --button-bg: var(--brand-cream);
+  --button-bg-hover: color-mix(in srgb, var(--brand-cream) 82%, var(--brand-white));
+  --button-fg: var(--brand-purple);
+}
+
+/* A section with its own background: cream, with the text and lines switched to the base purple.
+   Components keep using text-ivory / text-gold-light etc.; the variables change underneath them. */
+.section-cream {
+  background: var(--brand-cream);
+}
+.section-cream,
+.on-cream {
+  color: var(--brand-purple);
+  --ink: var(--brand-cream);
+  --purple: color-mix(in srgb, var(--brand-purple) 8%, var(--brand-cream));
+  --ivory: var(--brand-purple);
+  --lavender: color-mix(in srgb, var(--brand-purple) 75%, transparent);
+  --gold: var(--brand-purple);
+  --gold-light: var(--brand-purple);
+  --gold-deep: var(--brand-purple);
+  --button-bg: var(--brand-purple);
+  --button-bg-hover: color-mix(in srgb, var(--brand-purple) 85%, var(--brand-white));
+  --button-fg: var(--brand-cream);
 }
 
 @theme inline {
@@ -57,11 +89,12 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-sidebar: var(--sidebar);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-info: var(--info);
-  --color-brand: var(--brand);
+  --color-brand: var(--brand-purple);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-blue: var(--brand-blue);
   --color-brand-gold: var(--brand-gold);
+  --color-brand-white: var(--brand-white);
+  --color-brand-cream: var(--brand-cream);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -130,42 +163,91 @@
 
 .brand-gradient {
   background:
-    radial-gradient(ellipse 80% 60% at 85% 0%, rgb(27 43 107 / 0.55), transparent 70%),
-    linear-gradient(170deg, var(--ink) 0%, var(--purple) 55%, #1a1352 100%);
+    radial-gradient(
+      ellipse 80% 60% at 85% 0%,
+      color-mix(in srgb, var(--brand-blue) 55%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(
+      170deg,
+      var(--brand-purple) 0%,
+      var(--brand-purple) 50%,
+      var(--brand-blue) 100%
+    );
 }
 
+/* Primary buttons: cream on the purple site, purple on cream sections (so they never disappear). */
 .btn-gold {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--button-bg);
+  color: var(--button-fg);
   transition: background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .btn-gold:hover {
-  background: var(--gold-light);
+  background: var(--button-bg-hover);
 }
 .btn-gold:focus-visible {
-  outline: 2px solid var(--gold-light);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 
 .btn-ghost {
-  border: 1px solid rgb(244 238 228 / 0.28);
+  border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent);
   color: var(--ivory);
   transition:
     border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
     color 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+/* Outline buttons light up in cream on hover (purple inside cream sections, via --button-bg). */
 .btn-ghost:hover {
-  border-color: var(--gold);
-  color: var(--gold-light);
+  border-color: var(--button-bg);
+  color: var(--button-bg);
+}
+
+/* Public site: no text smaller than 16px. The small Tailwind sizes are raised to the base size here
+   (the admin dashboard keeps its compact type). */
+.site-type {
+  --text-xs: 1rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.6;
+}
+
+/* Plain cards: a soft fill, rounded, no borders. `card-hover-cream` also fills with cream on hover,
+   and everything inside (text, accents) flips to purple through the colour variables. */
+.card-plain,
+.card-hover-cream {
+  background: color-mix(in srgb, var(--ivory) 6%, transparent);
+  border-radius: 1.25rem;
+}
+.card-hover-cream {
+  transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover-cream:hover,
+.card-hover-cream:focus-within {
+  background: var(--brand-cream);
+  color: var(--brand-purple);
+  --ivory: var(--brand-purple);
+  --lavender: color-mix(in srgb, var(--brand-purple) 75%, transparent);
+  --gold: var(--brand-purple);
+  --gold-light: var(--brand-purple);
+}
+/* On cream sections: a light purple tint instead (cream on cream would vanish). */
+.section-cream .card-plain,
+.section-cream .card-hover-cream {
+  background: color-mix(in srgb, var(--brand-purple) 6%, var(--brand-cream));
+}
+.section-cream .card-hover-cream:hover,
+.section-cream .card-hover-cream:focus-within {
+  background: color-mix(in srgb, var(--brand-purple) 12%, var(--brand-cream));
 }
 
 .hairline-gold {
-  border-color: rgb(201 165 92 / 0.28);
+  border-color: color-mix(in srgb, var(--gold) 28%, transparent);
 }
 
 .text-outline-gold {
   color: transparent;
-  -webkit-text-stroke: 1px rgb(201 165 92 / 0.7);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--gold) 70%, transparent);
 }
 
 @keyframes marquee {
@@ -193,7 +275,11 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse 50% 40% at 50% 35%, rgb(201 165 92 / 0.12), transparent 70%);
+  background: radial-gradient(
+    ellipse 50% 40% at 50% 35%,
+    color-mix(in srgb, var(--gold) 12%, transparent),
+    transparent 70%
+  );
 }
 
 /* subtle film grain for depth on dark grounds */
@@ -210,25 +296,6 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* architectural frame lines aligned to the 90% content grid */
-.frame-lines::before,
-.frame-lines::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  z-index: 40;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent, rgb(201 165 92 / 0.14) 20%, rgb(201 165 92 / 0.14) 80%, transparent);
-}
-.frame-lines::before {
-  left: 5%;
-}
-.frame-lines::after {
-  right: 5%;
-}
-
 /* oversized outlined numerals for section rhythm */
 .numeral {
   font-family: var(--font-display), ui-sans-serif, sans-serif;
@@ -236,18 +303,22 @@
   line-height: 0.8;
   letter-spacing: -0.05em;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(201 165 92 / 0.22);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--gold) 22%, transparent);
   user-select: none;
   pointer-events: none;
 }
 
 /* frosted panel for text floating over the scene */
 .glass {
-  background: linear-gradient(160deg, rgb(30 13 67 / 0.45), rgb(14 6 33 / 0.35));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--ink) 45%, transparent),
+    color-mix(in srgb, var(--ink) 35%, transparent)
+  );
   backdrop-filter: blur(16px) saturate(120%);
   -webkit-backdrop-filter: blur(16px) saturate(120%);
-  border: 1px solid rgb(201 165 92 / 0.18);
-  box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.6);
+  border: 1px solid color-mix(in srgb, var(--gold) 18%, transparent);
+  box-shadow: 0 30px 80px -40px color-mix(in srgb, var(--ink) 90%, transparent);
 }
 
 /*
@@ -259,41 +330,51 @@
   --radius: 0.625rem;
 }
 :root:has(.admin-theme) {
-  /* Warm neutrals from the brand ivory, plum primary, gold as the accent/focus colour. */
-  --background: oklch(0.975 0.006 80);
-  --foreground: oklch(0.22 0.04 295);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.04 295);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.04 295);
-  --primary: oklch(0.3 0.11 295);
-  --primary-foreground: oklch(0.985 0.004 80);
-  --secondary: oklch(0.955 0.01 80);
-  --secondary-foreground: oklch(0.3 0.11 295);
-  --muted: oklch(0.955 0.01 80);
-  --muted-foreground: oklch(0.5 0.025 295);
-  --accent: oklch(0.95 0.018 295);
-  --accent-foreground: oklch(0.3 0.11 295);
-  --destructive: oklch(0.56 0.2 27);
-  --border: oklch(0.915 0.012 80);
-  --input: oklch(0.89 0.014 80);
-  --ring: oklch(0.72 0.11 80);
+  /* Dashboard: white surfaces, base purple text and chrome, Royal Blue for secondary emphasis,
+     Spiritual Gold as the accent/focus colour. */
+  --background: var(--brand-white);
+  --foreground: var(--brand-purple);
+  --card: var(--brand-white);
+  --card-foreground: var(--brand-purple);
+  --popover: var(--brand-white);
+  --popover-foreground: var(--brand-purple);
+  --primary: var(--brand-purple);
+  --primary-foreground: var(--brand-white);
+  --secondary: color-mix(in srgb, var(--brand-purple) 5%, var(--brand-white));
+  --secondary-foreground: var(--brand-purple);
+  --muted: color-mix(in srgb, var(--brand-purple) 4%, var(--brand-white));
+  --muted-foreground: color-mix(
+    in srgb,
+    var(--brand-purple) 62%,
+    var(--brand-white)
+  );
+  --accent: color-mix(in srgb, var(--brand-purple) 7%, var(--brand-white));
+  --accent-foreground: var(--brand-purple);
+  /* Not a palette colour: kept only for delete buttons and error messages, so danger stays unmistakable. */
+  --destructive: #c62828;
+  --border: color-mix(in srgb, var(--brand-purple) 13%, var(--brand-white));
+  --input: color-mix(in srgb, var(--brand-purple) 20%, var(--brand-white));
+  --ring: var(--brand-gold);
   --radius: 0.75rem;
 
-  --brand: oklch(0.3 0.11 295);
-  --brand-gold: oklch(0.74 0.1 80);
-  --success: oklch(0.55 0.12 155);
-  --warning: oklch(0.62 0.13 70);
-  --info: oklch(0.52 0.12 255);
+  --brand: var(--brand-purple);
 
-  --sidebar: oklch(0.19 0.055 295);
-  --sidebar-foreground: oklch(0.86 0.02 295);
-  --sidebar-primary: oklch(0.78 0.1 80);
-  --sidebar-primary-foreground: oklch(0.19 0.055 295);
-  --sidebar-accent: oklch(0.26 0.07 295);
-  --sidebar-accent-foreground: oklch(0.98 0.005 80);
-  --sidebar-border: oklch(0.27 0.05 295);
-  --sidebar-ring: oklch(0.78 0.1 80);
+  --sidebar: var(--brand-purple);
+  --sidebar-foreground: color-mix(
+    in srgb,
+    var(--brand-white) 78%,
+    var(--brand-purple)
+  );
+  --sidebar-primary: var(--brand-gold);
+  --sidebar-primary-foreground: var(--brand-purple);
+  --sidebar-accent: var(--brand-blue);
+  --sidebar-accent-foreground: var(--brand-white);
+  --sidebar-border: color-mix(
+    in srgb,
+    var(--brand-white) 12%,
+    var(--brand-purple)
+  );
+  --sidebar-ring: var(--brand-gold);
   --font-body: var(--font-geist);
   --font-display: var(--font-geist);
 }
@@ -307,7 +388,6 @@
   border-color: var(--border);
   outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
 }
-
 
 /* Rich-text blog bodies (HTML from the admin editor) */
 .blog-body > * + * {
@@ -354,7 +434,7 @@
   height: auto;
 }
 .blog-body hr {
-  border-color: rgb(201 165 92 / 0.28);
+  border-color: color-mix(in srgb, var(--gold) 28%, transparent);
 }
 
 /* Admin rich-text editor content */

@@ -1,31 +1,60 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ContactHero } from "@/features/contact/components/hero";
-import { ContactForm } from "@/features/contact/components/contact-form";
-import { getServices } from "@/features/content/server/queries";
 import { ContactInfo } from "@/features/contact/components/info";
 import { PageMotion } from "@/features/shared/components/page-motion";
+import { WhatsAppIcon, WhatsAppLink } from "@/features/shared/components/whatsapp-link";
+import { SOCIAL_LINKS } from "@/features/shared/lib/data";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Connect with HEX Healing Hub in Butwal, Pokhara or Kapilvastu for details, class schedules and appointments.",
+  description:
+    "Connect with HEX Healing Hub in Butwal, Pokhara or Kapilvastu on WhatsApp or by phone, or book a session online.",
 };
 
-export default async function ContactPage() {
-  const interests = (await getServices()).map((service) => service.title);
+export default function ContactPage() {
   return (
     <PageMotion>
-      <ContactHero />
-      <section id="inquiry" aria-label="Contact details and inquiry form" className="scroll-mt-24 border-t hairline-gold">
-        <div className="mx-auto grid w-[90%] items-start gap-14 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24 lg:py-28">
-          <ContactInfo />
-          <ContactForm interests={interests} />
-        </div>
-      </section>
-      <section className="border-t hairline-gold bg-purple/30">
-        <div className="page-reveal mx-auto flex w-[90%] flex-col justify-between gap-8 py-14 sm:flex-row sm:items-center">
-          <div><h2 className="mt-5 font-heading text-2xl sm:text-3xl">Still finding your <span className="text-gold-light">starting point?</span></h2></div>
-          <Link href="/services" className="btn-ghost w-fit shrink-0 rounded-full px-7 py-4 text-sm">Explore Our Services <span aria-hidden="true" className="ml-3">↗</span></Link>
+      <section aria-labelledby="contact-title" className="section-cream min-h-svh">
+        <div className="mx-auto w-[90%] pb-24 pt-32 sm:pt-40 lg:pb-32">
+          <div className="page-reveal mb-12 flex flex-col items-center gap-5 text-center lg:mb-16">
+            <h1 id="contact-title" className="font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+              Let&apos;s begin with a conversation.
+            </h1>
+            <p className="max-w-xl text-base leading-relaxed text-lavender sm:text-lg">
+              You don&apos;t need to have all the answers. Tell us where you are, and we&apos;ll take it from there.
+            </p>
+          </div>
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] lg:gap-8">
+            <div className="grid min-w-0 gap-6">
+              <div className="page-reveal card-plain rounded-3xl p-6 sm:p-10">
+                <h2 className="font-heading text-2xl leading-snug">Message us on WhatsApp</h2>
+                <p className="mt-3 max-w-lg text-base leading-relaxed text-lavender">
+                  The quickest way to reach us. Ask about a service, a schedule or your first visit, and we&apos;ll reply as soon as we can.
+                </p>
+                <WhatsAppLink label="Chat with us on WhatsApp" className="btn-gold mt-7 inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-medium">
+                  <WhatsAppIcon /> Chat on WhatsApp
+                </WhatsAppLink>
+              </div>
+              <div className="page-reveal card-plain rounded-3xl p-6 sm:p-10">
+                <h2 className="font-heading text-2xl leading-snug">Ready to book?</h2>
+                <p className="mt-3 max-w-lg text-base leading-relaxed text-lavender">
+                  Choose a service, a centre and a day that suits you. We&apos;ll confirm the time with you.
+                </p>
+                <Link href="/book" className="btn-ghost mt-7 inline-flex rounded-full px-7 py-4 text-sm font-medium">
+                  Book a Session
+                </Link>
+              </div>
+              <div className="page-reveal flex flex-wrap items-center gap-x-6 gap-y-2 px-2 text-base">
+                <span className="text-lavender">Follow us</span>
+                {SOCIAL_LINKS.map((social) => (
+                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="underline decoration-brand-purple/30 underline-offset-8 transition-colors hover:decoration-brand-purple">
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <ContactInfo />
+          </div>
         </div>
       </section>
     </PageMotion>

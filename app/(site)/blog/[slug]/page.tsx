@@ -24,19 +24,19 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
   return (
     <PageMotion>
       <article>
-        <header className="bg-[radial-gradient(ellipse_at_top_right,#243B8F44,transparent_65%)]">
-          <div className="page-reveal mx-auto w-[90%] max-w-5xl pb-12 pt-32 sm:pt-40 lg:pb-16">
+        <header className="section-cream flex min-h-svh flex-col justify-center">
+          <div className="page-reveal mx-auto w-[90%] max-w-5xl pb-16 pt-32 sm:pt-36">
             <Link href="/blog" className="inline-flex items-center gap-3 py-3 text-sm text-gold-light underline decoration-gold/40 underline-offset-8"><span aria-hidden="true">←</span> Back to Blogs</Link>
             <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3 text-xs text-lavender">
               <span className="uppercase tracking-[0.18em] text-gold">{blog.category}</span>
               {blog.publishedAt && <time dateTime={blog.publishedAt}>{formatBlogDate(blog.publishedAt)}</time>}
               <span>{readingTime(blog.content)}</span>
             </div>
-            <h1 className="mt-7 font-heading text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl lg:text-6xl">{blog.title}</h1>
+            <h1 className="mt-7 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{blog.title}</h1>
             <p className="mt-7 max-w-3xl text-base leading-relaxed text-lavender sm:text-xl">{blog.excerpt}</p>
           </div>
         </header>
-        <div className="page-reveal relative mx-auto aspect-[16/10] w-[90%] max-w-6xl overflow-hidden sm:aspect-[21/9]">
+        <div className="page-reveal relative mx-auto mt-12 aspect-[16/10] w-[90%] max-w-6xl overflow-hidden rounded-3xl sm:aspect-[21/9] lg:mt-16">
           <Image src={blog.image} alt="" fill preload sizes="(min-width: 1280px) 1152px, 90vw" className="object-cover" />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent" />
         </div>
@@ -52,10 +52,10 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
         </div>
       </article>
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="border-t hairline-gold bg-purple/20">
+        <section aria-labelledby="related-title" className="section-cream">
           <div className="mx-auto w-[90%] py-20 lg:py-28">
             <div className="page-reveal mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-              <div><h2 id="related-title" className="mt-5 font-heading text-3xl sm:text-4xl">A little more <span className="text-gold-light">to reflect on.</span></h2></div>
+              <div><h2 id="related-title" className="font-heading text-3xl">A little more to reflect on.</h2></div>
               <Link href="/blog" className="w-fit py-3 text-sm text-gold-light underline decoration-gold/40 underline-offset-8">View All Blogs <span aria-hidden="true" className="ml-3">↗</span></Link>
             </div>
             <div className="grid gap-12 md:grid-cols-2 lg:gap-20">{related.map(post => <BlogCard key={post.id} blog={post} />)}</div>
