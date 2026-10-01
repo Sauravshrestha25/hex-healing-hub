@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LOCATIONS, CONTACT_EMAIL, SOCIAL_LINKS } from "@/features/shared/lib/data";
+import { LOCATIONS, CONTACT_EMAIL } from "@/features/shared/lib/data";
+import { SocialLinks } from "./social-links";
 import { WhatsAppIcon, WhatsAppLink } from "./whatsapp-link";
 import { FooterWordmark } from "./footer-wordmark";
 import { WebxLogoSparkles } from "./webx-logo-sparkles";
@@ -36,20 +37,7 @@ export function Footer() {
               A spiritual wellness and learning center offering meditation,
               energy-focused practices, hypnotherapy and spiritual education.
             </p>
-            <ul aria-label="Social media" className="mt-6 flex flex-wrap gap-2">
-              {SOCIAL_LINKS.map((social) => (
-                <li key={social.label}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex rounded-full px-4 py-2 text-sm text-ivory/85 ring-1 ring-inset ring-ivory/25 transition-colors hover:ring-brand-cream hover:bg-brand-cream hover:text-brand-purple"
-                  >
-                    {social.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <SocialLinks className="mt-6" />
           </div>
           <div>
             <p className="text-sm font-medium mb-4">Explore</p>

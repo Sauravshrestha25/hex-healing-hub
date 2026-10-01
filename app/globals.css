@@ -498,3 +498,60 @@
   max-width: 100%;
   border-radius: 0.5rem;
 }
+
+/* Preloader (public site, first load of a visit). Skipped before paint on later loads; the failsafe
+   hides it even if JavaScript never runs, so it can't trap a visitor. */
+.hex-preloaded .preloader {
+  display: none;
+}
+.preloader {
+  animation: preloader-failsafe 0s linear 6s forwards;
+}
+@keyframes preloader-failsafe {
+  to {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+.preloader-breathe {
+  animation: preloader-breathe 2.4s ease-in-out infinite;
+}
+@keyframes preloader-breathe {
+  50% {
+    transform: scale(1.06);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader-breathe {
+    animation: none;
+  }
+}
+
+/* Home hero: ripples from the point where a visitor rings the bowl. */
+.hero-ripple {
+  position: absolute;
+  z-index: 15;
+  width: 18rem;
+  height: 18rem;
+  margin: -9rem 0 0 -9rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 70%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  animation: hero-ripple 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes hero-ripple {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-ripple {
+    animation-duration: 1.2s;
+  }
+}

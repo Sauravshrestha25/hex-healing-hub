@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Faq } from "@/features/shared/components/faq";
 import { ContactInfo } from "@/features/contact/components/info";
 import { PageMotion } from "@/features/shared/components/page-motion";
+import { SocialLinks } from "@/features/shared/components/social-links";
 import { WhatsAppIcon, WhatsAppLink } from "@/features/shared/components/whatsapp-link";
-import { SOCIAL_LINKS } from "@/features/shared/lib/data";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -45,13 +45,9 @@ export default function ContactPage() {
                   Book a Session
                 </Link>
               </div>
-              <div className="page-reveal flex flex-wrap items-center gap-x-6 gap-y-2 px-2 text-base">
+              <div className="page-reveal flex flex-wrap items-center gap-4 px-2 text-base">
                 <span className="text-lavender">Follow us</span>
-                {SOCIAL_LINKS.map((social) => (
-                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="underline decoration-brand-purple/30 underline-offset-8 transition-colors hover:decoration-brand-purple">
-                    {social.label}
-                  </a>
-                ))}
+                <SocialLinks />
               </div>
             </div>
             <ContactInfo />

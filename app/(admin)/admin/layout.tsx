@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
         <AdminSidebar newBookings={newBookings} />
         <SidebarInset className="bg-background">
           <AdminTopbar user={{ name: user.name, email: user.email, isVerified: user.isVerified }} />
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+          <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-8 sm:px-6 lg:px-10 lg:py-12 2xl:px-14">
             {!user.isVerified && <ReadOnlyBanner />}
             {children}
           </main>

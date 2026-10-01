@@ -8,6 +8,8 @@ export class DashboardService {
     const [
       newBookings,
       confirmedBookings,
+      completedBookings,
+      cancelledBookings,
       publishedPosts,
       draftPosts,
       services,
@@ -19,6 +21,8 @@ export class DashboardService {
     ] = await Promise.all([
       this.db.booking.count({ where: { status: "NEW" } }),
       this.db.booking.count({ where: { status: "CONFIRMED" } }),
+      this.db.booking.count({ where: { status: "COMPLETED" } }),
+      this.db.booking.count({ where: { status: "CANCELLED" } }),
       this.db.blog.count({ where: { published: true } }),
       this.db.blog.count({ where: { published: false } }),
       this.db.service.count(),
@@ -35,6 +39,8 @@ export class DashboardService {
     return {
       newBookings,
       confirmedBookings,
+      completedBookings,
+      cancelledBookings,
       publishedPosts,
       draftPosts,
       services,
