@@ -3,6 +3,7 @@ import { BookingForm } from "@/features/booking/components/booking-form";
 import { ContactInfo } from "@/features/contact/components/info";
 import { getServices } from "@/features/content/server/queries";
 import { PageMotion } from "@/features/shared/components/page-motion";
+import { PageHero } from "@/features/shared/components/page-hero";
 
 export const metadata: Metadata = {
   title: "Book a Session",
@@ -17,16 +18,14 @@ export default async function BookPage(props: PageProps<"/book">) {
 
   return (
     <PageMotion>
-      <section aria-labelledby="book-title" className="section-cream min-h-svh">
-        <div className="mx-auto w-[90%] pb-24 pt-32 sm:pt-40 lg:pb-32">
-          <div className="page-reveal mb-12 flex flex-col items-center gap-5 text-center lg:mb-16">
-            <h1 id="book-title" className="font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              Book a session.
-            </h1>
-            <p className="max-w-xl text-base leading-relaxed text-lavender sm:text-lg">
-              Tell us what you&apos;d like and when suits you. We&apos;ll confirm by phone or WhatsApp.
-            </p>
-          </div>
+      <PageHero
+        id="book-title"
+        title="Book a session."
+        intro="Tell us what you'd like and when suits you. We'll confirm by phone or WhatsApp."
+        image={{ src: "/images/spiritual-awakening.jpg", alt: "A person above the clouds at sunrise, arm raised" }}
+      />
+      <section aria-label="Booking form" className="section-cream">
+        <div className="mx-auto w-[90%] py-16 lg:py-24">
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] lg:gap-8">
             <BookingForm services={services.map((s) => s.title)} defaultService={preselected} today={today} />
             <ContactInfo />

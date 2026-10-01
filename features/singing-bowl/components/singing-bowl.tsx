@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Volume2, VolumeX } from "lucide-react";
+import { BellRing, Volume2, VolumeX } from "lucide-react";
 import { BowlController, type SoundState } from "@/features/singing-bowl/lib/bowl-controller";
 import { BowlAudio } from "@/features/singing-bowl/lib/bowl-sound";
 import { BowlArt, RIM, type OnBowlPart } from "./bowl-art";
@@ -89,9 +89,9 @@ export function SingingBowl() {
         <button
           type="button"
           onClick={() => controller.current?.strikeFront()}
-          className="rounded-full px-5 py-2.5 text-sm text-gold-light underline decoration-gold/40 underline-offset-8 transition-colors hover:text-ivory"
+          className="btn-gold inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
         >
-          Strike the bowl
+          <BellRing className="size-4" aria-hidden="true" /> Strike the bowl
         </button>
       </div>
       <p aria-live="polite" className="mt-4 max-w-sm text-center text-xs leading-relaxed text-lavender">

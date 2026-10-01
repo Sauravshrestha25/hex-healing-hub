@@ -55,12 +55,12 @@ const FAQS = [
 export function Faq() {
   return (
     <section aria-labelledby="faq-title">
-      <div className="mx-auto grid w-[90%] gap-10 py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16 lg:py-32">
-        <div className="page-reveal">
+      <div className="mx-auto w-[90%] max-w-5xl py-24 lg:py-32">
+        <div className="page-reveal mb-12 text-center">
           <h2 id="faq-title" className="font-heading text-3xl leading-tight text-brand-cream in-[.section-cream]:text-brand-purple">
             Questions, gently answered.
           </h2>
-          <p className="mt-5 max-w-sm text-base leading-relaxed text-lavender">
+          <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-lavender">
             Anything else on your mind? Message us on WhatsApp or book a first conversation.
           </p>
         </div>

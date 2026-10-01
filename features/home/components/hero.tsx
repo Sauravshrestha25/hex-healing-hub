@@ -30,6 +30,7 @@ export function Hero() {
   return (
     <section
       ref={rootRef}
+      data-motion="own"
       className="grain relative h-screen min-h-[640px] overflow-hidden bg-ink"
     >
       <div ref={imgRef} className="absolute inset-0 scale-100">

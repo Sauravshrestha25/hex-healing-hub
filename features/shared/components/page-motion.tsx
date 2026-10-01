@@ -1,25 +1,6 @@
-"use client";
+import type { ReactNode } from "react";
 
-import { useRef, type ReactNode } from "react";
-import { gsap, useGSAP } from "@/features/shared/lib/gsap";
-
+/** Page wrapper with the site's base colours. Scroll animations come from SiteMotion in the site layout. */
 export function PageMotion({ children }: { children: ReactNode }) {
-  const root = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const media = gsap.matchMedia();
-    media.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.utils.toArray<HTMLElement>(".page-reveal", root.current).forEach((element) => {
-        gsap.from(element, {
-          opacity: 0,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: { trigger: element, start: "top 92%", once: true },
-        });
-      });
-    });
-    return () => media.revert();
-  }, { scope: root });
-
-  return <div ref={root} className="bg-ink text-ivory">{children}</div>;
+  return <div className="bg-ink text-ivory">{children}</div>;
 }

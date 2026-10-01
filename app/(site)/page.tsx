@@ -4,7 +4,6 @@ import { ServicesShowcase } from "@/features/home/components/services-showcase";
 import { Community } from "@/features/about/components/community";
 import { BowlExperience } from "@/features/home/components/bowl-experience";
 import { PageMotion } from "@/features/shared/components/page-motion";
-import { SplitHeadings } from "@/features/shared/components/split-headings";
 import { getServices, getTestimonials } from "@/features/content/server/queries";
 import { Testimonials } from "@/features/shared/components/testimonials";
 
@@ -31,7 +30,6 @@ export default async function Home() {
           <Community />
         </PageMotion>
       </div>
-      <SplitHeadings />
     </>
   );
 }

@@ -34,8 +34,8 @@ export function NavBar() {
   }, []);
 
   // These pages open on a cream header, so the bar reads purple until it scrolls onto its own background.
-  // (Home, About, Services, Portfolio and Blogs open on a photo and keep the cream bar.)
-  const creamHeader = ["/contact", "/book"].includes(pathname) || pathname.startsWith("/blog/") || pathname.startsWith("/services/");
+  // (Home, About, Services, Portfolio, Blogs and Book open on a photo and keep the cream bar.)
+  const creamHeader = pathname === "/contact" || pathname.startsWith("/blog/") || pathname.startsWith("/services/");
   const onCream = creamHeader && !scrolled && !open;
   const accent = onCream ? "text-brand-purple" : "text-brand-cream";
   const accentHover = onCream ? "hover:text-brand-purple" : "hover:text-brand-cream";
@@ -54,19 +54,16 @@ export function NavBar() {
         className={`fixed top-0 z-50 w-full transition-colors duration-500 ${bar} ${onCream ? "on-cream" : ""}`}
       >
         <div className="mx-auto grid w-[90%] grid-cols-[1fr_auto] items-center gap-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
-          <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2 justify-self-start">
+          <Link href="/" onClick={() => setOpen(false)} className="flex items-center justify-self-start">
+            {/* Full logo: cream wordmark over purple or photos, the original dark wordmark on cream. */}
             <Image
-              src="/images/hex-mark.svg"
-              alt=""
-              width={36}
-              height={36}
-              className="size-9"
+              src={dark ? "/images/hex-healing-logo-light.svg" : "/images/hex-healing-logo.svg"}
+              alt="HEX Healing Hub"
+              width={116}
+              height={44}
+              priority
+              className="h-11 w-auto"
             />
-            <span
-              className={`whitespace-nowrap font-heading text-lg font-semibold tracking-wide sm:text-xl ${dark || onCream ? "text-ivory" : "text-foreground"}`}
-            >
-              HEX Healing Hub
-            </span>
           </Link>
           <nav
             className={`hidden gap-8 text-sm lg:flex ${hasDarkBackground ? "text-ivory/75" : "text-muted"}`}

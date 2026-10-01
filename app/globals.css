@@ -217,9 +217,9 @@
   --text-sm--line-height: 1.6;
 }
 
-/* Cards always take the opposite surface, in exact brand colours:
-   on the purple site they are solid cream with purple text; on cream sections, solid purple with
-   cream text. Everything inside flips through the colour variables. Interactive cards lift on hover. */
+/* Cards in exact brand colours: on the purple site they are solid cream with purple text; on cream
+   sections they are outlined (see below). Everything inside flips through the colour variables.
+   Interactive cards lift on hover. */
 .card-plain,
 .card-hover-cream {
   border-radius: 1.25rem;
@@ -235,18 +235,13 @@
   --button-bg: var(--brand-purple);
   --button-fg: var(--brand-cream);
 }
+/* On cream sections, cards stay light: the page's cream shows through, outlined in a purple hairline,
+   with purple used only for accents (titles, arrows, buttons, field lines). */
 .section-cream .card-plain,
 .section-cream .card-hover-cream {
-  background: var(--brand-purple);
-  color: var(--brand-cream);
-  --ink: var(--brand-purple);
-  --ivory: var(--brand-cream);
-  --lavender: color-mix(in srgb, var(--brand-cream) 78%, transparent);
-  --gold: var(--brand-cream);
-  --gold-light: var(--brand-cream);
-  --gold-deep: var(--brand-cream);
-  --button-bg: var(--brand-cream);
-  --button-fg: var(--brand-purple);
+  background: transparent;
+  color: var(--brand-purple);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-purple) 18%, transparent);
 }
 .card-hover-cream {
   transition:
@@ -257,6 +252,12 @@
 .card-hover-cream:focus-within {
   transform: translateY(-3px);
   box-shadow: 0 22px 44px -26px rgb(0 0 0 / 0.55);
+}
+.section-cream .card-hover-cream:hover,
+.section-cream .card-hover-cream:focus-within {
+  box-shadow:
+    inset 0 0 0 1px var(--brand-purple),
+    0 18px 36px -28px rgb(0 0 0 / 0.35);
 }
 @media (prefers-reduced-motion: reduce) {
   .card-hover-cream:hover,

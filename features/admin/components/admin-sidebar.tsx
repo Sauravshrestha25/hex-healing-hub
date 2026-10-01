@@ -76,7 +76,7 @@ export function AdminSidebar({ newBookings }: { newBookings: number }) {
                         isActive={active}
                         tooltip={label}
                         render={<Link href={href} />}
-                        className="relative h-9 text-sidebar-foreground hover:text-brand-cream data-active:bg-[var(--sidebar-active)] data-active:font-medium data-active:text-brand-purple data-active:hover:text-brand-purple"
+                        className="relative h-9 text-sidebar-foreground hover:text-brand-cream data-active:bg-[var(--sidebar-active)] data-active:font-medium data-active:text-brand-purple data-active:hover:bg-[var(--sidebar-active)] data-active:hover:text-brand-purple data-active:active:bg-[var(--sidebar-active)]"
                       >
                         <Icon />
                         <span>{label}</span>

@@ -48,7 +48,8 @@ export default async function ServicePage(
           </div>
         </header>
         <div className="page-reveal relative mx-auto mt-12 aspect-[16/10] w-[90%] max-w-6xl overflow-hidden rounded-3xl sm:aspect-[21/9] lg:mt-16">
-          <Image
+          <div data-parallax className="absolute inset-x-0 -top-[8%] -bottom-[8%]">
+            <Image
             src={service.image}
             alt=""
             fill
@@ -56,6 +57,7 @@ export default async function ServicePage(
             sizes="(min-width: 1280px) 1152px, 90vw"
             className="object-cover"
           />
+          </div>
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent"
