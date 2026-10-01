@@ -22,11 +22,11 @@ export function Footer() {
         <div className="grid gap-12 sm:grid-cols-4">
           <div className="sm:col-span-2">
             <Image
-              src="/white_logo.png"
-              alt="HEX Healing Hub"
-              width={40}
-              height={40}
-              className="rounded-full mb-4"
+              src="/images/hex-mark.svg"
+              alt=""
+              width={44}
+              height={44}
+              className="mb-4 size-11"
             />
             <p className="font-heading text-lg mb-1">HEX Healing Hub</p>
             <p className="mb-5 text-sm text-brand-cream">

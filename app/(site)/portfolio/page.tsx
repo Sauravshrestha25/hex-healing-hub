@@ -24,6 +24,7 @@ export default async function PortfolioPage() {
             slowing down.
           </>
         }
+        intro="Stillness, spiritual tradition and natural beauty: the moments that inspire our approach."
         image={{ src: "/images/prayer-flags.jpg", alt: "Prayer flags moving in the mountain wind" }}
       />
       <Gallery items={items} />

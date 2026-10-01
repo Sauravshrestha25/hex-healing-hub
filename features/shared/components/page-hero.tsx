@@ -1,35 +1,38 @@
 import Image from "next/image";
 
 /**
- * Full-screen cream hero for every page except home. The title sits in the cream band on top;
- * the photo runs edge to edge across the bottom 60% of the screen.
+ * Hero for the About, Services, Portfolio and Blogs pages: a full-bleed photo 60% of the screen tall,
+ * with a centred title and short intro set on the photo. Page content follows directly below.
  */
 export function PageHero({
   id,
   title,
+  intro,
   image,
 }: {
   id: string;
   title: React.ReactNode;
+  intro: string;
   image: { src: string; alt: string; position?: string };
 }) {
   return (
-    <section aria-labelledby={id} className="section-cream flex min-h-svh flex-col">
-      <div className="page-reveal mx-auto flex w-[90%] flex-1 items-center pb-12 pt-28">
-        <h1 id={id} className="font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+    <section aria-labelledby={id} className="relative isolate flex h-[60svh] min-h-[420px] items-center overflow-hidden">
+      <Image
+        src={image.src}
+        alt={image.alt}
+        fill
+        preload
+        sizes="100vw"
+        className={`-z-10 object-cover ${image.position ?? ""}`}
+      />
+      {/* Flat brand tint so the cream title reads on any photo. */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-brand-purple/45" />
+      {/* pt clears the fixed navbar so the text centres in the visible part of the photo. */}
+      <div className="page-reveal mx-auto flex w-[90%] flex-col items-center pt-16 text-center">
+        <h1 id={id} className="max-w-3xl font-heading text-4xl font-semibold leading-tight tracking-tight text-brand-cream sm:text-5xl">
           {title}
         </h1>
-      </div>
-
-      <div className="relative h-[60svh] w-full shrink-0">
-        <Image
-          src={image.src}
-          alt={image.alt}
-          fill
-          preload
-          sizes="100vw"
-          className={`object-cover ${image.position ?? ""}`}
-        />
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-brand-cream/85 sm:text-lg">{intro}</p>
       </div>
     </section>
   );

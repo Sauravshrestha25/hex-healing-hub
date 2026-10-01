@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description:
     "HEX Healing Hub is a spiritual wellness and learning center offering meditation, energy-focused practices, hypnotherapy and spiritual education.",
   icons: {
-    icon: "/colorful_logo.png",
+    icon: "/images/hex-mark.svg",
     apple: "/colorful_logo.png",
   },
 };

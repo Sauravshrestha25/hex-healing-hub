@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Faq } from "@/features/shared/components/faq";
 import { ContactInfo } from "@/features/contact/components/info";
 import { PageMotion } from "@/features/shared/components/page-motion";
 import { WhatsAppIcon, WhatsAppLink } from "@/features/shared/components/whatsapp-link";
@@ -57,6 +58,9 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      <div className="section-cream border-t border-brand-purple/10">
+        <Faq />
+      </div>
     </PageMotion>
   );
 }

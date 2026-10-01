@@ -49,7 +49,7 @@ export function AdminSidebar({ newBookings }: { newBookings: number }) {
       <SidebarHeader className="px-3 pt-4 pb-2">
         <Link href="/admin" className="flex items-center gap-2.5 rounded-lg px-1 py-1">
           <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white/[0.07] ring-1 ring-white/10">
-            <Image src="/white_logo.png" alt="" width={24} height={24} className="rounded-full" />
+            <Image src="/images/hex-mark.svg" alt="" width={24} height={24} className="size-6" />
           </span>
           <span className="grid leading-tight group-data-[collapsible=icon]:hidden">
             <span className="truncate text-sm font-semibold text-white">HEX Healing Hub</span>

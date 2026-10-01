@@ -10,7 +10,7 @@ const optional = (max: number) => z.string().trim().max(max).optional().transfor
 
 const testimonialSchema = z.object({
   name: z.string().trim().min(1, "Add the person's name.").max(120),
-  quote: z.string().trim().min(1, "Add what they said.").max(1200),
+  quote: z.string().trim().min(1, "Add what they said.").max(2000),
   photo: z.union([z.literal("").transform(() => null), imageField]).optional().transform((v) => v ?? null),
   service: optional(120),
   centre: optional(40).refine((v) => v === null || LOCATIONS.some((l) => l.city === v), "Choose one of the centres."),

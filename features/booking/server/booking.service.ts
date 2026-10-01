@@ -1,7 +1,7 @@
 import "server-only";
 import type { BookingStatus, PrismaClient } from "@prisma/client";
 import { z } from "zod";
-import { LOCATIONS, TIMES_OF_DAY } from "@/features/shared/lib/data";
+import { BOOKING_PLACES, TIMES_OF_DAY } from "@/features/shared/lib/data";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
 import type { RateLimiter } from "@/features/shared/server/rate-limiter";
 import type { BookingNotifier } from "./booking-notifier";
@@ -30,8 +30,8 @@ const bookingSchema = z.object({
     .refine((v) => v === null || z.string().email().safeParse(v).success, "Please add a valid email address."),
   service: z.string().trim().min(1, "Please choose a service.").max(120),
   centre: optionalText(40).refine(
-    (v) => v === null || LOCATIONS.some((l) => l.city === v),
-    "Please choose one of our centres.",
+    (v) => v === null || (BOOKING_PLACES as readonly string[]).includes(v),
+    "Please choose one of our centres, or online.",
   ),
   preferredDate: optionalText(10).refine(
     (v) => v === null || (/^\d{4}-\d{2}-\d{2}$/.test(v) && v >= todayInNepal()),

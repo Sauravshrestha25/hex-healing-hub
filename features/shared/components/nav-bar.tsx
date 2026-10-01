@@ -33,8 +33,10 @@ export function NavBar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Every page except home opens on a cream header, so the bar reads purple until it scrolls onto its own background.
-  const onCream = pathname !== "/" && !scrolled && !open;
+  // These pages open on a cream header, so the bar reads purple until it scrolls onto its own background.
+  // (Home, About, Services, Portfolio and Blogs open on a photo and keep the cream bar.)
+  const creamHeader = ["/contact", "/book"].includes(pathname) || pathname.startsWith("/blog/") || pathname.startsWith("/services/");
+  const onCream = creamHeader && !scrolled && !open;
   const accent = onCream ? "text-brand-purple" : "text-brand-cream";
   const accentHover = onCream ? "hover:text-brand-purple" : "hover:text-brand-cream";
   const dark = (hasDarkBackground || open) && !onCream;
@@ -54,11 +56,11 @@ export function NavBar() {
         <div className="mx-auto grid w-[90%] grid-cols-[1fr_auto] items-center gap-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
           <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2 justify-self-start">
             <Image
-              src={dark ? "/white_logo.png" : "/colorful_logo.png"}
-              alt="HEX Healing Hub"
-              width={34}
-              height={34}
-              className="rounded-full"
+              src="/images/hex-mark.svg"
+              alt=""
+              width={36}
+              height={36}
+              className="size-9"
             />
             <span
               className={`whitespace-nowrap font-heading text-lg font-semibold tracking-wide sm:text-xl ${dark || onCream ? "text-ivory" : "text-foreground"}`}

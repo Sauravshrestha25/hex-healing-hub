@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ServicesHero } from "@/features/services/components/hero";
 import { ServiceList } from "@/features/services/components/service-list";
+import { Faq } from "@/features/shared/components/faq";
 import { PageClosing } from "@/features/shared/components/page-closing";
 import { PageMotion } from "@/features/shared/components/page-motion";
 import { getServices } from "@/features/content/server/queries";
@@ -17,6 +18,7 @@ export default async function ServicesPage() {
     <PageMotion>
       <ServicesHero />
       <ServiceList services={services} />
+      <Faq />
       <PageClosing
         title="Not sure where"
         emphasis="to begin?"

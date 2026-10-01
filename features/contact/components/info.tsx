@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CONTACT_EMAIL, LOCATIONS } from "@/features/shared/lib/data";
+import { CONTACT_EMAIL, LOCATIONS, POKHARA_HOURS } from "@/features/shared/lib/data";
 
 export function ContactInfo() {
   return (
@@ -13,6 +13,18 @@ export function ContactInfo() {
           <span aria-hidden="true" className="text-xl transition-transform group-hover:translate-x-1">→</span>
         </a>
       ))}
+      <a
+        href="https://www.google.com/maps/search/?api=1&query=Hex+Healing+Hub+Pokhara"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="card-hover-cream group flex items-center justify-between gap-4 px-6 py-5"
+      >
+        <span className="min-w-0">
+          <span className="block text-sm text-lavender">Visit our Pokhara centre</span>
+          <span className="mt-1 block font-heading text-lg">{POKHARA_HOURS}</span>
+        </span>
+        <span aria-hidden="true" className="text-xl transition-transform group-hover:translate-x-1">↗</span>
+      </a>
       <a href={`mailto:${CONTACT_EMAIL}`} className="card-hover-cream group flex items-center justify-between gap-4 px-6 py-5">
         <span className="min-w-0">
           <span className="block text-sm text-lavender">Or email us</span>

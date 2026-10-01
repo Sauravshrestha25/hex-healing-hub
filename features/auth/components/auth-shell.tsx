@@ -10,7 +10,7 @@ export function AuthShell({ title, description, children }: { title: string; des
         <div className="absolute inset-0 bg-gradient-to-br from-brand/85 to-brand-blue/80" />
         <div className="relative flex h-full flex-col justify-between p-12 text-white">
           <div className="flex items-center gap-3">
-            <Image src="/white_logo.png" alt="" width={40} height={40} className="rounded-full" />
+            <Image src="/images/hex-mark.svg" alt="" width={40} height={40} className="size-10" />
             <span className="font-semibold">HEX Healing Hub</span>
           </div>
           <div className="max-w-md">
@@ -26,7 +26,7 @@ export function AuthShell({ title, description, children }: { title: string; des
 
       <section className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
-          <Image src="/colorful_logo.png" alt="" width={48} height={48} className="mb-8 size-12 rounded-full lg:hidden" />
+          <Image src="/images/hex-mark.svg" alt="" width={48} height={48} className="mb-8 size-12 lg:hidden" />
           <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
           <p className="mt-1.5 mb-8 text-sm text-muted-foreground">{description}</p>
           {children}

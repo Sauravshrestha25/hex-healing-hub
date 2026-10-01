@@ -48,6 +48,11 @@ export const SOCIAL_LINKS = [
   { label: "TikTok", href: "https://www.tiktok.com/@hex.healinghub.pokhara" },
 ] as const;
 
+/** Where a session can happen: one of the centres, or online. */
+export const BOOKING_PLACES = [...LOCATIONS.map((l) => l.city), "Online"] as const;
+
+export const POKHARA_HOURS = "Lakeside Rd, Pokhara · Open daily 11am–5pm";
+
 export const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"] as const;
 
 export type Testimonial = {

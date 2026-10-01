@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { submitBooking, type BookingState } from "@/features/booking/server/actions";
-import { LOCATIONS, TIMES_OF_DAY } from "@/features/shared/lib/data";
+import { BOOKING_PLACES, TIMES_OF_DAY } from "@/features/shared/lib/data";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
 
@@ -62,11 +62,11 @@ export function BookingForm({ services, defaultService, today }: { services: str
             </select>
           </div>
           <div>
-            <label htmlFor="booking-centre" className={labelClass}>Centre</label>
+            <label htmlFor="booking-centre" className={labelClass}>Centre or Online</label>
             <select id="booking-centre" name="centre" defaultValue="" className={fieldClass}>
               <option value="">No preference</option>
-              {LOCATIONS.map((location) => (
-                <option key={location.city} value={location.city}>{location.city}</option>
+              {BOOKING_PLACES.map((place) => (
+                <option key={place} value={place}>{place === "Online" ? "Online session" : place}</option>
               ))}
             </select>
           </div>

@@ -42,7 +42,7 @@ export function TestimonialForm({ item, services, readOnly }: { item?: Testimoni
             <Input id="name" name="name" defaultValue={item?.name} required maxLength={120} placeholder="e.g. Sita K." />
           </Field>
           <Field id="quote" label="Quote">
-            <Textarea id="quote" name="quote" defaultValue={item?.quote} required maxLength={1200} rows={5} />
+            <Textarea id="quote" name="quote" defaultValue={item?.quote} required maxLength={2000} rows={5} />
           </Field>
           <Field id="rating" label="Rating">
             <select id="rating" name="rating" defaultValue={item?.rating ?? 5} className={`${selectClass} w-40`}>
