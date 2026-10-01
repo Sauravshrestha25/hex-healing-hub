@@ -1,4 +1,5 @@
 import { Hero } from "@/features/home/components/hero";
+import { FirstVisit } from "@/features/home/components/first-visit";
 import { Manifesto } from "@/features/home/components/manifesto";
 import { ServicesShowcase } from "@/features/home/components/services-showcase";
 import { Community } from "@/features/about/components/community";
@@ -22,6 +23,7 @@ export default async function Home() {
         <BowlExperience />
       </div>
       <PageMotion>
+        <FirstVisit />
         <Testimonials items={testimonials} />
       </PageMotion>
       <div data-phase="3">
