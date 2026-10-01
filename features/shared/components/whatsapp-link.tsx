@@ -12,13 +12,16 @@ export function WhatsAppIcon({ className = "size-5" }: { className?: string }) {
   );
 }
 
-/** Builds the message for the page being viewed: service and blog pages name what the visitor is reading. */
+/**
+ * Builds the message for the page being viewed: service and blog pages name what the visitor is reading
+ * and link to it (the live domain in production); every other page sends a plain hello.
+ */
 function messageForCurrentPage() {
   const pageUrl = `${window.location.origin}${window.location.pathname}`;
   const title = document.querySelector("main h1")?.textContent?.trim();
   if (title && /^\/services\/[^/]+/.test(window.location.pathname)) return serviceMessage(title, pageUrl);
   if (title && /^\/blog\/[^/]+/.test(window.location.pathname)) return blogMessage(title, pageUrl);
-  return generalMessage(pageUrl);
+  return generalMessage();
 }
 
 /**

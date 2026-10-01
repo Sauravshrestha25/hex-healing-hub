@@ -49,7 +49,7 @@ export function Community() {
                 </div>
                 <span
                   aria-hidden="true"
-                  className="text-xl text-brand-cream transition-transform group-hover:text-brand-purple motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1"
+                  className="text-xl transition-transform motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1"
                 >
                   ↗
                 </span>

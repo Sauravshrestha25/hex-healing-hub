@@ -41,7 +41,7 @@ export function Approach() {
           <ol className="mt-10 grid gap-4">
             {APPROACH.map((item, index) => (
               <li key={item.title} className="card-plain flex gap-5 p-6">
-                <span className="font-heading text-sm text-brand-cream/80">
+                <span className="font-heading text-sm text-lavender">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div>

@@ -64,3 +64,6 @@ export type Testimonial = {
   centre: string | null;
   rating: number;
 };
+
+/** The Pokhara centre on Google Maps: reviews, directions and the map pin. */
+export const GOOGLE_REVIEWS_URL = "https://www.google.com/maps/place/Hex+Healing+Hub+Pokhara/@28.2092232,83.9590324,17z/data=!3m1!4b1!4m6!3m5!1s0x2880b9f3365a216b:0x50a1a90755544b36!8m2!3d28.2092232!4d83.9616073!16s%2Fg%2F11n3xkrlnn";

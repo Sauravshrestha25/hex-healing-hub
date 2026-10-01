@@ -7,8 +7,8 @@ export function AuthShell({ title, description, children }: { title: string; des
     <main className="grid min-h-svh flex-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
       <aside className="relative hidden overflow-hidden bg-brand lg:block">
         <Image src="/images/himalaya.jpg" alt="" fill priority sizes="55vw" className="object-cover opacity-45" />
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/85 to-brand-blue/80" />
-        <div className="relative flex h-full flex-col justify-between p-12 text-white">
+        <div className="absolute inset-0 bg-brand/85" />
+        <div className="relative flex h-full flex-col justify-between p-12 text-brand-cream">
           <div className="flex items-center gap-3">
             <Image src="/images/hex-mark.svg" alt="" width={40} height={40} className="size-10" />
             <span className="font-semibold">HEX Healing Hub</span>
@@ -17,7 +17,7 @@ export function AuthShell({ title, description, children }: { title: string; des
             <p className="text-sm tracking-wider text-brand-gold uppercase">Admin dashboard</p>
             <p className="mt-3 text-3xl leading-tight font-semibold">Manage the website, manage bookings and share new writing.</p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-white/55">
+          <div className="flex items-center gap-2 text-xs text-brand-cream/60">
             <span>Powered by:</span>
             <WebxLogo width={52} height={16} />
           </div>

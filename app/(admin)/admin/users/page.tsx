@@ -67,7 +67,7 @@ export default async function AdminUsersPage() {
                   {viewer.isVerified && !person.isSelf ? (
                     <VerifiedToggle id={person.id} name={person.name} verified={person.isVerified} />
                   ) : person.isVerified ? (
-                    <Pill tone="plum">Verified</Pill>
+                    <Pill tone="sage">Verified</Pill>
                   ) : (
                     <Pill tone="gold">View only</Pill>
                   )}

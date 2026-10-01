@@ -27,7 +27,7 @@ export function ServiceList({ services }: { services: Service[] }) {
             <Link
               key={service.id}
               href={`/services/${service.slug}`}
-              className="rounded-full bg-ivory/5 px-4 py-2 text-sm text-ivory/85 transition-colors hover:bg-brand-cream hover:text-brand-purple"
+              className="rounded-full px-4 py-2 text-sm text-ivory/85 ring-1 ring-inset ring-ivory/25 transition-colors hover:bg-brand-cream hover:text-brand-purple hover:ring-brand-cream"
             >
               {service.title}
             </Link>

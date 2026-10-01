@@ -16,7 +16,7 @@ export function BlogList({ blogs }: { blogs: Blog[] }) {
             <Link href={`/blog/${featured.slug}`} className="card-hover-cream group grid gap-3 p-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:p-4 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="relative min-h-64 overflow-hidden rounded-2xl sm:min-h-96 lg:min-h-[480px]">
                 <Image src={featured.image} alt="" fill preload sizes="(min-width: 1024px) 49vw, 90vw" className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" />
-                                <p className="absolute left-5 top-5 rounded-full border border-brand-cream/25 bg-brand-purple/80 px-4 py-2 text-xs uppercase tracking-[0.2em] text-brand-cream backdrop-blur-sm">Latest Story</p>
+                                <p className="absolute left-5 top-5 rounded-full bg-brand-purple px-4 py-2 text-xs uppercase tracking-[0.2em] text-brand-cream">Latest Story</p>
               </div>
               <div className="flex flex-col justify-center p-4 sm:p-8 lg:p-10">
                 <p className="text-sm text-lavender">{featured.category}</p>

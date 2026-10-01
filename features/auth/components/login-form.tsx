@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/features/auth/components/password-input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/features/auth/server/actions";
 import type { FormState } from "@/features/shared/lib/form-state";
@@ -27,7 +28,7 @@ export function LoginForm({ next }: { next?: string }) {
             Forgot password?
           </Link>
         </div>
-        <Input id="password" name="password" type="password" autoComplete="current-password" required className="h-10" />
+        <PasswordInput id="password" name="password" autoComplete="current-password" required className="h-10" />
       </div>
       {state.error && (
         <p role="alert" className="rounded-lg bg-destructive/8 px-3 py-2 text-sm text-destructive">

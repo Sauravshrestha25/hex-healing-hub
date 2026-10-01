@@ -7,7 +7,7 @@ import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
 
 const fieldClass =
-  "mt-1 w-full min-w-0 rounded-none border-0 border-b border-brand-purple/30 bg-transparent px-0 py-3 text-base text-brand-purple placeholder:text-brand-purple/45 transition-colors focus:border-brand-purple focus:outline-none";
+  "mt-1 w-full min-w-0 rounded-none border-0 border-b border-ivory/30 bg-transparent px-0 py-3 text-base text-ivory placeholder:text-ivory/50 transition-colors focus:border-ivory focus:outline-none [color-scheme:dark] [&_option]:text-brand-purple";
 const labelClass = "block text-sm font-medium text-ivory/90";
 
 export function BookingForm({ services, defaultService, today }: { services: string[]; defaultService?: string; today: string }) {
@@ -99,7 +99,7 @@ export function BookingForm({ services, defaultService, today }: { services: str
           <textarea id="booking-note" name="note" rows={3} placeholder="Questions, first visit, accessibility needs…" className={`${fieldClass} resize-y`} />
         </div>
         {state.status === "error" && (
-          <p role="alert" className="text-sm text-rose-700">{state.message}</p>
+          <p role="alert" className="text-sm text-rose-200">{state.message}</p>
         )}
         <div>
           <button type="submit" disabled={pending} className="btn-gold rounded-full px-7 py-4 text-sm font-medium disabled:opacity-60">

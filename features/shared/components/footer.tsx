@@ -43,7 +43,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex rounded-full bg-ivory/[0.07] px-4 py-2 text-sm text-ivory/85 transition-colors hover:bg-brand-cream hover:text-brand-purple"
+                    className="inline-flex rounded-full px-4 py-2 text-sm text-ivory/85 ring-1 ring-inset ring-ivory/25 transition-colors hover:ring-brand-cream hover:bg-brand-cream hover:text-brand-purple"
                   >
                     {social.label}
                   </a>

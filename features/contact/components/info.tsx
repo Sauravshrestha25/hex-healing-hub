@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CONTACT_EMAIL, LOCATIONS, POKHARA_HOURS } from "@/features/shared/lib/data";
+import { CONTACT_EMAIL, GOOGLE_REVIEWS_URL, LOCATIONS, POKHARA_HOURS } from "@/features/shared/lib/data";
 
 export function ContactInfo() {
   return (
@@ -14,7 +14,7 @@ export function ContactInfo() {
         </a>
       ))}
       <a
-        href="https://www.google.com/maps/search/?api=1&query=Hex+Healing+Hub+Pokhara"
+        href={GOOGLE_REVIEWS_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="card-hover-cream group flex items-center justify-between gap-4 px-6 py-5"

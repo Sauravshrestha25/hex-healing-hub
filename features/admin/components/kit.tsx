@@ -35,12 +35,16 @@ export function Panel({
   );
 }
 
-// Palette only: base purple, Royal Blue and Spiritual Gold at low opacity on white.
+// Muted tones that sit inside the dashboard palette: gold = needs attention, plum = active/in hand,
+// sage = done/live, grey = inactive. (See the admin palette notes in globals.css.)
 const PILL_TONES = {
-  gold: { pill: "bg-brand-gold/15 text-brand ring-brand-gold/60", dot: "bg-brand-gold" },
-  blue: { pill: "bg-brand-blue/8 text-brand-blue ring-brand-blue/25", dot: "bg-brand-blue" },
-  plum: { pill: "bg-brand/8 text-brand ring-brand/20", dot: "bg-brand" },
-  grey: { pill: "bg-transparent text-brand/60 ring-brand/15", dot: "bg-brand/40" },
+  gold: { pill: "bg-brand-gold/15 text-brand ring-brand-gold/55", dot: "bg-brand-gold" },
+  plum: { pill: "bg-brand/[0.07] text-brand ring-brand/20", dot: "bg-brand" },
+  sage: {
+    pill: "bg-[color-mix(in_srgb,var(--admin-sage)_10%,transparent)] text-[var(--admin-sage)] ring-[color-mix(in_srgb,var(--admin-sage)_30%,transparent)]",
+    dot: "bg-[var(--admin-sage)]",
+  },
+  grey: { pill: "bg-transparent text-brand/60 ring-brand/15", dot: "bg-brand/35" },
 } as const;
 
 export type PillTone = keyof typeof PILL_TONES;

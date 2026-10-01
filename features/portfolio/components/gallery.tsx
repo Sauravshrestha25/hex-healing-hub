@@ -59,7 +59,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                   aria-pressed={isActive}
                   onClick={() => setFilter(category)}
                   className={`rounded-full px-5 py-2.5 text-sm transition-colors ${
-                    isActive ? "bg-brand-cream text-brand-purple" : "bg-ivory/[0.07] text-ivory/85 hover:bg-ivory/15"
+                    isActive ? "bg-brand-cream text-brand-purple" : "text-ivory/85 ring-1 ring-inset ring-ivory/25 hover:bg-brand-cream hover:text-brand-purple hover:ring-brand-cream"
                   }`}
                 >
                   {category} <span className={isActive ? "text-brand-purple/60" : "text-lavender"}>{count}</span>
@@ -129,7 +129,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
             type="button"
             onClick={() => dialog.current?.close()}
             aria-label="Close image viewer"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory/10 text-xl transition-colors hover:bg-brand-cream hover:text-brand-purple"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl ring-1 ring-inset ring-ivory/25 transition-colors hover:bg-brand-cream hover:text-brand-purple"
           >
             ×
           </button>

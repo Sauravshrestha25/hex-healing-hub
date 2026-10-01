@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarCheck, Images, Newspaper, Sparkles } from "lucide-react";
 import { cn } from "cn";
 import { Panel } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
@@ -23,31 +23,37 @@ export default async function AdminOverviewPage() {
   const today = new Intl.DateTimeFormat("en", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Kathmandu" }).format(new Date());
 
   const figures = [
-    { label: "New bookings", value: stats.newBookings, href: "/admin/bookings", attention: stats.newBookings > 0 },
-    { label: "Published posts", value: stats.publishedPosts, href: "/admin/blogs", note: stats.draftPosts ? `${stats.draftPosts} draft${stats.draftPosts === 1 ? "" : "s"}` : undefined },
-    { label: "Services", value: stats.services, href: "/admin/services" },
-    { label: "Portfolio photos", value: stats.galleryImages, href: "/admin/portfolio" },
+    { label: "New bookings", value: stats.newBookings, href: "/admin/bookings", icon: CalendarCheck, attention: stats.newBookings > 0 },
+    { label: "Published posts", value: stats.publishedPosts, href: "/admin/blogs", icon: Newspaper, note: stats.draftPosts ? `${stats.draftPosts} draft${stats.draftPosts === 1 ? "" : "s"}` : undefined },
+    { label: "Services", value: stats.services, href: "/admin/services", icon: Sparkles },
+    { label: "Portfolio photos", value: stats.galleryImages, href: "/admin/portfolio", icon: Images },
   ];
 
   return (
     <>
       <PageHeader title="Overview" description={today} />
 
-      <dl className="grid grid-cols-2 overflow-hidden rounded-lg border bg-card lg:grid-cols-4">
-        {figures.map((figure, index) => (
+      <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {figures.map(({ icon: Icon, ...figure }) => (
           <Link
             key={figure.label}
             href={figure.href}
-            className={cn(
-              "flex flex-col gap-1 border-border p-5 transition-colors hover:bg-muted/50",
-              index % 2 === 1 && "border-l",
-              index >= 2 && "border-t lg:border-t-0",
-              index === 2 && "lg:border-l",
-            )}
+            className="group flex flex-col rounded-xl border bg-card p-5 transition-colors hover:border-brand/25 hover:bg-accent/40"
           >
-            <dt className="text-sm text-muted-foreground">{figure.label}</dt>
-            <dd className={cn("text-3xl font-semibold tabular-nums", figure.attention && "text-brand underline decoration-brand-gold decoration-4 underline-offset-8")}>{figure.value}</dd>
-            {figure.note && <dd className="text-xs text-muted-foreground">{figure.note}</dd>}
+            <div className="flex items-start justify-between gap-3">
+              <dt className="text-sm text-muted-foreground">{figure.label}</dt>
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-accent text-brand transition-colors group-hover:bg-brand group-hover:text-brand-cream">
+                <Icon className="size-4" aria-hidden="true" />
+              </span>
+            </div>
+            <dd className="mt-3 text-3xl font-semibold tracking-tight tabular-nums">{figure.value}</dd>
+            {figure.attention ? (
+              <dd className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-brand">
+                <span className="size-1.5 rounded-full bg-brand-gold" aria-hidden="true" /> To review
+              </dd>
+            ) : (
+              figure.note && <dd className="mt-1 text-xs text-muted-foreground">{figure.note}</dd>
+            )}
           </Link>
         ))}
       </dl>

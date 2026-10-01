@@ -48,11 +48,11 @@ export function AdminSidebar({ newBookings }: { newBookings: number }) {
     <Sidebar collapsible="icon">
       <SidebarHeader className="px-3 pt-4 pb-2">
         <Link href="/admin" className="flex items-center gap-2.5 rounded-lg px-1 py-1">
-          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white/[0.07] ring-1 ring-white/10">
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand-cream/[0.08] ring-1 ring-brand-cream/15">
             <Image src="/images/hex-mark.svg" alt="" width={24} height={24} className="size-6" />
           </span>
           <span className="grid leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="truncate text-sm font-semibold text-white">HEX Healing Hub</span>
+            <span className="truncate text-sm font-semibold text-brand-cream">HEX Healing Hub</span>
             <span className="truncate text-[11px] tracking-wide text-sidebar-primary/90 uppercase">Admin</span>
           </span>
         </Link>
@@ -76,15 +76,9 @@ export function AdminSidebar({ newBookings }: { newBookings: number }) {
                         isActive={active}
                         tooltip={label}
                         render={<Link href={href} />}
-                        className="relative h-9 text-sidebar-foreground/80 hover:text-white data-active:bg-sidebar-accent data-active:font-medium data-active:text-white"
+                        className="relative h-9 text-sidebar-foreground hover:text-brand-cream data-active:bg-[var(--sidebar-active)] data-active:font-medium data-active:text-brand-purple data-active:hover:text-brand-purple"
                       >
-                        {active && (
-                          <span
-                            aria-hidden="true"
-                            className="absolute top-1.5 bottom-1.5 left-0 w-[3px] rounded-full bg-sidebar-primary group-data-[collapsible=icon]:hidden"
-                          />
-                        )}
-                        <Icon className={active ? "text-sidebar-primary" : undefined} />
+                        <Icon />
                         <span>{label}</span>
                       </SidebarMenuButton>
                       {href === "/admin/bookings" && newBookings > 0 && (
@@ -102,7 +96,7 @@ export function AdminSidebar({ newBookings }: { newBookings: number }) {
       </SidebarContent>
 
       <SidebarFooter className="px-4 pb-4 group-data-[collapsible=icon]:hidden">
-        <div className="flex items-center gap-2 border-t border-white/10 pt-4 text-xs text-sidebar-foreground/55">
+        <div className="flex items-center gap-2 border-t border-sidebar-border pt-4 text-xs text-sidebar-foreground/55">
           <span>Powered by:</span>
           <WebxLogo width={52} height={16} />
         </div>

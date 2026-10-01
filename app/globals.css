@@ -4,10 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Palette (Brand Guidelines v1.0 section 4, with the base purple updated to #330c36).
-   Lighter or darker shades are one of these at an opacity, never a new colour. */
+/* Palette (Brand Guidelines v1.0 section 4, with the base purple set to #330b36).
+   Surfaces use these colours exactly (no mixed "in-between" purples); lighter text and hairlines
+   are one of these at an opacity. */
 :root {
-  --brand-purple: #330c36; /* base purple: primary background */
+  --brand-purple: #330b36; /* base purple: primary background, used exactly everywhere */
   --brand-blue: #243b8f; /* Royal Blue: gradient / digital background */
   --brand-gold: #d4af37; /* Spiritual Gold: logo accents, borders, headings (accent only) */
   --brand-white: #ffffff; /* White: body text */
@@ -33,7 +34,6 @@
   --accent-soft: color-mix(in srgb, var(--brand-gold) 18%, transparent);
 
   --button-bg: var(--brand-cream);
-  --button-bg-hover: color-mix(in srgb, var(--brand-cream) 82%, var(--brand-white));
   --button-fg: var(--brand-purple);
 }
 
@@ -46,14 +46,13 @@
 .on-cream {
   color: var(--brand-purple);
   --ink: var(--brand-cream);
-  --purple: color-mix(in srgb, var(--brand-purple) 8%, var(--brand-cream));
+  --purple: var(--brand-purple);
   --ivory: var(--brand-purple);
   --lavender: color-mix(in srgb, var(--brand-purple) 75%, transparent);
   --gold: var(--brand-purple);
   --gold-light: var(--brand-purple);
   --gold-deep: var(--brand-purple);
   --button-bg: var(--brand-purple);
-  --button-bg-hover: color-mix(in srgb, var(--brand-purple) 85%, var(--brand-white));
   --button-fg: var(--brand-cream);
 }
 
@@ -180,10 +179,16 @@
 .btn-gold {
   background: var(--button-bg);
   color: var(--button-fg);
-  transition: background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+/* Hover keeps the exact colour and adds a soft halo of it, instead of a lighter, made-up shade. */
 .btn-gold:hover {
-  background: var(--button-bg-hover);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-bg) 22%, transparent);
+}
+.btn-gold:active {
+  transform: translateY(1px);
 }
 .btn-gold:focus-visible {
   outline: 2px solid var(--gold);
@@ -212,33 +217,52 @@
   --text-sm--line-height: 1.6;
 }
 
-/* Plain cards: a soft fill, rounded, no borders. `card-hover-cream` also fills with cream on hover,
-   and everything inside (text, accents) flips to purple through the colour variables. */
+/* Cards always take the opposite surface, in exact brand colours:
+   on the purple site they are solid cream with purple text; on cream sections, solid purple with
+   cream text. Everything inside flips through the colour variables. Interactive cards lift on hover. */
 .card-plain,
 .card-hover-cream {
-  background: color-mix(in srgb, var(--ivory) 6%, transparent);
   border-radius: 1.25rem;
-}
-.card-hover-cream {
-  transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.card-hover-cream:hover,
-.card-hover-cream:focus-within {
   background: var(--brand-cream);
   color: var(--brand-purple);
+  --ink: var(--brand-cream);
+  --purple: var(--brand-purple);
   --ivory: var(--brand-purple);
   --lavender: color-mix(in srgb, var(--brand-purple) 75%, transparent);
   --gold: var(--brand-purple);
   --gold-light: var(--brand-purple);
+  --gold-deep: var(--brand-purple);
+  --button-bg: var(--brand-purple);
+  --button-fg: var(--brand-cream);
 }
-/* On cream sections: a light purple tint instead (cream on cream would vanish). */
 .section-cream .card-plain,
 .section-cream .card-hover-cream {
-  background: color-mix(in srgb, var(--brand-purple) 6%, var(--brand-cream));
+  background: var(--brand-purple);
+  color: var(--brand-cream);
+  --ink: var(--brand-purple);
+  --ivory: var(--brand-cream);
+  --lavender: color-mix(in srgb, var(--brand-cream) 78%, transparent);
+  --gold: var(--brand-cream);
+  --gold-light: var(--brand-cream);
+  --gold-deep: var(--brand-cream);
+  --button-bg: var(--brand-cream);
+  --button-fg: var(--brand-purple);
 }
-.section-cream .card-hover-cream:hover,
-.section-cream .card-hover-cream:focus-within {
-  background: color-mix(in srgb, var(--brand-purple) 12%, var(--brand-cream));
+.card-hover-cream {
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover-cream:hover,
+.card-hover-cream:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px -26px rgb(0 0 0 / 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-hover-cream:hover,
+  .card-hover-cream:focus-within {
+    transform: none;
+  }
 }
 
 .hairline-gold {
@@ -330,50 +354,53 @@
   --radius: 0.625rem;
 }
 :root:has(.admin-theme) {
-  /* Dashboard: white surfaces, base purple text and chrome, Royal Blue for secondary emphasis,
-     Spiritual Gold as the accent/focus colour. */
-  --background: var(--brand-white);
+  /*
+   * Dashboard palette, 60-30-10 on the brand's own hues (no Royal Blue):
+   *   60% warm neutral: a white washed with brand cream, so the dashboard shares the site's warmth;
+   *        cards stay pure white and lift off it (figure/ground) without heavy borders or shadows.
+   *   30% plum: sidebar, text, primary actions. Hover/active states are lighter tints of the same plum
+   *        (tonal, one hue family) instead of a competing hue.
+   *   10% gold: small signals only (active marker, "new" dots, attention), never large fills.
+   * Status colours are muted so they sit inside the palette; red stays saturated for danger only.
+   */
+  --admin-canvas: color-mix(in srgb, var(--brand-cream) 24%, var(--brand-white));
+  --admin-sage: #4f7a5f;
+
+  --background: var(--admin-canvas);
   --foreground: var(--brand-purple);
   --card: var(--brand-white);
   --card-foreground: var(--brand-purple);
   --popover: var(--brand-white);
   --popover-foreground: var(--brand-purple);
   --primary: var(--brand-purple);
-  --primary-foreground: var(--brand-white);
-  --secondary: color-mix(in srgb, var(--brand-purple) 5%, var(--brand-white));
+  --primary-foreground: var(--brand-cream);
+  --secondary: color-mix(in srgb, var(--brand-cream) 45%, var(--brand-white));
   --secondary-foreground: var(--brand-purple);
-  --muted: color-mix(in srgb, var(--brand-purple) 4%, var(--brand-white));
-  --muted-foreground: color-mix(
-    in srgb,
-    var(--brand-purple) 62%,
-    var(--brand-white)
-  );
-  --accent: color-mix(in srgb, var(--brand-purple) 7%, var(--brand-white));
+  --muted: color-mix(in srgb, var(--brand-cream) 30%, var(--brand-white));
+  --muted-foreground: color-mix(in srgb, var(--brand-purple) 64%, var(--brand-white));
+  /* Hover surfaces (menu items, ghost buttons, list rows): a cream wash, not a lavender tint. */
+  --accent: color-mix(in srgb, var(--brand-cream) 55%, var(--brand-white));
   --accent-foreground: var(--brand-purple);
   /* Not a palette colour: kept only for delete buttons and error messages, so danger stays unmistakable. */
   --destructive: #c62828;
-  --border: color-mix(in srgb, var(--brand-purple) 13%, var(--brand-white));
+  --border: color-mix(in srgb, var(--brand-purple) 11%, var(--admin-canvas));
   --input: color-mix(in srgb, var(--brand-purple) 20%, var(--brand-white));
-  --ring: var(--brand-gold);
+  /* Focus ring: plum reads on white and cream (gold alone is too faint on light surfaces). */
+  --ring: color-mix(in srgb, var(--brand-purple) 55%, var(--brand-white));
   --radius: 0.75rem;
 
   --brand: var(--brand-purple);
 
   --sidebar: var(--brand-purple);
-  --sidebar-foreground: color-mix(
-    in srgb,
-    var(--brand-white) 78%,
-    var(--brand-purple)
-  );
+  --sidebar-foreground: color-mix(in srgb, var(--brand-cream) 72%, var(--brand-purple));
   --sidebar-primary: var(--brand-gold);
   --sidebar-primary-foreground: var(--brand-purple);
-  --sidebar-accent: var(--brand-blue);
-  --sidebar-accent-foreground: var(--brand-white);
-  --sidebar-border: color-mix(
-    in srgb,
-    var(--brand-white) 12%,
-    var(--brand-purple)
-  );
+  /* Exact colours only: hover keeps the purple and brightens the text to cream; the active item is
+     a cream pill with purple text (the same pairing as the site's buttons). */
+  --sidebar-accent: var(--brand-purple);
+  --sidebar-accent-foreground: var(--brand-cream);
+  --sidebar-active: var(--brand-cream);
+  --sidebar-border: color-mix(in srgb, var(--brand-cream) 12%, var(--brand-purple));
   --sidebar-ring: var(--brand-gold);
   --font-body: var(--font-geist);
   --font-display: var(--font-geist);

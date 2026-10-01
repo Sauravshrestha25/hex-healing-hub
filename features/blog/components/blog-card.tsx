@@ -9,7 +9,7 @@ export function BlogCard({ blog }: { blog: Blog }) {
       <Link href={`/blog/${blog.slug}`} className="card-hover-cream group flex h-full flex-col p-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">
         <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-purple">
           <Image src={blog.image} alt="" fill sizes="(min-width: 768px) 43vw, 90vw" className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" />
-          <span className="absolute bottom-4 left-4 rounded-full border border-brand-cream/25 bg-brand-purple/80 px-3 py-1.5 text-xs uppercase tracking-[0.15em] text-brand-cream backdrop-blur-sm">{blog.category}</span>
+          <span className="absolute bottom-4 left-4 rounded-full bg-brand-purple px-3 py-1.5 text-xs uppercase tracking-[0.15em] text-brand-cream">{blog.category}</span>
         </div>
         <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 px-3 text-sm text-lavender">
           {blog.publishedAt && <time dateTime={blog.publishedAt}>{formatBlogDate(blog.publishedAt)}</time>}

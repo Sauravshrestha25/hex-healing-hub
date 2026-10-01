@@ -44,7 +44,7 @@ export function NavBar() {
     ? "bg-transparent"
     : hasDarkBackground
       ? scrolled
-        ? "bg-ink/80 backdrop-blur-md border-b border-gold/15"
+        ? "bg-brand-purple border-b border-brand-cream/10"
         : "bg-transparent"
       : "bg-background/90 backdrop-blur border-b border-border";
 

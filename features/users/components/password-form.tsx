@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/features/auth/components/password-input";
 import { Field } from "@/features/admin/components/form-bits";
 import { MIN_PASSWORD_LENGTH } from "@/features/auth/lib/password-policy";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
@@ -23,14 +23,14 @@ export function PasswordForm() {
   return (
     <form ref={form} action={formAction} onSubmit={onSubmit} className="grid gap-5">
       <Field id="currentPassword" label="Current password">
-        <Input id="currentPassword" name="currentPassword" type="password" required autoComplete="current-password" />
+        <PasswordInput id="currentPassword" name="currentPassword" required autoComplete="current-password" />
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="newPassword" label="New password" hint={`At least ${MIN_PASSWORD_LENGTH} characters.`}>
-          <Input id="newPassword" name="newPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} maxLength={200} autoComplete="new-password" />
+          <PasswordInput id="newPassword" name="newPassword" required minLength={MIN_PASSWORD_LENGTH} maxLength={200} autoComplete="new-password" />
         </Field>
         <Field id="confirmPassword" label="Confirm new password">
-          <Input id="confirmPassword" name="confirmPassword" type="password" required maxLength={200} autoComplete="new-password" />
+          <PasswordInput id="confirmPassword" name="confirmPassword" required maxLength={200} autoComplete="new-password" />
         </Field>
       </div>
       <div className="flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">

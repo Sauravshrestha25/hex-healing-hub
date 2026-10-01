@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/features/auth/components/password-input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Field, FormActions, FormSection } from "@/features/admin/components/form-bits";
@@ -32,7 +33,7 @@ export function UserForm() {
 
       <FormSection title="Sign-in" description="Share the password with them privately. They can change it from their account page.">
         <Field id="password" label="Password" hint={`At least ${MIN_PASSWORD_LENGTH} characters.`}>
-          <Input id="password" name="password" type="password" required minLength={MIN_PASSWORD_LENGTH} maxLength={200} autoComplete="new-password" />
+          <PasswordInput id="password" name="password" required minLength={MIN_PASSWORD_LENGTH} maxLength={200} autoComplete="new-password" />
         </Field>
       </FormSection>
 
