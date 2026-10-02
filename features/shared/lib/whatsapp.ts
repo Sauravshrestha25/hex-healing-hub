@@ -1,5 +1,5 @@
 /** The business WhatsApp line (Nepal, +977). Every WhatsApp button on the site opens a chat here. */
-export const WHATSAPP_NUMBER = "9779867187726";
+export const WHATSAPP_NUMBER = "9779705223335";
 
 /**
  * wa.me link with a prefilled message. `to` defaults to the business line; pass a visitor's number
