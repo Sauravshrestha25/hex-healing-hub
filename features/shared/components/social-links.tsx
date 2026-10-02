@@ -13,6 +13,12 @@ const ICONS: Record<Network, React.ReactNode> = {
     </>
   ),
   TikTok: <path d="M9 12a4 4 0 1 0 4 4V3a5 5 0 0 0 5 5" />,
+  YouTube: (
+    <>
+      <rect x="2" y="5" width="20" height="14" rx="4" />
+      <path d="M10 9.5v5l4.5-2.5z" fill="currentColor" stroke="none" />
+    </>
+  ),
 };
 
 /** Round icon buttons for the centre's social profiles. */
