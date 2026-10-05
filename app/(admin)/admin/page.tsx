@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   CalendarClock,
   CalendarDays,
+  HeartHandshake,
   ImagePlus,
   Images,
   MapPin,
@@ -26,6 +27,7 @@ import { container } from "@/features/shared/server/container";
 export const metadata = { title: "Overview" };
 
 const QUICK_ACTIONS: { href: string; label: string; hint: string; icon: LucideIcon }[] = [
+  { href: "/admin/healers/new", label: "Add a healer", hint: "Profile, prices and hours", icon: HeartHandshake },
   { href: "/admin/blogs/new", label: "Write a post", hint: "Share a new reflection", icon: PenLine },
   { href: "/admin/portfolio/new", label: "Add a photo", hint: "Grow the portfolio", icon: ImagePlus },
   { href: "/admin/services/new", label: "Add a service", hint: "Offer something new", icon: Sparkles },

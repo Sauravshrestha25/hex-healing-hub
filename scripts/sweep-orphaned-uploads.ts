@@ -36,13 +36,14 @@ const s3 = new S3Client({
 });
 const db = new PrismaClient({ datasourceUrl: requireDatabaseUrl() });
 
-/** Object keys that some blog, service, portfolio item or testimonial points at. */
+/** Object keys that some blog, service, portfolio item, testimonial or healer points at. */
 async function referencedKeys() {
-  const [blogs, services, gallery, testimonials] = await Promise.all([
+  const [blogs, services, gallery, testimonials, healers] = await Promise.all([
     db.blog.findMany({ select: { coverImage: true, content: true } }),
     db.service.findMany({ select: { image: true, content: true } }),
     db.galleryItem.findMany({ select: { image: true } }),
     db.testimonial.findMany({ select: { photo: true } }),
+    db.healer.findMany({ select: { photo: true } }),
   ]);
   // Guard against an empty or wrong database, which would make every file look unused.
   if (blogs.length + services.length + gallery.length === 0) {
@@ -53,6 +54,7 @@ async function referencedKeys() {
     ...services.flatMap((s) => [s.image, ...imagesInHtml(s.content)]),
     ...gallery.map((g) => g.image),
     ...testimonials.flatMap((t) => (t.photo ? [t.photo] : [])),
+    ...healers.flatMap((h) => (h.photo ? [h.photo] : [])),
   ];
   return new Set(
     urls

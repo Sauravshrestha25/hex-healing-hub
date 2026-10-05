@@ -8,7 +8,7 @@ import { saveTestimonial } from "@/features/admin/server/testimonials";
 import { LOCATIONS } from "@/features/shared/lib/data";
 import type { FormState } from "@/features/shared/lib/form-state";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
-import { Field, FormActions, FormSection } from "./form-bits";
+import { FORM_SECTIONS, Field, FormActions, FormSection } from "./form-bits";
 import { ImageUploadField } from "./image-upload-field";
 
 type TestimonialValues = {
@@ -18,6 +18,7 @@ type TestimonialValues = {
   photo: string | null;
   service: string | null;
   centre: string | null;
+  healerId: string | null;
   rating: number;
   published: boolean;
   order: number;
@@ -27,7 +28,17 @@ type TestimonialValues = {
 const selectClass =
   "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 md:text-sm";
 
-export function TestimonialForm({ item, services, readOnly }: { item?: TestimonialValues; services: string[]; readOnly?: boolean }) {
+export function TestimonialForm({
+  item,
+  services,
+  healers,
+  readOnly,
+}: {
+  item?: TestimonialValues;
+  services: string[];
+  healers: { id: string; name: string }[];
+  readOnly?: boolean;
+}) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(saveTestimonial, {});
   const onSubmit = usePreservingSubmit(formAction);
   // Keep a service that was renamed or removed selectable, so saving doesn't silently drop it.
@@ -36,7 +47,7 @@ export function TestimonialForm({ item, services, readOnly }: { item?: Testimoni
   return (
     <form action={formAction} onSubmit={onSubmit}>
       {item && <input type="hidden" name="id" value={item.id} />}
-      <fieldset disabled={readOnly} className="grid min-w-0 gap-8">
+      <fieldset disabled={readOnly} className={FORM_SECTIONS}>
         <FormSection title="Testimonial" description="What they said, in their words.">
           <Field id="name" label="Name">
             <Input id="name" name="name" defaultValue={item?.name} required maxLength={120} placeholder="e.g. Sita K." />
@@ -82,6 +93,18 @@ export function TestimonialForm({ item, services, readOnly }: { item?: Testimoni
               </select>
             </Field>
           </div>
+          {healers.length > 0 && (
+            <Field id="healerId" label="Healer" hint="If this review is about one healer, it shows on their profile and counts towards their rating.">
+              <select id="healerId" name="healerId" defaultValue={item?.healerId ?? ""} className={`${selectClass} sm:max-w-xs`}>
+                <option value="">Not about a specific healer</option>
+                {healers.map((healer) => (
+                  <option key={healer.id} value={healer.id}>
+                    {healer.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          )}
           <Field id="order" label="Display order" hint="Lower numbers appear first.">
             <Input id="order" name="order" type="number" min={0} max={999} defaultValue={item?.order ?? 0} className="w-28" />
           </Field>

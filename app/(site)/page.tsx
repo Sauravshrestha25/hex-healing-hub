@@ -5,11 +5,12 @@ import { ServicesShowcase } from "@/features/home/components/services-showcase";
 import { Community } from "@/features/about/components/community";
 import { BowlExperience } from "@/features/home/components/bowl-experience";
 import { PageMotion } from "@/features/shared/components/page-motion";
-import { getServices, getTestimonials } from "@/features/content/server/queries";
+import { getHealers, getServices, getTestimonials } from "@/features/content/server/queries";
+import { HealersPreview } from "@/features/home/components/healers-preview";
 import { Testimonials } from "@/features/shared/components/testimonials";
 
 export default async function Home() {
-  const [services, testimonials] = await Promise.all([getServices(), getTestimonials()]);
+  const [services, testimonials, healers] = await Promise.all([getServices(), getTestimonials(), getHealers()]);
   return (
     <>
       <Hero />
@@ -23,6 +24,7 @@ export default async function Home() {
         <BowlExperience />
       </div>
       <PageMotion>
+        <HealersPreview healers={healers} />
         <FirstVisit />
         <Testimonials items={testimonials} />
       </PageMotion>

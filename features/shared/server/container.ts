@@ -13,6 +13,7 @@ import { GalleryService } from "@/features/content/server/gallery.service";
 import { ImageJanitor } from "@/features/content/server/image-janitor.service";
 import { ServiceCatalogService } from "@/features/content/server/service-catalog.service";
 import { TestimonialService } from "@/features/content/server/testimonial.service";
+import { HealerService } from "@/features/healers/server/healer.service";
 import { UserService } from "@/features/users/server/user.service";
 import { getDb } from "./db";
 import { MemoryRateLimiter, RedisRateLimiter } from "./rate-limiter";
@@ -41,6 +42,7 @@ function createContainer() {
     gallery: new GalleryService(db, images),
     passwordResets: new PasswordResetService(db, hasher, mailer, limiter("password-reset", 5, 60 * 60 * 1000), siteUrl),
     testimonials: new TestimonialService(db, images),
+    healers: new HealerService(db, images),
     // INQUIRY_NOTIFY_TO kept from the contact-form days so existing deployments keep their setting.
     bookings: new BookingService(
       db,

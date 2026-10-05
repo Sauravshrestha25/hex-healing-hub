@@ -10,6 +10,7 @@ const EXPLORE = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/services", label: "Services" },
+  { href: "/healers", label: "Our Healers" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/blog", label: "Blogs" },
   { href: "/book", label: "Book a Session" },

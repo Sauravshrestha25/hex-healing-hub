@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { cn } from "cn";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
@@ -13,15 +14,34 @@ export function Field({ id, label, hint, children }: { id: string; label: string
   );
 }
 
-/** A titled group of fields: heading on the left on wide screens, fields in a card on the right. */
-export function FormSection({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
+/**
+ * Layout for a form's sections: one column, flowing into two on wide screens so the fields use the
+ * width and long forms stay short. Put FormSections directly inside an element with this class.
+ */
+export const FORM_SECTIONS = "min-w-0 xl:columns-2 xl:gap-6";
+
+/**
+ * A titled group of fields: a card with a slim header (title, optional one-line hint) above the
+ * fields. `wide` makes it span both columns (rich-text editors and other wide content).
+ */
+export function FormSection({
+  title,
+  description,
+  wide,
+  children,
+}: {
+  title: string;
+  description?: string;
+  wide?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <section className="grid gap-4 border-b pb-8 last-of-type:border-0 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
-      <div>
+    <section className={cn("mb-6 break-inside-avoid rounded-xl border bg-card", wide && "xl:[column-span:all]")}>
+      <header className="border-b px-5 py-3.5 sm:px-6">
         <h2 className="text-sm font-semibold">{title}</h2>
-        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
-      </div>
-      <div className="grid gap-5 rounded-xl border bg-card p-5 sm:p-6">{children}</div>
+        {description && <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>}
+      </header>
+      <div className="grid gap-5 p-5 sm:p-6">{children}</div>
     </section>
   );
 }

@@ -8,11 +8,12 @@ export const metadata = { title: "Add testimonial" };
 
 export default async function NewTestimonialPage() {
   if (!(await getViewer()).isVerified) redirect("/admin/testimonials");
-  const services = (await container().services.list()).map((service) => service.title);
+  const { services: catalog, healers } = container();
+  const [services, healerNames] = await Promise.all([catalog.list().then((list) => list.map((service) => service.title)), healers.listNames()]);
   return (
     <>
       <PageHeader title="Add testimonial" back={{ href: "/admin/testimonials", label: "Testimonials" }} />
-      <TestimonialForm services={services} />
+      <TestimonialForm services={services} healers={healerNames} />
     </>
   );
 }

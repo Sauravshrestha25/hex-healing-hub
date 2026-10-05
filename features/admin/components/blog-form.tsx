@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { saveBlog } from "@/features/admin/server/blogs";
 import type { FormState } from "@/features/shared/lib/form-state";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
-import { Field, FormActions, FormSection } from "./form-bits";
+import { FORM_SECTIONS, Field, FormActions, FormSection } from "./form-bits";
 import { ImageUploadField } from "./image-upload-field";
 import { RichTextEditor } from "./rich-text-editor";
 import { TitleSlugFields } from "./title-slug-fields";
@@ -31,7 +31,7 @@ export function BlogForm({ blog, readOnly }: { blog?: BlogValues; readOnly?: boo
   return (
     <form action={formAction} onSubmit={onSubmit}>
       {blog && <input type="hidden" name="id" value={blog.id} />}
-      <fieldset disabled={readOnly} className="grid min-w-0 gap-8">
+      <fieldset disabled={readOnly} className={FORM_SECTIONS}>
         <FormSection title="Basics" description="The title, where it lives and how it's listed.">
           <TitleSlugFields defaultTitle={blog?.title} defaultSlug={blog?.slug} pathPrefix="/blog/" titleMaxLength={200} />
           <Field id="category" label="Category" hint="e.g. Mindfulness, Healing practices">
@@ -46,7 +46,7 @@ export function BlogForm({ blog, readOnly }: { blog?: BlogValues; readOnly?: boo
           <ImageUploadField name="coverImage" label="Cover image" defaultValue={blog?.coverImage} aspect="aspect-video" readOnly={readOnly} />
         </FormSection>
 
-        <FormSection title="Article" description="Use headings to break up longer posts. Images upload as you add them.">
+        <FormSection wide title="Article" description="Use headings to break up longer posts. Images upload as you add them.">
           <RichTextEditor name="content" defaultValue={blog?.content} readOnly={readOnly} />
         </FormSection>
 

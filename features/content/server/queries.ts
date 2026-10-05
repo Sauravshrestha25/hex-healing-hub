@@ -26,6 +26,21 @@ export async function getTestimonials() {
   return container().testimonials.listPublished();
 }
 
+export async function getHealers() {
+  await connection();
+  return container().healers.listPublished();
+}
+
+export async function getHealersForService(serviceId: string) {
+  await connection();
+  return container().healers.listForService(serviceId);
+}
+
+export const getHealer = cache(async (slug: string) => {
+  await connection();
+  return container().healers.findPublishedBySlug(slug);
+});
+
 // cache(): generateMetadata and the page share one query per request.
 export const getService = cache(async (slug: string) => {
   await connection();

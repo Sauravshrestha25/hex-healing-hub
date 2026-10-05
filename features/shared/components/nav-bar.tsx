@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/services", label: "Services" },
+  { href: "/healers", label: "Healers" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/blog", label: "Blogs" },
   { href: "/contact", label: "Contact" },
@@ -17,7 +18,7 @@ const LINKS = [
 
 export function NavBar() {
   const pathname = usePathname();
-  const hasDarkBackground = ["/", "/about", "/services", "/portfolio", "/contact", "/blog", "/book"].includes(pathname) || pathname.startsWith("/blog/") || pathname.startsWith("/services/");
+  const hasDarkBackground = ["/", "/about", "/services", "/portfolio", "/contact", "/blog", "/book"].includes(pathname) || pathname.startsWith("/blog/") || pathname.startsWith("/services/") || pathname.startsWith("/healers");
   const [scrolled, setScrolled] = useState(false);
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
   const [open, setOpen] = useState(false);

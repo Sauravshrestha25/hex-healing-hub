@@ -14,11 +14,16 @@ export function TitleSlugFields({
   defaultSlug = "",
   pathPrefix,
   titleMaxLength,
+  titleName = "title",
+  titleLabel = "Title",
 }: {
   defaultTitle?: string;
   defaultSlug?: string;
   pathPrefix: string;
   titleMaxLength: number;
+  /** Form field name and label for the title input (e.g. "name" / "Name" for people). */
+  titleName?: string;
+  titleLabel?: string;
 }) {
   const [title, setTitle] = useState(defaultTitle);
   // Existing items keep their URL (changing it would break links to them); only new ones follow the title.
@@ -27,10 +32,10 @@ export function TitleSlugFields({
 
   return (
     <>
-      <Field id="title" label="Title">
+      <Field id={titleName} label={titleLabel}>
         <Input
-          id="title"
-          name="title"
+          id={titleName}
+          name={titleName}
           value={title}
           required
           maxLength={titleMaxLength}
@@ -46,9 +51,9 @@ export function TitleSlugFields({
         hint={
           custom
             ? defaultSlug && slug === defaultSlug
-              ? "Changing this breaks existing links to the page. Clear it to follow the title."
-              : "Custom URL. Clear it to follow the title again."
-            : "Filled in from the title. Edit it to set your own."
+              ? `Changing this breaks existing links to the page. Clear it to follow the ${titleLabel.toLowerCase()}.`
+              : `Custom URL. Clear it to follow the ${titleLabel.toLowerCase()} again.`
+            : `Filled in from the ${titleLabel.toLowerCase()}. Edit it to set your own.`
         }
       >
         <div className="flex h-9 items-center overflow-hidden rounded-lg border border-input bg-transparent shadow-xs focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { saveGalleryItem } from "@/features/admin/server/gallery";
 import type { FormState } from "@/features/shared/lib/form-state";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
-import { Field, FormActions, FormSection } from "./form-bits";
+import { FORM_SECTIONS, Field, FormActions, FormSection } from "./form-bits";
 import { ImageUploadField } from "./image-upload-field";
 
 type GalleryValues = { id: string; image: string; title: string; category: string; alt: string; order: number };
@@ -17,7 +17,7 @@ export function GalleryForm({ item, readOnly }: { item?: GalleryValues; readOnly
   return (
     <form action={formAction} onSubmit={onSubmit}>
       {item && <input type="hidden" name="id" value={item.id} />}
-      <fieldset disabled={readOnly} className="grid min-w-0 gap-8">
+      <fieldset disabled={readOnly} className={FORM_SECTIONS}>
         <FormSection title="Photo" description="Portrait or square photos look best on the Portfolio page.">
           <div className="max-w-sm">
             <ImageUploadField name="image" label="Image" defaultValue={item?.image} aspect="aspect-[4/5]" readOnly={readOnly} />

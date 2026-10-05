@@ -21,6 +21,12 @@ export function BookingForm({ services, defaultService, today }: { services: str
         <p className="mt-4 max-w-lg text-base leading-relaxed text-lavender">
           We&apos;ll call or message you soon to confirm your session. Want a quicker reply? Send us your booking on WhatsApp.
         </p>
+        {state.reference && (
+          <p className="mt-6 text-base">
+            <span className="text-lavender">Booking reference: </span>
+            <span className="font-heading text-xl tracking-wide">{state.reference}</span>
+          </p>
+        )}
         {state.whatsapp && (
           <a href={state.whatsapp} target="_blank" rel="noopener noreferrer" className="btn-gold mt-8 inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-medium">
             <WhatsAppIcon /> Message us on WhatsApp

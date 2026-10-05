@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { saveService } from "@/features/admin/server/services";
 import type { FormState } from "@/features/shared/lib/form-state";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
-import { Field, FormActions, FormSection } from "./form-bits";
+import { FORM_SECTIONS, Field, FormActions, FormSection } from "./form-bits";
 import { ImageUploadField } from "./image-upload-field";
 import { RichTextEditor } from "./rich-text-editor";
 import { TitleSlugFields } from "./title-slug-fields";
@@ -20,7 +20,7 @@ export function ServiceForm({ service, readOnly }: { service?: ServiceValues; re
   return (
     <form action={formAction} onSubmit={onSubmit}>
       {service && <input type="hidden" name="id" value={service.id} />}
-      <fieldset disabled={readOnly} className="grid min-w-0 gap-8">
+      <fieldset disabled={readOnly} className={FORM_SECTIONS}>
         <FormSection title="Details" description="How the service appears on the homepage and Services page.">
           <TitleSlugFields defaultTitle={service?.title} defaultSlug={service?.slug} pathPrefix="/services/" titleMaxLength={120} />
           <Field id="description" label="Summary" hint="Two or three sentences, shown on the homepage, the Services list and at the top of the service's page.">
@@ -33,7 +33,7 @@ export function ServiceForm({ service, readOnly }: { service?: ServiceValues; re
         <FormSection title="Image">
           <ImageUploadField name="image" label="Image" defaultValue={service?.image} aspect="aspect-[16/10]" readOnly={readOnly} />
         </FormSection>
-        <FormSection title="Page content" description="The full write-up on the service's own page: what it is, what a session looks like, who it helps.">
+        <FormSection wide title="Page content" description="The full write-up on the service's own page: what it is, what a session looks like, who it helps.">
           <RichTextEditor name="content" defaultValue={service?.content} readOnly={readOnly} />
         </FormSection>
       </fieldset>

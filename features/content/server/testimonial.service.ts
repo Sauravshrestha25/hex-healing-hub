@@ -14,6 +14,7 @@ const testimonialSchema = z.object({
   photo: z.union([z.literal("").transform(() => null), imageField]).optional().transform((v) => v ?? null),
   service: optional(120),
   centre: optional(40).refine((v) => v === null || LOCATIONS.some((l) => l.city === v), "Choose one of the centres."),
+  healerId: optional(40),
   rating: z.coerce.number().int().min(1, "Rating is 1 to 5 stars.").max(5, "Rating is 1 to 5 stars.").default(5),
   // Checkbox: present ("on") when ticked, absent otherwise.
   published: z.preprocess((v) => v === "on" || v === "true", z.boolean()),

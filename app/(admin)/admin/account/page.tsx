@@ -1,4 +1,4 @@
-import { FormSection } from "@/features/admin/components/form-bits";
+import { FORM_SECTIONS, FormSection } from "@/features/admin/components/form-bits";
 import { InitialsAvatar, Pill } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
 import { getViewer } from "@/features/admin/server/viewer";
@@ -12,7 +12,7 @@ export default async function AccountPage() {
   return (
     <>
       <PageHeader title="Your account" />
-      <div className="grid gap-8">
+      <div className={FORM_SECTIONS}>
         <FormSection title="Profile">
           <div className="flex items-center gap-4">
             <InitialsAvatar name={user.name} className="size-14 text-base" />

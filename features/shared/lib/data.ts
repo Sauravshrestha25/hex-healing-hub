@@ -68,3 +68,34 @@ export type Testimonial = {
 
 /** The Pokhara centre on Google Maps: reviews, directions and the map pin. */
 export const GOOGLE_REVIEWS_URL = "https://maps.app.goo.gl/gBNg33pqjVtpz8Gz6?g_st=ac";
+
+/** A healer as shown on cards (Our Healers page, homepage, service pages). */
+export type HealerCard = {
+  id: string;
+  name: string;
+  slug: string;
+  title: string;
+  photo: string | null;
+  experienceYears: number;
+  places: string[];
+  /** Lowest price among their services, in rupees (null if none listed). */
+  fromPrice: number | null;
+  /** Average of their published reviews (null until they have one). */
+  rating: number | null;
+  reviewCount: number;
+  services: string[];
+};
+
+export type HealerOffering = { serviceId: string; title: string; slug: string; price: number; durationMinutes: number };
+
+export type HealerProfile = HealerCard & {
+  bio: string;
+  qualifications: string[];
+  languages: string[];
+  offerings: HealerOffering[];
+  /** Weekly hours, minutes from midnight (Nepal time); weekday 0 = Sunday. */
+  hours: { weekday: number; startMinute: number; endMinute: number }[];
+  reviews: Testimonial[];
+  /** Bookings with this healer marked Completed. */
+  sessionsCompleted: number;
+};

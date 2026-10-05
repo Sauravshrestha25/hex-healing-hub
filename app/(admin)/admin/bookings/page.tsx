@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarCheck, CalendarDays, MapPin, Phone } from "lucide-react";
+import { CalendarCheck, CalendarDays, HeartHandshake, MapPin, Phone } from "lucide-react";
 import { cn } from "cn";
 import { EmptyState, InitialsAvatar, Panel } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
@@ -8,6 +8,7 @@ import { DeleteButton } from "@/features/admin/components/delete-button";
 import { formatDay, timeAgo } from "@/features/admin/lib/format";
 import { deleteBooking } from "@/features/admin/server/bookings";
 import { getViewer } from "@/features/admin/server/viewer";
+import { formatSlot } from "@/features/healers/lib/slots";
 import { container } from "@/features/shared/server/container";
 
 export const metadata = { title: "Bookings" };
@@ -70,11 +71,14 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
                     </div>
                     <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                       {booking.phone && <span className="inline-flex items-center gap-1"><Phone className="size-3" />{booking.phone}</span>}
+                      {booking.healer && <span className="inline-flex items-center gap-1"><HeartHandshake className="size-3" />{booking.healer.name}</span>}
                       {booking.centre && <span className="inline-flex items-center gap-1"><MapPin className="size-3" />{booking.centre}</span>}
-                      {(booking.preferredDate || booking.timeOfDay) && (
+                      {(booking.startsAt || booking.preferredDate || booking.timeOfDay) && (
                         <span className="inline-flex items-center gap-1">
                           <CalendarDays className="size-3" />
-                          {[booking.preferredDate && formatDay(booking.preferredDate), booking.timeOfDay].filter(Boolean).join(" · ")}
+                          {booking.startsAt
+                            ? formatSlot(booking.startsAt)
+                            : [booking.preferredDate && formatDay(booking.preferredDate), booking.timeOfDay].filter(Boolean).join(" · ")}
                         </span>
                       )}
                     </p>

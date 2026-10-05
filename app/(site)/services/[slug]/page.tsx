@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { sanitizeBlogHtml } from "@/features/content/lib/sanitize";
-import { getService, getServices } from "@/features/content/server/queries";
+import { getHealersForService, getService, getServices } from "@/features/content/server/queries";
+import { HealerCard } from "@/features/healers/components/healer-card";
 import { PageClosing } from "@/features/shared/components/page-closing";
 import { PageMotion } from "@/features/shared/components/page-motion";
 
@@ -22,6 +23,7 @@ export default async function ServicePage(
   const { slug } = await props.params;
   const service = await getService(slug);
   if (!service) notFound();
+  const healers = await getHealersForService(service.id);
   const others = (await getServices())
     .filter((other) => other.slug !== service.slug)
     .slice(0, 3);
@@ -85,6 +87,21 @@ export default async function ServicePage(
           </div>
         </div>
       </article>
+
+      {healers.length > 0 && (
+        <section aria-labelledby="service-healers-title">
+          <div className="mx-auto w-[90%] pb-20 lg:pb-28">
+            <h2 id="service-healers-title" className="page-reveal font-heading text-3xl text-brand-cream">
+              Healers who offer {service.title.toLowerCase()}
+            </h2>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {healers.map((healer) => (
+                <HealerCard key={healer.id} healer={healer} offer={{ price: healer.price, durationMinutes: healer.durationMinutes, serviceSlug: service.slug }} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {others.length > 0 && (
         <section

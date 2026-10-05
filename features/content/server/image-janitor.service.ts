@@ -26,12 +26,13 @@ export class ImageJanitor {
   }
 
   private async isInUse(url: string) {
-    const [blogs, services, gallery, testimonials] = await Promise.all([
+    const [blogs, services, gallery, testimonials, healers] = await Promise.all([
       this.db.blog.count({ where: { OR: [{ coverImage: url }, { content: { contains: url } }] } }),
       this.db.service.count({ where: { image: url } }),
       this.db.galleryItem.count({ where: { image: url } }),
       this.db.testimonial.count({ where: { photo: url } }),
+      this.db.healer.count({ where: { photo: url } }),
     ]);
-    return blogs + services + gallery + testimonials > 0;
+    return blogs + services + gallery + testimonials + healers > 0;
   }
 }
