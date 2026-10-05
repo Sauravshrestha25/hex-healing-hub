@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { formatDate, formatMinute, formatRupees } from "@/features/healers/lib/slots";
 import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } from "@/features/healers/server/actions";
+import { Calendar } from "@/features/shared/components/calendar";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
 import type { HealerOffering } from "@/features/shared/lib/data";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
@@ -166,17 +167,21 @@ export function HealerBooking({
         ) : dates.length === 0 ? (
           <p className="text-base text-lavender">No free days in the next 30 days. Please message us on WhatsApp and we&apos;ll find a time.</p>
         ) : (
-          <div className="flex gap-3 overflow-x-auto pb-2" data-lenis-prevent>
-            {dates.map((day) => {
-              const [weekday, rest] = formatDate(day).split(", ");
-              return (
-                <button key={day} type="button" aria-pressed={date === day} aria-label={formatDate(day)} onClick={() => chooseDate(day)} className={`${chip(date === day)} shrink-0 text-center`}>
-                  <span className="block text-sm opacity-80">{weekday}</span>
-                  <span className="block font-heading text-base whitespace-nowrap">{rest}</span>
-                </button>
-              );
-            })}
-          </div>
+          <>
+            {/* Only days that still have a free time for this service can be chosen. */}
+            <Calendar
+              key={serviceId}
+              label="Choose a day"
+              min={dates[0]!}
+              max={dates.at(-1)!}
+              selected={date ? [date] : []}
+              isSelectable={(day) => dates.includes(day)}
+              onSelect={chooseDate}
+            />
+            <p className="mt-4 text-sm text-lavender" aria-live="polite">
+              {date ? `Chosen: ${formatDate(date)}` : "Days you can book are outlined."}
+            </p>
+          </>
         )}
       </Step>
 

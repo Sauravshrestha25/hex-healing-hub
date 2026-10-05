@@ -68,8 +68,12 @@ with sync_playwright() as p:
     form=v.locator("form[aria-label='Book a session with Test Healer']")
     assert form.get_by_role("button", name=re.compile("Hypnotherapy")).get_attribute("aria-pressed")=="true"
     form.get_by_role("button", name="Pokhara").click()
-    days=form.locator("button[aria-label*=', 20']"); days.first.wait_for()
-    assert days.count()==30, days.count()
+    # The calendar offers exactly the 30 bookable days (tomorrow … +30), across this month and the next
+    days=form.locator("button[data-date]:not([disabled])"); days.first.wait_for()
+    this_month=days.count()
+    form.get_by_role("button", name="Next month").click()
+    assert this_month+days.count()==30, (this_month, days.count())
+    form.get_by_role("button", name="Previous month").click()
     day_label=days.first.get_attribute("aria-label"); days.first.click()
     times=form.get_by_role("button", name=re.compile(r"^\d{1,2}:\d{2} (AM|PM)$")); times.first.wait_for()
     n=times.count(); first_time=times.first.inner_text()

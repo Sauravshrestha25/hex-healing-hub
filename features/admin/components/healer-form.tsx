@@ -1,13 +1,13 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Plus, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { saveHealer } from "@/features/admin/server/healers";
-import { toClock, WEEKDAYS } from "@/features/healers/lib/slots";
+import { addDays, nepalDate, toClock, WEEKDAYS } from "@/features/healers/lib/slots";
+import { Calendar } from "@/features/shared/components/calendar";
 import { BOOKING_PLACES } from "@/features/shared/lib/data";
 import type { FormState } from "@/features/shared/lib/form-state";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
@@ -57,7 +57,7 @@ export function HealerForm({
   const [offered, setOffered] = useState(() => new Set(healer?.services.map((s) => s.serviceId)));
   const [workdays, setWorkdays] = useState(() => new Set(healer?.availability.map((a) => a.weekday)));
   const [timeOff, setTimeOff] = useState<string[]>(healer?.timeOff ?? []);
-  const [newDayOff, setNewDayOff] = useState("");
+  const today = nepalDate(new Date());
 
   const toggle = <T,>(set: Set<T>, value: T) => {
     const next = new Set(set);
@@ -191,23 +191,16 @@ export function HealerForm({
           </ul>
         </FormSection>
 
-        <FormSection title="Days off" description="Single dates this healer can't be booked: leave, holidays, festivals.">
-          <div className="flex flex-wrap items-end gap-3">
-            <Field id="new-day-off" label="Add a date">
-              <input id="new-day-off" type="date" value={newDayOff} onChange={(event) => setNewDayOff(event.target.value)} className={controlClass} />
-            </Field>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!newDayOff || timeOff.includes(newDayOff)}
-              onClick={() => {
-                setTimeOff((dates) => [...dates, newDayOff].sort());
-                setNewDayOff("");
-              }}
-            >
-              <Plus /> Add
-            </Button>
-          </div>
+        <FormSection title="Days off" description="Click the dates this healer can't be booked: leave, holidays, festivals.">
+          {/* Click a day to mark it off; click it again to bring it back. */}
+          <Calendar
+            label="Days off"
+            min={today}
+            max={addDays(today, 365)}
+            selected={timeOff}
+            isSelectable={() => !readOnly}
+            onSelect={(day) => setTimeOff((dates) => (dates.includes(day) ? dates.filter((d) => d !== day) : [...dates, day].sort()))}
+          />
           {timeOff.length > 0 && (
             <ul className="flex flex-wrap gap-2">
               {timeOff.map((date) => (
