@@ -105,15 +105,15 @@ export function NavBar() {
               onClick={() => setOpen((o) => !o)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className={`relative z-10 flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden ${
+              className={`relative z-10 flex h-10 w-10 flex-col items-center justify-center gap-1.5 transition-[scale] duration-500 ease-out active:scale-90 active:duration-100 lg:hidden ${
                 dark || onCream ? "text-ivory" : "text-foreground"
               }`}
             >
               <span
-                className={`block h-px w-6 bg-current transition-transform duration-300 ${open ? "translate-y-[3.5px] rotate-45" : ""}`}
+                className={`block h-px w-5 bg-current transition-transform duration-300 ${open ? "translate-y-[3.5px] rotate-45" : ""}`}
               />
               <span
-                className={`block h-px w-6 bg-current transition-transform duration-300 ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`}
+                className={`block h-px w-5 bg-current transition-transform duration-300 ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`}
               />
             </button>
           </div>
@@ -124,28 +124,28 @@ export function NavBar() {
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
-        <nav className="flex flex-col gap-6">
+        <nav className="flex flex-col gap-1">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
               aria-current={isActive(link.href) ? "page" : undefined}
-              className={`font-heading text-4xl font-light ${isActive(link.href) ? "text-brand-cream" : "text-ivory hover:text-brand-cream"}`}
+              className={`font-heading origin-left py-2 text-2xl font-light transition-[scale,opacity] duration-500 ease-out active:scale-95 active:opacity-70 active:duration-100 ${isActive(link.href) ? "text-brand-cream" : "text-ivory hover:text-brand-cream"}`}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="mt-12 flex flex-wrap items-center gap-3">
-          <Link href="/book" onClick={() => setOpen(false)} className="btn-gold rounded-full px-7 py-3.5 text-sm font-medium">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <Link href="/book" onClick={() => setOpen(false)} className="btn-gold rounded-full px-6 py-3 text-sm font-medium">
             Book Now
           </Link>
-          <WhatsAppLink onNavigate={() => setOpen(false)} className="btn-ghost inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium">
+          <WhatsAppLink onNavigate={() => setOpen(false)} className="btn-ghost inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium">
             <WhatsAppIcon /> WhatsApp
           </WhatsAppLink>
         </div>
-        <p className="mt-10 text-sm text-gold-light">
+        <p className="mt-6 text-xs text-gold-light">
           Heal Within. Awaken. Transform.
         </p>
       </div>

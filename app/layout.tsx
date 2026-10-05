@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Montserrat, Poppins, Geist } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
@@ -37,9 +36,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${montserrat.variable} ${geist.variable} h-full`}>
       <body className="min-h-full flex flex-col overflow-x-hidden bg-background text-foreground">
         {/* Skip the site preloader on later page loads in the same visit, before it paints. */}
-        <Script id="hex-preloaded" strategy="beforeInteractive">
-          {"try{if(sessionStorage.getItem('hex-preloaded'))document.documentElement.classList.add('hex-preloaded')}catch(e){}"}
-        </Script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(sessionStorage.getItem('hex-preloaded'))document.documentElement.classList.add('hex-preloaded')}catch(e){}",
+          }}
+        />
         {children}
       </body>
     </html>
