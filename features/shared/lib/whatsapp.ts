@@ -23,3 +23,14 @@ export function generalMessage(pageUrl?: string) {
   const hello = "Hi HEX Healing Hub! I'd like to know more about your sessions.";
   return pageUrl ? `${hello}\n\n${pageUrl}` : hello;
 }
+
+/** Booking with a healer over WhatsApp: names the healer and whatever the visitor has chosen so far. */
+export function healerBookingMessage(healerName: string, choice: { service?: string; place?: string; day?: string; time?: string }, pageUrl: string) {
+  const details = [
+    choice.service && `Service: ${choice.service}`,
+    choice.place && `Where: ${choice.place}`,
+    choice.day && `Day: ${choice.day}`,
+    choice.time && `Time: ${choice.time} (Nepal time)`,
+  ].filter(Boolean);
+  return [`Hi HEX Healing Hub! I'd like to book a session with ${healerName}.`, ...(details.length ? ["", ...details] : []), "", pageUrl].join("\n");
+}

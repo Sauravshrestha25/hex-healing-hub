@@ -5,6 +5,7 @@ import { formatDate, formatMinute, formatRupees } from "@/features/healers/lib/s
 import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } from "@/features/healers/server/actions";
 import { Calendar } from "@/features/shared/components/calendar";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
+import { healerBookingMessage, whatsappUrl } from "@/features/shared/lib/whatsapp";
 import type { HealerOffering } from "@/features/shared/lib/data";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
 
@@ -245,8 +246,31 @@ export function HealerBooking({
           <button type="submit" disabled={!ready || pending || loading} className="btn-gold rounded-full px-7 py-4 text-sm font-medium disabled:opacity-50">
             {pending ? "Booking…" : "Request this time"}
           </button>
-          {!ready && <span className="text-sm text-lavender">Choose a service, place, day and time to continue.</span>}
+          {/* Same choices, sent as a WhatsApp message instead. Nothing is held until the team replies. */}
+          <a
+            href={whatsappUrl(healerBookingMessage(healer.name, {}, ""))}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-medium"
+            onClick={(event) => {
+              event.currentTarget.href = whatsappUrl(
+                healerBookingMessage(
+                  healer.name,
+                  {
+                    service: offering?.title,
+                    place: place === "Online" ? "Online session" : place,
+                    day: date && formatDate(date),
+                    time: start === null ? undefined : formatMinute(start),
+                  },
+                  `${window.location.origin}${window.location.pathname}`,
+                ),
+              );
+            }}
+          >
+            <WhatsAppIcon /> Book on WhatsApp
+          </a>
         </div>
+        {!ready && <p className="text-sm text-lavender">Choose a service, place, day and time to request it here, or message us on WhatsApp.</p>}
       </div>
     </form>
   );
