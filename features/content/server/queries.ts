@@ -26,6 +26,11 @@ export async function getTestimonials() {
   return container().testimonials.listPublished();
 }
 
+export async function getFaqs() {
+  await connection();
+  return container().faqs.listPublished();
+}
+
 export async function getHealers() {
   await connection();
   return container().healers.listPublished();

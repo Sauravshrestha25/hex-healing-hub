@@ -173,6 +173,19 @@ model Testimonial {
   @@index([published, order])
 }
 
+/// A common question shown on the Services and Contact pages.
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, order])
+}
+
 enum Role {
   SUPERADMIN
   ADMIN

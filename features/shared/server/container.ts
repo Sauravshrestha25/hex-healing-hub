@@ -9,6 +9,7 @@ import { BookingService } from "@/features/booking/server/booking.service";
 import { BookingNotifier } from "@/features/booking/server/booking-notifier";
 import { PasswordResetService } from "@/features/auth/server/password-reset.service";
 import { BlogService } from "@/features/content/server/blog.service";
+import { FaqService } from "@/features/content/server/faq.service";
 import { GalleryService } from "@/features/content/server/gallery.service";
 import { ImageJanitor } from "@/features/content/server/image-janitor.service";
 import { ServiceCatalogService } from "@/features/content/server/service-catalog.service";
@@ -42,6 +43,7 @@ function createContainer() {
     gallery: new GalleryService(db, images),
     passwordResets: new PasswordResetService(db, hasher, mailer, limiter("password-reset", 5, 60 * 60 * 1000), siteUrl),
     testimonials: new TestimonialService(db, images),
+    faqs: new FaqService(db),
     healers: new HealerService(db, images),
     // INQUIRY_NOTIFY_TO kept from the contact-form days so existing deployments keep their setting.
     bookings: new BookingService(

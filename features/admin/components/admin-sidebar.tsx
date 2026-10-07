@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, HeartHandshake, Images, LayoutDashboard, MessageSquareQuote, Newspaper, Sparkles, Users, type LucideIcon } from "lucide-react";
+import { CalendarCheck, CircleHelp, HeartHandshake, Images, LayoutDashboard, MessageSquareQuote, Newspaper, Sparkles, Users, type LucideIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +36,7 @@ const GROUPS: { label?: string; items: NavItem[] }[] = [
       { href: "/admin/services", label: "Services", icon: Sparkles },
       { href: "/admin/portfolio", label: "Portfolio", icon: Images },
       { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
+      { href: "/admin/faqs", label: "FAQs", icon: CircleHelp },
     ],
   },
   { label: "Team", items: [{ href: "/admin/users", label: "Users", icon: Users }] },
