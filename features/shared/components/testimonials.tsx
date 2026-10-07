@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { GOOGLE_REVIEWS_URL, type Testimonial } from "@/features/shared/lib/data";
+import { CENTRE_MAP_URL, type Testimonial } from "@/features/shared/lib/data";
 
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]!.toUpperCase()).join("");
@@ -21,7 +21,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
             </p>
           </div>
           <a
-            href={GOOGLE_REVIEWS_URL}
+            href={CENTRE_MAP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-ghost inline-flex w-fit shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-6 py-3 text-sm font-medium"

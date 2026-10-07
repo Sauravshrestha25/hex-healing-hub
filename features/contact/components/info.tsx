@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CONTACT_EMAIL, GOOGLE_REVIEWS_URL, LOCATIONS, POKHARA_HOURS } from "@/features/shared/lib/data";
+import { CENTRE_ADDRESS, CENTRE_MAP_URL, CONTACT_EMAIL, LOCATIONS } from "@/features/shared/lib/data";
 
 export function ContactInfo() {
   return (
@@ -14,14 +14,14 @@ export function ContactInfo() {
         </a>
       ))}
       <a
-        href={GOOGLE_REVIEWS_URL}
+        href={CENTRE_MAP_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="card-hover-cream group flex items-center justify-between gap-4 px-6 py-5"
       >
         <span className="min-w-0">
-          <span className="block text-sm text-lavender">Visit our Pokhara centre</span>
-          <span className="mt-1 block font-heading text-lg">{POKHARA_HOURS}</span>
+          <span className="block text-sm text-lavender">Visit our Butwal centre</span>
+          <span className="mt-1 block font-heading text-lg">{CENTRE_ADDRESS}</span>
         </span>
         <span aria-hidden="true" className="text-xl transition-transform group-hover:translate-x-1">↗</span>
       </a>

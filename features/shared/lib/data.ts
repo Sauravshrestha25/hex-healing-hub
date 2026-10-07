@@ -52,7 +52,11 @@ export const SOCIAL_LINKS = [
 /** Where a session can happen: one of the centres, or online. */
 export const BOOKING_PLACES = [...LOCATIONS.map((l) => l.city), "Online"] as const;
 
-export const POKHARA_HOURS = "Lakeside Rd, Pokhara · Open daily 11am–5pm";
+export const CENTRE_ADDRESS = "Butwal, Lumbini Province 32907 · Open Sun–Fri 11am–5pm";
+
+/** The Butwal centre on Google Maps: reviews, directions and the map pin. */
+export const CENTRE_MAP_URL =
+  "https://www.google.com/maps/place/Hex+Healing+Hub+Private+Limited/@27.6906764,83.463639,17z/data=!3m1!4b1!4m6!3m5!1s0x3996875cc0697625:0x4fd8f408d3044fda!8m2!3d27.6906764!4d83.4662139!16s%2Fg%2F11yhg_vtk2";
 
 export const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"] as const;
 
@@ -66,8 +70,6 @@ export type Testimonial = {
   rating: number;
 };
 
-/** The Pokhara centre on Google Maps: reviews, directions and the map pin. */
-export const GOOGLE_REVIEWS_URL = "https://maps.app.goo.gl/gBNg33pqjVtpz8Gz6?g_st=ac";
 
 /** A healer as shown on cards (Our Healers page, homepage, service pages). */
 export type HealerCard = {
