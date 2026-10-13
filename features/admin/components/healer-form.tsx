@@ -1,12 +1,12 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { saveHealer } from "@/features/admin/server/healers";
-import { addDays, nepalDate, toClock, WEEKDAYS } from "@/features/healers/lib/slots";
+import { addDays, nepalDate, toClock, WEEKDAYS, type Fee } from "@/features/healers/lib/slots";
 import { Calendar } from "@/features/shared/components/calendar";
 import { BOOKING_PLACES } from "@/features/shared/lib/data";
 import type { FormState } from "@/features/shared/lib/form-state";
@@ -28,13 +28,17 @@ export type HealerValues = {
   places: string[];
   published: boolean;
   order: number;
-  services: { serviceId: string; price: number; durationMinutes: number; sessions: number; feeType: "PER_SESSION" | "PACKAGE" }[];
+  /** One row per session option; a service's options share its session length. */
+  services: ({ serviceId: string; durationMinutes: number } & Fee)[];
   availability: { weekday: number; startMinute: number; endMinute: number }[];
   /** YYYY-MM-DD */
   timeOff: string[];
 };
 
 const DURATIONS = [30, 45, 60, 75, 90, 120, 150, 180];
+
+/** A session-option row in the form: saved values, or blank for one just added. */
+type OptionRow = Partial<Fee> & { key: number };
 
 // Native controls, styled like the kit's Input.
 const controlClass =
@@ -55,6 +59,15 @@ export function HealerForm({
 
   // Which service and weekday rows are switched on (their price/time fields only apply then).
   const [offered, setOffered] = useState(() => new Set(healer?.services.map((s) => s.serviceId)));
+  // Each service's session options (1 session, 4 sessions, …); always at least one row.
+  const [options, setOptions] = useState<Record<string, OptionRow[]>>(() =>
+    Object.fromEntries(
+      services.map((service) => {
+        const saved = (healer?.services ?? []).filter((s) => s.serviceId === service.id).sort((a, b) => a.sessions - b.sessions);
+        return [service.id, saved.length ? saved.map((s, key) => ({ key, price: s.price, sessions: s.sessions, feeType: s.feeType })) : [{ key: 0, sessions: 1 }]];
+      }),
+    ),
+  );
   const [workdays, setWorkdays] = useState(() => new Set(healer?.availability.map((a) => a.weekday)));
   const [timeOff, setTimeOff] = useState<string[]>(healer?.timeOff ?? []);
   const today = nepalDate(new Date());
@@ -108,7 +121,7 @@ export function HealerForm({
           </div>
         </FormSection>
 
-        <FormSection title="Services and pricing" description="Tick what this healer offers, then set their price (in rupees), how long a session takes, how many sessions it needs, and whether the price is per session or for all of them. Visitors book the first session online; you arrange the rest.">
+        <FormSection title="Services and pricing" description="Tick what this healer offers and set how long a session takes. Then add the options visitors can choose from: a number of sessions and its price (in rupees), per session or for all of them. Visitors book the first session online; you arrange the rest.">
           {services.length === 0 ? (
             <p className="text-sm text-muted-foreground">Add services first (Website content → Services).</p>
           ) : (
@@ -116,72 +129,100 @@ export function HealerForm({
               {services.map((service) => {
                 const current = healer?.services.find((s) => s.serviceId === service.id);
                 const on = offered.has(service.id);
+                const rows = options[service.id] ?? [];
+                const setRows = (next: (rows: OptionRow[]) => OptionRow[]) => setOptions((all) => ({ ...all, [service.id]: next(all[service.id] ?? []) }));
                 return (
-                  <li key={service.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border p-3">
-                    <label className="inline-flex min-w-48 flex-1 items-center gap-2 text-sm font-medium">
-                      <input
-                        type="checkbox"
-                        name={`service:${service.id}`}
-                        checked={on}
-                        onChange={() => setOffered((set) => toggle(set, service.id))}
-                        className={checkClass}
-                      />
-                      {service.title}
-                    </label>
-                    <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      Rs
-                      <input
-                        type="number"
-                        name={`price:${service.id}`}
-                        min={0}
-                        max={1000000}
-                        step={50}
-                        required={on}
-                        disabled={!on}
-                        defaultValue={current?.price}
-                        aria-label={`Price for ${service.title} in rupees`}
-                        className={`${controlClass} w-28`}
-                      />
-                    </label>
-                    <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      <select
-                        name={`duration:${service.id}`}
-                        disabled={!on}
-                        defaultValue={current?.durationMinutes ?? 60}
-                        aria-label={`Session length for ${service.title}`}
-                        className={controlClass}
-                      >
-                        {[...new Set([...DURATIONS, current?.durationMinutes ?? 60])].sort((a, b) => a - b).map((minutes) => (
-                          <option key={minutes} value={minutes}>
-                            {minutes} min
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      <input
-                        type="number"
-                        name={`sessions:${service.id}`}
-                        min={1}
-                        max={50}
-                        required={on}
-                        disabled={!on}
-                        defaultValue={current?.sessions ?? 1}
-                        aria-label={`Number of sessions for ${service.title}`}
-                        className={`${controlClass} w-16`}
-                      />
-                      sessions
-                    </label>
-                    <select
-                      name={`feeType:${service.id}`}
-                      disabled={!on}
-                      defaultValue={current?.feeType ?? "PER_SESSION"}
-                      aria-label={`What the price for ${service.title} covers`}
-                      className={controlClass}
-                    >
-                      <option value="PER_SESSION">Price per session</option>
-                      <option value="PACKAGE">Price for all sessions</option>
-                    </select>
+                  <li key={service.id} className="grid gap-3 rounded-lg border p-3">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                      <label className="inline-flex min-w-48 flex-1 items-center gap-2 text-sm font-medium">
+                        <input
+                          type="checkbox"
+                          name={`service:${service.id}`}
+                          checked={on}
+                          onChange={() => setOffered((set) => toggle(set, service.id))}
+                          className={checkClass}
+                        />
+                        {service.title}
+                      </label>
+                      {on && (
+                        <select
+                          name={`duration:${service.id}`}
+                          defaultValue={current?.durationMinutes ?? 60}
+                          aria-label={`Session length for ${service.title}`}
+                          className={controlClass}
+                        >
+                          {[...new Set([...DURATIONS, current?.durationMinutes ?? 60])].sort((a, b) => a - b).map((minutes) => (
+                            <option key={minutes} value={minutes}>
+                              {minutes} min per session
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                    {on && (
+                      <>
+                        <ul className="grid gap-2 pl-6">
+                          {rows.map((row, index) => {
+                            // The first option keeps the plain label; later ones say which option they are.
+                            const which = index === 0 ? "" : `, option ${index + 1}`;
+                            return (
+                              <li key={row.key} className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+                                <input
+                                  type="number"
+                                  name={`sessions:${service.id}`}
+                                  min={1}
+                                  max={50}
+                                  required
+                                  defaultValue={row.sessions}
+                                  aria-label={`Number of sessions for ${service.title}${which}`}
+                                  className={`${controlClass} w-16`}
+                                />
+                                session(s) for Rs
+                                <input
+                                  type="number"
+                                  name={`price:${service.id}`}
+                                  min={0}
+                                  max={1000000}
+                                  step={50}
+                                  required
+                                  defaultValue={row.price}
+                                  aria-label={`Price for ${service.title} in rupees${which}`}
+                                  className={`${controlClass} w-28`}
+                                />
+                                <select
+                                  name={`feeType:${service.id}`}
+                                  defaultValue={row.feeType ?? "PER_SESSION"}
+                                  aria-label={`What the price for ${service.title} covers${which}`}
+                                  className={controlClass}
+                                >
+                                  <option value="PER_SESSION">per session</option>
+                                  <option value="PACKAGE">for all sessions</option>
+                                </select>
+                                {rows.length > 1 && !readOnly && (
+                                  <button
+                                    type="button"
+                                    aria-label={`Remove option ${index + 1} for ${service.title}`}
+                                    onClick={() => setRows((list) => list.filter((r) => r.key !== row.key))}
+                                    className="grid size-6 place-items-center rounded-full hover:bg-accent hover:text-foreground"
+                                  >
+                                    <X className="size-3.5" />
+                                  </button>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        {!readOnly && (
+                          <button
+                            type="button"
+                            onClick={() => setRows((list) => [...list, { key: Math.max(...list.map((r) => r.key)) + 1 }])}
+                            className="ml-6 inline-flex w-fit items-center gap-1 text-sm font-medium text-brand hover:underline"
+                          >
+                            <Plus className="size-3.5" /> Add session option
+                          </button>
+                        )}
+                      </>
+                    )}
                   </li>
                 );
               })}

@@ -124,6 +124,15 @@ export function formatFee(fee: Fee) {
     : `${formatRupees(fee.price)} / session · ${fee.sessions} sessions (${formatRupees(totalFee(fee))})`;
 }
 
+/** One option reads in full; several read "from Rs 1,750 / session" (their cheapest per-session rate). */
+export function formatFromFee(options: Fee[]) {
+  return options.length === 1 ? formatFee(options[0]!) : `from ${formatRupees(Math.min(...options.map(perSessionFee)))} / session`;
+}
+
+export function sessionCount(sessions: number) {
+  return sessions === 1 ? "1 session" : `${sessions} sessions`;
+}
+
 /** The total quoted on a booking: "Rs 8,000 for 4 sessions", or just "Rs 2,000" for a single session. */
 export function formatBookedFee(total: number, sessions: number | null | undefined) {
   return sessions && sessions > 1 ? `${formatRupees(total)} for ${sessions} sessions` : formatRupees(total);

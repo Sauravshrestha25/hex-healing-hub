@@ -50,7 +50,7 @@ export default async function AdminHealersPage() {
                     <p className="mt-0.5 truncate text-sm text-muted-foreground">{healer.title}</p>
                     <p className="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
                       <span>
-                        {healer._count.services} {healer._count.services === 1 ? "service" : "services"}
+                        {healer.services.length} {healer.services.length === 1 ? "service" : "services"}
                       </span>
                       {healer.places.length > 0 && (
                         <span className="inline-flex items-center gap-1">

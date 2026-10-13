@@ -125,7 +125,8 @@ enum FeeType {
   PACKAGE
 }
 
-/// A service a healer offers, with their own price, session length and number of sessions.
+/// One way to book a healer's service: a number of sessions and its price. A healer can offer the
+/// same service as several options (1 session, 4 sessions, …); all of them share one session length.
 model HealerService {
   id              String  @id @default(cuid())
   healerId        String
@@ -140,7 +141,7 @@ model HealerService {
   healer          Healer  @relation(fields: [healerId], references: [id], onDelete: Cascade)
   service         Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  @@unique([healerId, serviceId])
+  @@unique([healerId, serviceId, sessions])
 }
 
 /// Weekly working hours: one window per weekday, in minutes from midnight, Nepal time.

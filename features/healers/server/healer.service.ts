@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { ImageJanitor } from "@/features/content/server/image-janitor.service";
 import { imageField, orderField, parseOrThrow, withUniqueGuard } from "@/features/content/server/validation";
 import { bookableDates, FEE_TYPES, isDateString, nepalDate, nepalInstant, nepalMinuteOfDay, freeSlotStarts, perSessionFee, weekdayOf, type FeeType, type MinuteRange } from "@/features/healers/lib/slots";
-import { BOOKING_PLACES, type HealerCard, type HealerProfile } from "@/features/shared/lib/data";
+import { BOOKING_PLACES, type HealerCard, type HealerOffering, type HealerProfile } from "@/features/shared/lib/data";
 import { slugify } from "@/features/shared/lib/slugify";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
 import { findFreeSlots, HOLDING_STATUSES } from "./slot-finder";
@@ -41,6 +41,7 @@ const healerSchema = z
     ),
     timeOff: z.array(z.string().refine(isDateString, "Days off must be valid dates.")),
   })
+  .refine((h) => new Set(h.services.map((s) => `${s.serviceId}:${s.sessions}`)).size === h.services.length, "Each option for a service needs a different number of sessions.")
   .refine((h) => !h.published || h.services.length > 0, "Add at least one service with a price before publishing.")
   .refine((h) => !h.published || h.availability.length > 0, "Add at least one working day before publishing.");
 
@@ -86,7 +87,8 @@ function toCard(row: CardRow): HealerCard {
     fromPrice: services.length ? Math.min(...services.map(perSessionFee)) : null,
     rating: average(row.testimonials.map((t) => t.rating)),
     reviewCount: row.testimonials.length,
-    services: services.map((s) => s.service.title),
+    // A service offered as several session options is still one service.
+    services: [...new Set(services.map((s) => s.service.title))],
   };
 }
 
@@ -108,7 +110,7 @@ export class HealerService {
     return rows.map(toCard);
   }
 
-  /** Published healers offering one service, with their price and session length for it. */
+  /** Published healers offering one service, with their session length and priced options for it. */
   async listForService(serviceId: string) {
     const rows = await this.db.healer.findMany({
       where: { published: true, services: { some: { serviceId } } },
@@ -116,8 +118,8 @@ export class HealerService {
       select: { ...cardSelect, services: { select: { serviceId: true, price: true, durationMinutes: true, sessions: true, feeType: true, service: { select: { title: true, order: true } } } } },
     });
     return rows.map((row) => {
-      const offering = row.services.find((s) => s.serviceId === serviceId)!;
-      return { ...toCard(row), price: offering.price, durationMinutes: offering.durationMinutes, sessions: offering.sessions, feeType: offering.feeType };
+      const options = row.services.filter((s) => s.serviceId === serviceId).sort((a, b) => a.sessions - b.sessions);
+      return { ...toCard(row), durationMinutes: options[0]!.durationMinutes, options: options.map(({ price, sessions, feeType }) => ({ price, sessions, feeType })) };
     });
   }
 
@@ -142,9 +144,15 @@ export class HealerService {
       },
     });
     if (!row) return null;
-    const offerings = [...row.services]
-      .sort((a, b) => a.service.order - b.service.order)
-      .map((s) => ({ serviceId: s.serviceId, title: s.service.title, slug: s.service.slug, price: s.price, durationMinutes: s.durationMinutes, sessions: s.sessions, feeType: s.feeType }));
+    // Rows are options; fold each service's options (fewest sessions first) into one offering.
+    const offerings: HealerOffering[] = [];
+    const rows = [...row.services].sort((a, b) => a.service.order - b.service.order || a.serviceId.localeCompare(b.serviceId) || a.sessions - b.sessions);
+    for (const s of rows) {
+      const option = { price: s.price, sessions: s.sessions, feeType: s.feeType };
+      const last = offerings.at(-1);
+      if (last?.serviceId === s.serviceId) last.options.push(option);
+      else offerings.push({ serviceId: s.serviceId, title: s.service.title, slug: s.service.slug, durationMinutes: s.durationMinutes, options: [option] });
+    }
     return {
       ...toCard(row),
       bio: row.bio,
@@ -203,7 +211,8 @@ export class HealerService {
   listForAdmin() {
     return this.db.healer.findMany({
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-      select: { id: true, name: true, title: true, photo: true, published: true, order: true, places: true, _count: { select: { services: true } } },
+      // One row per service offered, however many session options it has.
+      select: { id: true, name: true, title: true, photo: true, published: true, order: true, places: true, services: { distinct: ["serviceId"], select: { serviceId: true } } },
     });
   }
 

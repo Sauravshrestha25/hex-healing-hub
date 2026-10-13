@@ -53,6 +53,7 @@ const bookingSchema = z.object({
 const slotBookingSchema = z.object({
   healerId: z.string().min(1, "Please choose a healer."),
   serviceId: z.string().min(1, "Please choose a service."),
+  sessions: z.coerce.number().int().min(1, "Please choose how many sessions.").max(50),
   date: z.string().refine(isDateString, "Please choose a date."),
   start: z.coerce.number().int().min(0).max(24 * 60),
   place: z.string().trim().min(1, "Please choose where you'd like the session.").max(40),
@@ -128,12 +129,12 @@ export class BookingService {
     if (await this.submissions.isLimited(ip)) {
       throw new ValidationError("You've sent several requests recently. Please try again in a few minutes.");
     }
-    const { healerId, serviceId, date, start, place, name, phone, email, note } = parsed.data;
+    const { healerId, serviceId, sessions, date, start, place, name, phone, email, note } = parsed.data;
 
     const booking = await this.db.$transaction(async (tx) => {
       // Serialise bookings per healer for the length of this transaction.
       await tx.$executeRaw(Prisma.sql`SELECT pg_advisory_xact_lock(hashtext(${healerId}))`);
-      const found = await findFreeSlots(tx, healerId, serviceId, date);
+      const found = await findFreeSlots(tx, healerId, serviceId, date, sessions);
       if (!found) throw new ValidationError("That day can no longer be booked. Please choose another.");
       if (!found.healer.places.includes(place)) throw new ValidationError("Please choose one of the places this healer works.");
       if (!found.starts.includes(start)) {

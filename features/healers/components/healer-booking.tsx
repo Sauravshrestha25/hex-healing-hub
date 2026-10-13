@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
-import { formatDate, formatFee, formatMinute } from "@/features/healers/lib/slots";
+import { formatDate, formatFee, formatFromFee, formatMinute, formatRupees, perSessionFee, sessionCount, totalFee } from "@/features/healers/lib/slots";
 import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } from "@/features/healers/server/actions";
 import { Calendar } from "@/features/shared/components/calendar";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
@@ -32,7 +32,8 @@ function Step({ number, title, children }: { number: number; title: string; chil
 }
 
 /**
- * Books a real time slot with one healer: service, place, a day with free times, a start time, then
+ * Books a real time slot with one healer: service, how many sessions (when the service comes in
+ * several options), place, a day with free times, a start time, then
  * the visitor's details. Free days and times come from the server and are re-checked when booking.
  */
 export function HealerBooking({
@@ -51,7 +52,14 @@ export function HealerBooking({
   const [date, setDate] = useState("");
   const [slots, setSlots] = useState<number[] | null>(null);
   const [start, setStart] = useState<number | null>(null);
+  // The only option is chosen for the visitor; several options get their own step.
+  const onlyOption = (o?: HealerOffering) => (o?.options.length === 1 ? o.options[0]!.sessions : null);
+  const [sessions, setSessions] = useState<number | null>(onlyOption(initialService));
   const offering = healer.offerings.find((o) => o.serviceId === serviceId);
+  const option = offering?.options.find((o) => o.sessions === sessions);
+  const pickSessions = Boolean(offering && offering.options.length > 1);
+  // Later steps move down one when the sessions step is showing.
+  const shift = pickSessions ? 1 : 0;
 
   // "That time was just taken": refresh the times so the visitor can pick another.
   async function submit(previous: SlotBookingState, formData: FormData) {
@@ -67,6 +75,7 @@ export function HealerBooking({
 
   function chooseService(id: string) {
     setServiceId(id);
+    setSessions(onlyOption(healer.offerings.find((o) => o.serviceId === id)));
     setDate("");
     setSlots(null);
     setStart(null);
@@ -124,12 +133,13 @@ export function HealerBooking({
     );
   }
 
-  const ready = Boolean(offering && place && date && start !== null);
+  const ready = Boolean(offering && option && place && date && start !== null);
 
   return (
     <form action={formAction} onSubmit={onSubmit} className="card-plain grid gap-10 rounded-3xl p-6 sm:p-10" aria-label={`Book a session with ${healer.name}`}>
       <input type="hidden" name="healerId" value={healer.id} />
       <input type="hidden" name="serviceId" value={serviceId} />
+      <input type="hidden" name="sessions" value={option?.sessions ?? ""} />
       <input type="hidden" name="place" value={place} />
       <input type="hidden" name="date" value={date} />
       <input type="hidden" name="start" value={start ?? ""} />
@@ -144,14 +154,31 @@ export function HealerBooking({
             <button key={o.serviceId} type="button" aria-pressed={serviceId === o.serviceId} onClick={() => chooseService(o.serviceId)} className={chip(serviceId === o.serviceId)}>
               <span className="block font-heading text-base">{o.title}</span>
               <span className="mt-1 block opacity-80">
-                {o.durationMinutes} min · {formatFee(o)}
+                {o.durationMinutes} min · {formatFromFee(o.options)}
               </span>
             </button>
           ))}
         </div>
       </Step>
 
-      <Step number={2} title="Where?">
+      {pickSessions && offering && (
+        <Step number={2} title="How many sessions?">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {offering.options.map((o) => (
+              <button key={o.sessions} type="button" aria-pressed={sessions === o.sessions} onClick={() => setSessions(o.sessions)} className={chip(sessions === o.sessions)}>
+                <span className="block font-heading text-base">{sessionCount(o.sessions)}</span>
+                <span className="mt-1 block opacity-80">
+                  {formatRupees(totalFee(o))}
+                  {o.sessions > 1 && ` · ${formatRupees(perSessionFee(o))} / session`}
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="mt-3 text-sm text-lavender">You pick the time of your first session here; we arrange the rest with you.</p>
+        </Step>
+      )}
+
+      <Step number={2 + shift} title="Where?">
         <div className="flex flex-wrap gap-3">
           {healer.places.map((p) => (
             <button key={p} type="button" aria-pressed={place === p} onClick={() => setPlace(p)} className={chip(place === p)}>
@@ -161,7 +188,7 @@ export function HealerBooking({
         </div>
       </Step>
 
-      <Step number={3} title="Pick a day">
+      <Step number={3 + shift} title="Pick a day">
         {!serviceId ? (
           <p className="text-base text-lavender">Choose a service first to see free days.</p>
         ) : dates === null ? (
@@ -187,7 +214,7 @@ export function HealerBooking({
         )}
       </Step>
 
-      <Step number={4} title="Pick a time">
+      <Step number={4 + shift} title="Pick a time">
         {!date ? (
           <p className="text-base text-lavender">Choose a day to see free times.</p>
         ) : slots === null ? (
@@ -208,7 +235,7 @@ export function HealerBooking({
         )}
       </Step>
 
-      <Step number={5} title="Your details">
+      <Step number={5 + shift} title="Your details">
         <div className="grid gap-6 sm:grid-cols-2">
           <div>
             <label htmlFor="slot-name" className={labelClass}>Full Name *</label>
@@ -234,13 +261,13 @@ export function HealerBooking({
       </Step>
 
       <div className="grid gap-4">
-        {ready && offering && (
+        {ready && offering && option && (
           <p className="text-base leading-relaxed" aria-live="polite">
             <span className="font-heading text-lg">{offering.title}</span> with {healer.name}, {formatDate(date)} at {formatMinute(start!)} ·{" "}
-            {place === "Online" ? "online" : place} · {offering.durationMinutes} min · {formatFee(offering)}
-            {offering.sessions > 1 && (
+            {place === "Online" ? "online" : place} · {offering.durationMinutes} min · {formatFee(option)}
+            {option.sessions > 1 && (
               <span className="mt-1 block text-sm text-lavender">
-                This books your first session. We&apos;ll arrange the other {offering.sessions - 1} with you.
+                This books your first session. We&apos;ll arrange the other {option.sessions - 1} with you.
               </span>
             )}
           </p>
@@ -263,7 +290,7 @@ export function HealerBooking({
                 healerBookingMessage(
                   healer.name,
                   {
-                    service: offering && (offering.sessions > 1 ? `${offering.title} (${offering.sessions} sessions)` : offering.title),
+                    service: offering && (option && option.sessions > 1 ? `${offering.title} (${option.sessions} sessions)` : offering.title),
                     place: place === "Online" ? "Online session" : place,
                     day: date && formatDate(date),
                     time: start === null ? undefined : formatMinute(start),
@@ -276,7 +303,7 @@ export function HealerBooking({
             <WhatsAppIcon /> Book on WhatsApp
           </a>
         </div>
-        {!ready && <p className="text-sm text-lavender">Choose a service, place, day and time to request it here, or message us on WhatsApp.</p>}
+        {!ready && <p className="text-sm text-lavender">Choose a service{pickSessions ? ", sessions" : ""}, place, day and time to request it here, or message us on WhatsApp.</p>}
       </div>
     </form>
   );

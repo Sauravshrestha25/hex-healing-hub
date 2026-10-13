@@ -10,9 +10,10 @@ export const HOLDING_STATUSES = ["NEW", "CONFIRMED"] as const;
 /**
  * Free start times (minutes from Nepal midnight) for one healer, service and day, plus what was
  * looked up to compute them. Null when the combination can't be booked at all (unpublished healer,
- * service not offered, day off, outside the booking window).
+ * service not offered, day off, outside the booking window). `sessions` picks one of the service's
+ * options; free times are the same for all of them, since they share a session length.
  */
-export async function findFreeSlots(db: Db, healerId: string, serviceId: string, date: string, now = new Date()) {
+export async function findFreeSlots(db: Db, healerId: string, serviceId: string, date: string, sessions?: number, now = new Date()) {
   if (!isBookableDate(date, now)) return null;
   const healer = await db.healer.findFirst({
     where: { id: healerId, published: true },
@@ -20,7 +21,7 @@ export async function findFreeSlots(db: Db, healerId: string, serviceId: string,
       id: true,
       name: true,
       places: true,
-      services: { where: { serviceId }, select: { price: true, durationMinutes: true, sessions: true, feeType: true, service: { select: { title: true } } } },
+      services: { where: { serviceId, sessions }, orderBy: { sessions: "asc" }, select: { price: true, durationMinutes: true, sessions: true, feeType: true, service: { select: { title: true } } } },
       availability: { where: { weekday: weekdayOf(date) }, select: { startMinute: true, endMinute: true } },
       timeOff: { where: { date: new Date(`${date}T00:00:00Z`) }, select: { id: true } },
     },

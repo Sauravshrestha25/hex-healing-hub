@@ -1,6 +1,6 @@
 // Run with: pnpm exec tsx features/healers/lib/slots.check.ts
 import assert from "node:assert/strict";
-import { addDays, bookableDates, formatBookedFee, formatFee, formatMinute, formatSlot, freeSlotStarts, isBookableDate, nepalDate, nepalInstant, nepalMinuteOfDay, parseClock, perSessionFee, totalFee, weekdayOf } from "./slots";
+import { addDays, bookableDates, formatBookedFee, formatFee, formatFromFee, formatMinute, formatSlot, freeSlotStarts, isBookableDate, nepalDate, nepalInstant, nepalMinuteOfDay, parseClock, perSessionFee, totalFee, weekdayOf } from "./slots";
 
 // Nepal is UTC+5:45: 10:00 in Kathmandu is 04:15 UTC, and late UTC evenings are already "tomorrow".
 assert.equal(nepalInstant("2026-10-12", 600).toISOString(), "2026-10-12T04:15:00.000Z");
@@ -39,6 +39,9 @@ assert.equal(perSessionFee({ price: 7000, sessions: 4, feeType: "PACKAGE" }), 17
 assert.equal(formatFee({ price: 2000, sessions: 1, feeType: "PACKAGE" }), "Rs 2,000");
 assert.equal(formatFee({ price: 2000, sessions: 4, feeType: "PER_SESSION" }), "Rs 2,000 / session · 4 sessions (Rs 8,000)");
 assert.equal(formatFee({ price: 7000, sessions: 4, feeType: "PACKAGE" }), "Rs 7,000 for 4 sessions");
+// Several options for one service: quote the cheapest per-session rate.
+assert.equal(formatFromFee([{ price: 2000, sessions: 1, feeType: "PER_SESSION" }, { price: 7000, sessions: 4, feeType: "PACKAGE" }]), "from Rs 1,750 / session");
+assert.equal(formatFromFee([{ price: 2000, sessions: 1, feeType: "PER_SESSION" }]), "Rs 2,000");
 assert.equal(formatBookedFee(8000, 4), "Rs 8,000 for 4 sessions");
 assert.equal(formatBookedFee(2000, null), "Rs 2,000"); // bookings from before sessions
 console.log("slots ok");

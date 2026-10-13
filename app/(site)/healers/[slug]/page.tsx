@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getHealer } from "@/features/content/server/queries";
 import { HealerBooking } from "@/features/healers/components/healer-booking";
 import { HealerRating } from "@/features/healers/components/healer-card";
-import { formatFee, formatMinute, formatRupees, WEEKDAYS } from "@/features/healers/lib/slots";
+import { formatFee, formatMinute, formatRupees, sessionCount, totalFee, WEEKDAYS } from "@/features/healers/lib/slots";
 import { PageMotion } from "@/features/shared/components/page-motion";
 
 export async function generateMetadata(props: PageProps<"/healers/[slug]">): Promise<Metadata> {
@@ -87,8 +87,19 @@ export default async function HealerPage(props: PageProps<"/healers/[slug]">) {
             {healer.offerings.map((offering) => (
               <li key={offering.serviceId} className="page-reveal card-plain flex flex-col p-7">
                 <h3 className="font-heading text-xl font-semibold">{offering.title}</h3>
-                <p className="mt-2 text-sm text-lavender">{offering.durationMinutes} minute session{offering.sessions > 1 ? "s" : ""}</p>
-                <p className="mt-6 font-heading text-2xl">{formatFee(offering)}</p>
+                <p className="mt-2 text-sm text-lavender">{offering.durationMinutes} minute session</p>
+                {offering.options.length === 1 ? (
+                  <p className="mt-6 font-heading text-2xl">{formatFee(offering.options[0]!)}</p>
+                ) : (
+                  <ul className="mt-6 grid gap-2">
+                    {offering.options.map((option) => (
+                      <li key={option.sessions} className="flex items-baseline justify-between gap-4">
+                        <span className="text-sm text-lavender">{sessionCount(option.sessions)}</span>
+                        <span className="font-heading text-xl">{formatRupees(totalFee(option))}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
                   <Link href={`/healers/${healer.slug}?service=${offering.slug}#book`} className="btn-gold rounded-full px-5 py-2.5 text-sm font-medium">
                     Book

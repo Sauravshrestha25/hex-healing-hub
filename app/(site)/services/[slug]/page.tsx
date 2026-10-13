@@ -96,7 +96,7 @@ export default async function ServicePage(
             </h2>
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {healers.map((healer) => (
-                <HealerCard key={healer.id} healer={healer} offer={{ price: healer.price, durationMinutes: healer.durationMinutes, sessions: healer.sessions, feeType: healer.feeType, serviceSlug: service.slug }} />
+                <HealerCard key={healer.id} healer={healer} offer={{ options: healer.options, durationMinutes: healer.durationMinutes, serviceSlug: service.slug }} />
               ))}
             </div>
           </div>

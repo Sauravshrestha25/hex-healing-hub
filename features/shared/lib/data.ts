@@ -1,3 +1,5 @@
+import type { Fee } from "@/features/healers/lib/slots";
+
 export type Blog = {
   id: string;
   title: string;
@@ -88,7 +90,8 @@ export type HealerCard = {
   services: string[];
 };
 
-export type HealerOffering = { serviceId: string; title: string; slug: string; price: number; durationMinutes: number; sessions: number; feeType: "PER_SESSION" | "PACKAGE" };
+/** A service a healer offers: one session length, and one or more session-count options with their prices. */
+export type HealerOffering = { serviceId: string; title: string; slug: string; durationMinutes: number; options: Fee[] };
 
 export type HealerProfile = HealerCard & {
   bio: string;
