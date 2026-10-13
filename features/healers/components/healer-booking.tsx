@@ -7,7 +7,7 @@ import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } fr
 import { Calendar } from "@/features/shared/components/calendar";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
 import { healerBookingMessage, whatsappUrl } from "@/features/shared/lib/whatsapp";
-import type { HealerOffering } from "@/features/shared/lib/data";
+import { BOOKING_PURPOSES, type HealerOffering } from "@/features/shared/lib/data";
 import { uploadImage } from "@/features/shared/lib/upload-image";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
 
@@ -270,12 +270,33 @@ export function HealerBooking({
             <input id="slot-phone" name="phone" type="tel" autoComplete="tel" placeholder="98XXXXXXXX" required className={fieldClass} />
           </div>
         </div>
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <div>
+            <label htmlFor="slot-age" className={labelClass}>Age *</label>
+            <input id="slot-age" name="age" type="number" inputMode="numeric" min={1} max={120} placeholder="Your age" required className={fieldClass} />
+          </div>
+          <div>
+            <label htmlFor="slot-address" className={labelClass}>Address *</label>
+            <input id="slot-address" name="address" autoComplete="street-address" maxLength={200} placeholder="City, area" required className={fieldClass} />
+          </div>
+        </div>
         <div className="mt-6">
           <label htmlFor="slot-email" className={labelClass}>
             Email Address <span className="text-lavender">(optional, for your confirmation)</span>
           </label>
           <input id="slot-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" className={fieldClass} />
         </div>
+        <fieldset className="mt-6">
+          <legend className={labelClass}>What are you booking for? *</legend>
+          <div className="mt-3 flex flex-wrap gap-x-8 gap-y-3">
+            {BOOKING_PURPOSES.map((purpose) => (
+              <label key={purpose} className="inline-flex items-center gap-2 text-base">
+                <input type="radio" name="purpose" value={purpose} required className="size-4 accent-[var(--brand-purple)]" />
+                {purpose}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <div className="mt-6">
           <label htmlFor="slot-note" className={labelClass}>
             Anything we should know? <span className="text-lavender">(optional)</span>

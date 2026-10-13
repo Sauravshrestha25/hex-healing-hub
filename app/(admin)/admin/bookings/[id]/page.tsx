@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Banknote, CalendarDays, Clock, HeartHandshake, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
+import { Banknote, CalendarDays, Clock, HeartHandshake, Home, Mail, MapPin, MessageCircle, Phone, Send, Sparkles, Target, UserRound } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingActions, PaymentVerifyButton } from "@/features/admin/components/booking-actions";
 import { InitialsAvatar, Panel, Pill } from "@/features/admin/components/kit";
@@ -54,6 +54,7 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
     );
 
   const details = [
+    { icon: Target, label: "Booking for", value: booking.purpose },
     { icon: Sparkles, label: "Service", value: booking.service },
     ...(booking.healer ? [{ icon: HeartHandshake, label: "Healer", value: booking.healer.name }] : []),
     { icon: MapPin, label: "Place", value: booking.centre },
@@ -67,6 +68,8 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
           { icon: CalendarDays, label: "Preferred day", value: booking.preferredDate && formatDay(booking.preferredDate) },
           { icon: Clock, label: "Time of day", value: booking.timeOfDay },
         ]),
+    { icon: UserRound, label: "Age", value: booking.age != null ? String(booking.age) : null },
+    { icon: Home, label: "Address", value: booking.address },
   ];
 
   return (

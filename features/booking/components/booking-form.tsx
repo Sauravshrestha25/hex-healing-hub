@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { submitBooking, type BookingState } from "@/features/booking/server/actions";
-import { BOOKING_PLACES, TIMES_OF_DAY } from "@/features/shared/lib/data";
+import { BOOKING_PLACES, BOOKING_PURPOSES, TIMES_OF_DAY } from "@/features/shared/lib/data";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
 
@@ -59,6 +59,16 @@ export function BookingForm({ services, defaultService, today }: { services: str
         </div>
         <div className="grid gap-6 sm:grid-cols-2">
           <div>
+            <label htmlFor="booking-age" className={labelClass}>Age *</label>
+            <input id="booking-age" name="age" type="number" inputMode="numeric" min={1} max={120} placeholder="Your age" required className={fieldClass} />
+          </div>
+          <div>
+            <label htmlFor="booking-address" className={labelClass}>Address *</label>
+            <input id="booking-address" name="address" autoComplete="street-address" maxLength={200} placeholder="City, area" required className={fieldClass} />
+          </div>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div>
             <label htmlFor="booking-service" className={labelClass}>Service *</label>
             <select id="booking-service" name="service" required defaultValue={defaultService ?? ""} className={fieldClass}>
               <option value="" disabled>Choose a service</option>
@@ -98,6 +108,17 @@ export function BookingForm({ services, defaultService, today }: { services: str
           </label>
           <input id="booking-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" className={fieldClass} />
         </div>
+        <fieldset>
+          <legend className={labelClass}>What are you booking for? *</legend>
+          <div className="mt-3 flex flex-wrap gap-x-8 gap-y-3">
+            {BOOKING_PURPOSES.map((purpose) => (
+              <label key={purpose} className="inline-flex items-center gap-2 text-base">
+                <input type="radio" name="purpose" value={purpose} required className="size-4 accent-[var(--brand-purple)]" />
+                {purpose}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <div>
           <label htmlFor="booking-note" className={labelClass}>
             Anything we should know? <span className="text-lavender">(optional)</span>

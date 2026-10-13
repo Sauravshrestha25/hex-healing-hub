@@ -61,6 +61,8 @@ export const CENTRE_MAP_URL =
   "https://www.google.com/maps/place/Hex+Healing+Hub+Private+Limited/@27.6906764,83.463639,17z/data=!3m1!4b1!4m6!3m5!1s0x3996875cc0697625:0x4fd8f408d3044fda!8m2!3d27.6906764!4d83.4662139!16s%2Fg%2F11yhg_vtk2";
 
 export const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"] as const;
+/** What a visitor is booking for. */
+export const BOOKING_PURPOSES = ["Healing", "Training"] as const;
 
 export type Testimonial = {
   id: string;

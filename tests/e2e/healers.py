@@ -80,6 +80,7 @@ with sync_playwright() as p:
     assert n==11 and first_time=="11:00 AM", (n, first_time)   # 11:00–17:00, 60 min, every 30 min → 11:00 … 4:00
     times.first.click()
     form.locator("#slot-name").fill("Slot Visitor"); form.locator("#slot-phone").fill("9800000002"); form.locator("#slot-email").fill("slot@example.com")
+    form.locator("#slot-age").fill("30"); form.locator("#slot-address").fill("Butwal"); form.get_by_label("Healing", exact=True).check()
     form.get_by_role("button", name="Request this time").click()
     expect(v.get_by_text("Your request is in.")).to_be_visible()
     ref=v.locator("dd", has_text=re.compile(r"^HEX-[2-9A-Z]{6}$")).inner_text()

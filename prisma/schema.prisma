@@ -68,6 +68,11 @@ model Booking {
   /// "Morning" | "Afternoon" | "Evening"
   timeOfDay     String?
   note          String?
+  /// Asked on the booking forms since Oct 2026; empty on older bookings.
+  age           Int?
+  address       String?
+  /// "Healing" | "Training"
+  purpose       String?
   status        BookingStatus @default(NEW)
   createdAt     DateTime      @default(now())
 

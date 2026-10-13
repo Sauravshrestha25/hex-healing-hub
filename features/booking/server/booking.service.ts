@@ -4,7 +4,7 @@ import { randomInt } from "node:crypto";
 import { z } from "zod";
 import { formatMinute, isDateString, nepalInstant, totalFee } from "@/features/healers/lib/slots";
 import { findFreeSlots } from "@/features/healers/server/slot-finder";
-import { BOOKING_PLACES, TIMES_OF_DAY } from "@/features/shared/lib/data";
+import { BOOKING_PLACES, BOOKING_PURPOSES, TIMES_OF_DAY } from "@/features/shared/lib/data";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
 import type { RateLimiter } from "@/features/shared/server/rate-limiter";
 import type { BookingNotifier } from "./booking-notifier";
@@ -32,6 +32,9 @@ const bookingSchema = z.object({
     .optional()
     .transform((v) => v || null)
     .refine((v) => v === null || z.string().email().safeParse(v).success, "Please add a valid email address."),
+  age: z.coerce.number({ message: "Please add your age." }).int("Please add your age in whole years.").min(1, "Please add your age.").max(120, "Please check your age."),
+  address: z.string().trim().min(1, "Please add your address.").max(200),
+  purpose: z.enum(BOOKING_PURPOSES, { message: "Please choose Healing or Training." }),
   service: z.string().trim().min(1, "Please choose a service.").max(120),
   centre: optionalText(40).refine(
     (v) => v === null || (BOOKING_PLACES as readonly string[]).includes(v),
@@ -61,6 +64,9 @@ const slotBookingSchema = z.object({
   name: bookingSchema.shape.name,
   phone: bookingSchema.shape.phone,
   email: bookingSchema.shape.email,
+  age: bookingSchema.shape.age,
+  address: bookingSchema.shape.address,
+  purpose: bookingSchema.shape.purpose,
   note: optionalText(2000),
   /** URL of the uploaded payment screenshot, when the visitor paid by QR. */
   paymentProof: optionalText(500),
@@ -110,8 +116,8 @@ export class BookingService {
       throw new ValidationError("You've sent several requests recently. Please try again in a few minutes.");
     }
 
-    const { name, phone, email, service, centre, preferredDate, timeOfDay, note } = parsed.data;
-    const booking: NewBooking = { name, phone, email, service, centre, preferredDate, timeOfDay, note, reference: newReference() };
+    const { name, phone, email, age, address, purpose, service, centre, preferredDate, timeOfDay, note } = parsed.data;
+    const booking: NewBooking = { name, phone, email, age, address, purpose, service, centre, preferredDate, timeOfDay, note, reference: newReference() };
     await this.db.booking.create({
       data: { ...booking, preferredDate: booking.preferredDate ? new Date(`${booking.preferredDate}T00:00:00Z`) : null },
     });
@@ -134,7 +140,7 @@ export class BookingService {
     if (await this.submissions.isLimited(ip)) {
       throw new ValidationError("You've sent several requests recently. Please try again in a few minutes.");
     }
-    const { healerId, serviceId, sessions, date, start, place, name, phone, email, note, paymentProof } = parsed.data;
+    const { healerId, serviceId, sessions, date, start, place, name, phone, email, age, address, purpose, note, paymentProof } = parsed.data;
     if (paymentProof && !this.payments.isProof(paymentProof)) throw new ValidationError("Please upload your payment screenshot again.");
     if (!paymentProof && (await this.payments.offer())?.required) {
       throw new ValidationError("Please pay using the QR code and upload a screenshot of your payment.");
@@ -153,6 +159,9 @@ export class BookingService {
         name,
         phone,
         email,
+        age,
+        address,
+        purpose,
         note,
         service: found.offering.title,
         centre: place,

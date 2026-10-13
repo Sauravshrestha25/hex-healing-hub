@@ -102,6 +102,7 @@ with sync_playwright() as p:
             go(pg, B + "/book?service=hypnotherapy")
             pg.fill("#booking-name", "QA Visitor")
             pg.fill("#booking-phone", "9800000001")
+            pg.fill("#booking-age", "30"); pg.fill("#booking-address", "Butwal"); pg.get_by_label("Healing", exact=True).check()
             pg.select_option("#booking-centre", "Online")
             pg.click("button[type=submit]")
             pg.wait_for_timeout(1500)
