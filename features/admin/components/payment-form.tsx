@@ -18,8 +18,11 @@ export function PaymentForm({ settings, readOnly }: { settings: PaymentValues; r
     <form action={formAction} onSubmit={onSubmit}>
       <fieldset disabled={readOnly} className="min-w-0 max-w-3xl">
         <FormSection title="Payment QR" description="Visitors booking with a healer scan this to pay, then upload a screenshot of the payment. Without a QR, booking works as before and no payment is asked.">
-          <div className="max-w-64">
-            <ImageUploadField name="qrImage" label="QR code" defaultValue={settings.qrImage ?? undefined} aspect="aspect-square" readOnly={readOnly} removable />
+          <div className="grid max-w-52 gap-2">
+            <ImageUploadField name="qrImage" label="QR code" defaultValue={settings.qrImage ?? undefined} aspect="aspect-[9/16]" readOnly={readOnly} removable />
+            <p className="text-xs text-muted-foreground">
+              Use the standard portrait Fonepay QR image (9:16). It shows small on the booking form; visitors tap it to see it full size.
+            </p>
           </div>
           <Field id="instructions" label="Note under the QR" hint="Optional. E.g. the account name to check before paying, or which apps work.">
             <Textarea id="instructions" name="instructions" defaultValue={settings.instructions} maxLength={500} rows={3} placeholder="eSewa / Fonepay. Account name: HEX Healing Hub" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { formatDate, formatFee, formatFromFee, formatMinute, formatRupees, perSessionFee, sessionCount, totalFee } from "@/features/healers/lib/slots";
 import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } from "@/features/healers/server/actions";
@@ -65,6 +65,9 @@ export function HealerBooking({
   const pickSessions = Boolean(offering && offering.options.length > 1);
   // Later steps move down one when the sessions step is showing.
   const shift = pickSessions ? 1 : 0;
+
+  // The QR sits small in the form; tapping it opens it large enough to scan from another screen.
+  const qrDialog = useRef<HTMLDialogElement>(null);
 
   // Payment screenshot: uploaded as soon as it's chosen, its URL sent with the booking.
   const [proof, setProof] = useState("");
@@ -284,7 +287,27 @@ export function HealerBooking({
       {payment && (
         <Step number={6 + shift} title={payment.required ? "Pay to book" : "Pay now (optional)"}>
           <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
-            <Image src={payment.qrImage} alt="QR code to pay HEX Healing Hub" width={224} height={224} className="h-auto w-56 rounded-xl bg-white p-2" />
+            {/* Fonepay QR images are portrait (9:16). */}
+            <button type="button" onClick={() => qrDialog.current?.showModal()} aria-label="Enlarge the payment QR code" className="group w-40 text-center">
+              <span className="relative block aspect-[9/16] overflow-hidden rounded-xl bg-white ring-1 ring-brand-purple/25 transition group-hover:ring-brand-purple">
+                <Image src={payment.qrImage} alt="QR code to pay HEX Healing Hub" fill sizes="160px" className="object-contain" />
+              </span>
+              <span className="mt-2 block text-sm text-lavender underline decoration-brand-purple/30 underline-offset-4">Tap to enlarge</span>
+            </button>
+            {/* Native dialog: Esc and the backdrop close it. */}
+            <dialog
+              ref={qrDialog}
+              aria-label="Payment QR code"
+              onClick={(event) => event.target === event.currentTarget && event.currentTarget.close()}
+              className="m-auto max-h-none max-w-none bg-transparent p-0 backdrop:bg-black/75"
+            >
+              <span className="relative block aspect-[9/16] w-[min(92vw,calc(82vh*9/16))] overflow-hidden rounded-2xl bg-white">
+                <Image src={payment.qrImage} alt="QR code to pay HEX Healing Hub" fill sizes="(max-width: 640px) 92vw, 480px" className="object-contain" />
+              </span>
+              <button type="button" onClick={() => qrDialog.current?.close()} className="btn-gold mx-auto mt-4 block rounded-full px-7 py-3 text-sm font-medium">
+                Close
+              </button>
+            </dialog>
             <div className="min-w-0">
               <p className="text-base leading-relaxed">
                 {option ? (
