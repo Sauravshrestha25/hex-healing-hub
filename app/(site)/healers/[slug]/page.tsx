@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getHealer } from "@/features/content/server/queries";
+import { getHealer, getPaymentOffer } from "@/features/content/server/queries";
 import { HealerBooking } from "@/features/healers/components/healer-booking";
 import { HealerRating } from "@/features/healers/components/healer-card";
 import { formatFee, formatMinute, formatRupees, sessionCount, totalFee, WEEKDAYS } from "@/features/healers/lib/slots";
@@ -19,7 +19,7 @@ const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2)
 
 export default async function HealerPage(props: PageProps<"/healers/[slug]">) {
   const [{ slug }, { service }] = await Promise.all([props.params, props.searchParams]);
-  const healer = await getHealer(slug);
+  const [healer, payment] = await Promise.all([getHealer(slug), getPaymentOffer()]);
   if (!healer) notFound();
 
   const firstName = healer.name.split(/\s+/)[0];
@@ -186,7 +186,7 @@ export default async function HealerPage(props: PageProps<"/healers/[slug]">) {
             </p>
           </div>
           <div className="page-reveal">
-            <HealerBooking healer={{ id: healer.id, name: healer.name, places: healer.places, offerings: healer.offerings }} preselectedServiceId={preselected} />
+            <HealerBooking healer={{ id: healer.id, name: healer.name, places: healer.places, offerings: healer.offerings }} preselectedServiceId={preselected} payment={payment} />
           </div>
         </div>
       </section>

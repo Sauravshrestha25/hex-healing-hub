@@ -56,3 +56,9 @@ export const getPublishedBlog = cache(async (slug: string) => {
   await connection();
   return container().blogs.findPublishedBySlug(slug);
 });
+
+/** The payment QR shown while booking; null when the business hasn't set one. */
+export async function getPaymentOffer() {
+  await connection();
+  return container().payments.offer();
+}

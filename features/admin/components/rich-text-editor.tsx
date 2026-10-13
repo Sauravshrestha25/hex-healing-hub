@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { uploadImage } from "./image-upload-field";
+import { uploadImage } from "@/features/shared/lib/upload-image";
 
 export function RichTextEditor({ name, defaultValue, readOnly }: { name: string; defaultValue?: string; readOnly?: boolean }) {
   const [html, setHtml] = useState(defaultValue ?? "");

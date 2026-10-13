@@ -83,9 +83,25 @@ model Booking {
   price           Int?
   /// Sessions in the course booked; only the first holds a time slot. Empty on older bookings (one session).
   sessions        Int?
+  /// Screenshot of the visitor's payment (uploaded image URL), if they paid by QR when booking.
+  paymentProof      String?
+  /// When staff checked the payment arrived; empty until then.
+  paymentVerifiedAt DateTime?
 
   @@index([status, createdAt])
   @@index([healerId, startsAt])
+}
+
+/// How visitors pay when booking: the business's payment QR. A single row, id "default".
+model PaymentSettings {
+  id           String   @id @default("default")
+  /// The QR code photo; online payment is offered only once this is set.
+  qrImage      String?
+  /// Shown under the QR, e.g. the account name to check before paying.
+  instructions String   @default("")
+  /// When on, a booking with a healer needs a payment screenshot.
+  required     Boolean  @default(false)
+  updatedAt    DateTime @updatedAt
 }
 
 /// A practitioner visitors can read about and book ("Our Healers").

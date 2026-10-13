@@ -24,3 +24,13 @@ export async function deleteBooking(id: string): Promise<FormState> {
   if (!result.error) revalidatePath("/admin", "layout");
   return result;
 }
+
+export async function setPaymentVerified(id: string, verified: boolean): Promise<FormState> {
+  const { sessions, bookings } = container();
+  const result = await attempt(async () => {
+    await sessions.requireEditor();
+    await bookings.setPaymentVerified(id, verified);
+  });
+  if (!result.error) revalidatePath("/admin", "layout");
+  return result;
+}

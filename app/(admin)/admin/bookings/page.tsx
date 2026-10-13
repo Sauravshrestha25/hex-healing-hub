@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CalendarCheck, CalendarDays, HeartHandshake, MapPin, Phone } from "lucide-react";
 import { cn } from "cn";
-import { EmptyState, InitialsAvatar, Panel } from "@/features/admin/components/kit";
+import { EmptyState, InitialsAvatar, Panel, Pill } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
 import { BookingStatusBadge } from "@/features/admin/components/status-badge";
 import { DeleteButton } from "@/features/admin/components/delete-button";
@@ -90,6 +90,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
                     <BookingStatusBadge status={booking.status} />
+                    {booking.paymentProof && (booking.paymentVerifiedAt ? <Pill tone="sage">Paid</Pill> : <Pill tone="gold">Payment to verify</Pill>)}
                     <span className="text-xs whitespace-nowrap text-muted-foreground">{timeAgo(booking.createdAt)}</span>
                   </div>
                 </Link>

@@ -8,6 +8,7 @@ import { BOOKING_PLACES, TIMES_OF_DAY } from "@/features/shared/lib/data";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
 import type { RateLimiter } from "@/features/shared/server/rate-limiter";
 import type { BookingNotifier } from "./booking-notifier";
+import type { PaymentService } from "./payment.service";
 
 const optionalText = (max: number) =>
   z.string().trim().max(max).optional().transform((v) => v || null);
@@ -61,6 +62,8 @@ const slotBookingSchema = z.object({
   phone: bookingSchema.shape.phone,
   email: bookingSchema.shape.email,
   note: optionalText(2000),
+  /** URL of the uploaded payment screenshot, when the visitor paid by QR. */
+  paymentProof: optionalText(500),
   company: z.string().max(0).optional(),
 });
 
@@ -73,6 +76,7 @@ export type NewBooking = Omit<z.infer<typeof bookingSchema>, "company"> & {
   /** Total for every session. */
   price?: number;
   sessions?: number;
+  paymentProof?: string | null;
 };
 
 // No 0/O/1/I: references get read out over the phone.
@@ -91,6 +95,7 @@ export class BookingService {
     private readonly db: PrismaClient,
     private readonly notifier: BookingNotifier,
     private readonly submissions: RateLimiter,
+    private readonly payments: PaymentService,
   ) {}
 
   /** Public booking form. Returns the saved booking, or null for a silently-dropped bot submission. */
@@ -129,7 +134,11 @@ export class BookingService {
     if (await this.submissions.isLimited(ip)) {
       throw new ValidationError("You've sent several requests recently. Please try again in a few minutes.");
     }
-    const { healerId, serviceId, sessions, date, start, place, name, phone, email, note } = parsed.data;
+    const { healerId, serviceId, sessions, date, start, place, name, phone, email, note, paymentProof } = parsed.data;
+    if (paymentProof && !this.payments.isProof(paymentProof)) throw new ValidationError("Please upload your payment screenshot again.");
+    if (!paymentProof && (await this.payments.offer())?.required) {
+      throw new ValidationError("Please pay using the QR code and upload a screenshot of your payment.");
+    }
 
     const booking = await this.db.$transaction(async (tx) => {
       // Serialise bookings per healer for the length of this transaction.
@@ -155,6 +164,7 @@ export class BookingService {
         durationMinutes: found.offering.durationMinutes,
         price: totalFee(found.offering),
         sessions: found.offering.sessions,
+        paymentProof,
       };
       // The row links the healer by id; healerName travels only in the notification.
       const row = { ...created, healerId, preferredDate: new Date(`${date}T00:00:00Z`) };
@@ -215,8 +225,16 @@ export class BookingService {
     }
   }
 
+  /** Staff tick this once the money has arrived (and can untick it). */
+  async setPaymentVerified(id: string, verified: boolean) {
+    const { count } = await this.db.booking.updateMany({ where: { id, paymentProof: { not: null } }, data: { paymentVerifiedAt: verified ? new Date() : null } });
+    if (count === 0) throw new NotFoundError("That booking has no payment screenshot.");
+  }
+
   async remove(id: string) {
+    const booking = await this.db.booking.findUnique({ where: { id }, select: { paymentProof: true } });
     const { count } = await this.db.booking.deleteMany({ where: { id } });
     if (count === 0) throw new NotFoundError("That booking no longer exists.");
+    if (booking?.paymentProof) await this.payments.removeProof(booking.paymentProof);
   }
 }

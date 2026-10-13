@@ -1,8 +1,9 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Banknote, CalendarDays, Clock, HeartHandshake, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { BookingActions } from "@/features/admin/components/booking-actions";
-import { InitialsAvatar, Panel } from "@/features/admin/components/kit";
+import { BookingActions, PaymentVerifyButton } from "@/features/admin/components/booking-actions";
+import { InitialsAvatar, Panel, Pill } from "@/features/admin/components/kit";
 import { PageHeader } from "@/features/admin/components/page-header";
 import { BookingStatusBadge } from "@/features/admin/components/status-badge";
 import { formatDateTime, formatDay, timeAgo } from "@/features/admin/lib/format";
@@ -44,6 +45,7 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
         when ? `${multiSession ? "First session" : "When"}: ${when}` : null,
         booking.centre ? `Where: ${booking.centre}` : null,
         booking.price != null ? `Fee: ${formatBookedFee(booking.price, booking.sessions)}` : null,
+        booking.paymentVerifiedAt ? "Payment: received, thank you." : null,
         "We look forward to seeing you.",
       ]
         .filter(Boolean)
@@ -91,6 +93,30 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
               ))}
             </dl>
           </Panel>
+          {booking.paymentProof && (
+            <Panel
+              title="Payment"
+              description={booking.price != null ? `The visitor's screenshot. Expected: ${formatBookedFee(booking.price, booking.sessions)}.` : "The visitor's payment screenshot."}
+              action={booking.paymentVerifiedAt ? <Pill tone="sage">Verified {formatDateTime(booking.paymentVerifiedAt)}</Pill> : <Pill tone="gold">Not verified yet</Pill>}
+            >
+              {/* Shown in place, at a readable size; the link opens the original for zooming. */}
+              <a href={booking.paymentProof} target="_blank" rel="noopener noreferrer" className="block w-fit">
+                <Image
+                  src={booking.paymentProof}
+                  alt={`Payment screenshot from ${booking.name}`}
+                  width={480}
+                  height={960}
+                  sizes="(min-width: 640px) 480px, 100vw"
+                  className="h-auto max-h-[80vh] w-auto max-w-full rounded-lg border object-contain"
+                />
+              </a>
+              {viewer.isVerified && (
+                <div className="mt-4">
+                  <PaymentVerifyButton id={booking.id} verified={Boolean(booking.paymentVerifiedAt)} />
+                </div>
+              )}
+            </Panel>
+          )}
           {booking.note && (
             <Panel title="Note">
               <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{booking.note}</p>

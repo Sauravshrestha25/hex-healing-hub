@@ -166,44 +166,53 @@ export function HealerForm({
                             // The first option keeps the plain label; later ones say which option they are.
                             const which = index === 0 ? "" : `, option ${index + 1}`;
                             return (
-                              <li key={row.key} className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
-                                <input
-                                  type="number"
-                                  name={`sessions:${service.id}`}
-                                  min={1}
-                                  max={50}
-                                  required
-                                  defaultValue={row.sessions}
-                                  aria-label={`Number of sessions for ${service.title}${which}`}
-                                  className={`${controlClass} w-16`}
-                                />
-                                session(s) for Rs
-                                <input
-                                  type="number"
-                                  name={`price:${service.id}`}
-                                  min={0}
-                                  max={1000000}
-                                  step={50}
-                                  required
-                                  defaultValue={row.price}
-                                  aria-label={`Price for ${service.title} in rupees${which}`}
-                                  className={`${controlClass} w-28`}
-                                />
-                                <select
-                                  name={`feeType:${service.id}`}
-                                  defaultValue={row.feeType ?? "PER_SESSION"}
-                                  aria-label={`What the price for ${service.title} covers${which}`}
-                                  className={controlClass}
-                                >
-                                  <option value="PER_SESSION">per session</option>
-                                  <option value="PACKAGE">for all sessions</option>
-                                </select>
+                              // Each box carries its own label: on a phone the row wraps, and unlabelled boxes get mixed up.
+                              <li key={row.key} className="flex flex-wrap items-end gap-x-3 gap-y-2 text-xs text-muted-foreground">
+                                <label className="grid gap-1">
+                                  Sessions
+                                  <input
+                                    type="number"
+                                    name={`sessions:${service.id}`}
+                                    min={1}
+                                    max={50}
+                                    required
+                                    defaultValue={row.sessions}
+                                    aria-label={`Number of sessions for ${service.title}${which}`}
+                                    className={`${controlClass} w-20`}
+                                  />
+                                </label>
+                                <label className="grid gap-1">
+                                  Price (Rs)
+                                  <input
+                                    type="number"
+                                    name={`price:${service.id}`}
+                                    min={0}
+                                    max={1000000}
+                                    step={50}
+                                    required
+                                    defaultValue={row.price}
+                                    aria-label={`Price for ${service.title} in rupees${which}`}
+                                    className={`${controlClass} w-28`}
+                                  />
+                                </label>
+                                <label className="grid gap-1">
+                                  Price is
+                                  <select
+                                    name={`feeType:${service.id}`}
+                                    defaultValue={row.feeType ?? "PER_SESSION"}
+                                    aria-label={`What the price for ${service.title} covers${which}`}
+                                    className={controlClass}
+                                  >
+                                    <option value="PER_SESSION">per session</option>
+                                    <option value="PACKAGE">for all sessions</option>
+                                  </select>
+                                </label>
                                 {rows.length > 1 && !readOnly && (
                                   <button
                                     type="button"
                                     aria-label={`Remove option ${index + 1} for ${service.title}`}
                                     onClick={() => setRows((list) => list.filter((r) => r.key !== row.key))}
-                                    className="grid size-6 place-items-center rounded-full hover:bg-accent hover:text-foreground"
+                                    className="mb-1 grid size-6 place-items-center rounded-full hover:bg-accent hover:text-foreground"
                                   >
                                     <X className="size-3.5" />
                                   </button>

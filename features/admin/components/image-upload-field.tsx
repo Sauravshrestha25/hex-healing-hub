@@ -5,22 +5,9 @@ import Image from "next/image";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { cn } from "cn";
 import { Label } from "@/components/ui/label";
+import { uploadImage } from "@/features/shared/lib/upload-image";
 
 /** Uploads straight to R2 via a signed URL; submits the resulting public URL as `name`. */
-export async function uploadImage(file: File) {
-  const res = await fetch("/api/admin/uploads", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contentType: file.type, size: file.size }),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Upload failed.");
-
-  const put = await fetch(data.uploadUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file });
-  if (!put.ok) throw new Error("Upload to storage failed. Check the bucket's CORS settings.");
-  return data.publicUrl as string;
-}
-
 export function ImageUploadField({
   name,
   label,

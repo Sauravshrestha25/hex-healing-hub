@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarCheck, CheckCircle2, RotateCcw, Trash2, XCircle } from "lucide-react";
+import { BadgeCheck, CalendarCheck, CheckCircle2, RotateCcw, Trash2, Undo2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { deleteBooking, setBookingStatus } from "@/features/admin/server/bookings";
+import { deleteBooking, setBookingStatus, setPaymentVerified } from "@/features/admin/server/bookings";
 
 type Status = "NEW" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
@@ -84,5 +84,21 @@ export function BookingActions({ id, status }: { id: string; status: Status }) {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+/** Staff tick this after checking the payment screenshot against what arrived in the account. */
+export function PaymentVerifyButton({ id, verified }: { id: string; verified: boolean }) {
+  const [pending, startTransition] = useTransition();
+  const toggle = () =>
+    startTransition(async () => {
+      const { error } = await setPaymentVerified(id, !verified);
+      if (error) toast.error(error);
+      else toast.success(verified ? "Payment marked as not verified" : "Payment verified");
+    });
+  return (
+    <Button variant={verified ? "outline" : "default"} disabled={pending} onClick={toggle}>
+      {verified ? <Undo2 /> : <BadgeCheck />} {verified ? "Undo verification" : "Mark payment verified"}
+    </Button>
   );
 }

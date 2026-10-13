@@ -1,12 +1,14 @@
 "use client";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
+import Image from "next/image";
 import { formatDate, formatFee, formatFromFee, formatMinute, formatRupees, perSessionFee, sessionCount, totalFee } from "@/features/healers/lib/slots";
 import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } from "@/features/healers/server/actions";
 import { Calendar } from "@/features/shared/components/calendar";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
 import { healerBookingMessage, whatsappUrl } from "@/features/shared/lib/whatsapp";
 import type { HealerOffering } from "@/features/shared/lib/data";
+import { uploadImage } from "@/features/shared/lib/upload-image";
 import { usePreservingSubmit } from "@/features/shared/lib/use-preserving-submit";
 
 const fieldClass =
@@ -34,14 +36,17 @@ function Step({ number, title, children }: { number: number; title: string; chil
 /**
  * Books a real time slot with one healer: service, how many sessions (when the service comes in
  * several options), place, a day with free times, a start time, then
- * the visitor's details. Free days and times come from the server and are re-checked when booking.
+ * the visitor's details and, when the business has a payment QR, paying and attaching a screenshot. Free days and times come from the server and are re-checked when booking.
  */
 export function HealerBooking({
   healer,
   preselectedServiceId,
+  payment,
 }: {
   healer: { id: string; name: string; places: string[]; offerings: HealerOffering[] };
   preselectedServiceId?: string;
+  /** The business's payment QR; null when paying online isn't set up. */
+  payment: { qrImage: string; instructions: string; required: boolean } | null;
 }) {
   const [loading, startLoading] = useTransition();
 
@@ -60,6 +65,20 @@ export function HealerBooking({
   const pickSessions = Boolean(offering && offering.options.length > 1);
   // Later steps move down one when the sessions step is showing.
   const shift = pickSessions ? 1 : 0;
+
+  // Payment screenshot: uploaded as soon as it's chosen, its URL sent with the booking.
+  const [proof, setProof] = useState("");
+  const [proofStatus, setProofStatus] = useState<{ uploading: boolean; error?: string }>({ uploading: false });
+  async function attachProof(file: File | undefined) {
+    if (!file) return;
+    setProofStatus({ uploading: true });
+    try {
+      setProof(await uploadImage(file, "/api/bookings/payment-proof"));
+      setProofStatus({ uploading: false });
+    } catch (error) {
+      setProofStatus({ uploading: false, error: error instanceof Error ? error.message : "Upload failed. Please try again." });
+    }
+  }
 
   // "That time was just taken": refresh the times so the visitor can pick another.
   async function submit(previous: SlotBookingState, formData: FormData) {
@@ -105,6 +124,7 @@ export function HealerBooking({
         <p className="mt-3 max-w-xl text-base leading-relaxed text-lavender">
           We&apos;ve held this time for you. Our team will confirm it shortly by phone or WhatsApp{summary ? ", and by email if you left one" : ""}.
           {summary && summary.sessions > 1 && ` This is the first of ${summary.sessions} sessions; we'll arrange the rest with you.`}
+          {summary?.paid && " We've received your payment screenshot and will check it."}
         </p>
         {summary && (
           <dl className="mt-8 grid gap-x-10 gap-y-5 sm:grid-cols-2">
@@ -133,13 +153,14 @@ export function HealerBooking({
     );
   }
 
-  const ready = Boolean(offering && option && place && date && start !== null);
+  const ready = Boolean(offering && option && place && date && start !== null) && (!payment?.required || Boolean(proof));
 
   return (
     <form action={formAction} onSubmit={onSubmit} className="card-plain grid gap-10 rounded-3xl p-6 sm:p-10" aria-label={`Book a session with ${healer.name}`}>
       <input type="hidden" name="healerId" value={healer.id} />
       <input type="hidden" name="serviceId" value={serviceId} />
       <input type="hidden" name="sessions" value={option?.sessions ?? ""} />
+      <input type="hidden" name="paymentProof" value={proof} />
       <input type="hidden" name="place" value={place} />
       <input type="hidden" name="date" value={date} />
       <input type="hidden" name="start" value={start ?? ""} />
@@ -260,6 +281,44 @@ export function HealerBooking({
         </div>
       </Step>
 
+      {payment && (
+        <Step number={6 + shift} title={payment.required ? "Pay to book" : "Pay now (optional)"}>
+          <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
+            <Image src={payment.qrImage} alt="QR code to pay HEX Healing Hub" width={224} height={224} className="h-auto w-56 rounded-xl bg-white p-2" />
+            <div className="min-w-0">
+              <p className="text-base leading-relaxed">
+                {option ? (
+                  <>
+                    Scan the QR code and pay <span className="font-heading text-lg">{formatRupees(totalFee(option))}</span>, then upload a screenshot of the payment.
+                  </>
+                ) : (
+                  "Choose a service to see the amount, then scan the QR code to pay and upload a screenshot of the payment."
+                )}
+              </p>
+              {payment.instructions && <p className="mt-2 text-sm leading-relaxed whitespace-pre-line text-lavender">{payment.instructions}</p>}
+              <label htmlFor="slot-proof" className={`${labelClass} mt-5`}>
+                Payment screenshot {payment.required ? "*" : <span className="text-lavender">(optional)</span>}
+              </label>
+              <input
+                id="slot-proof"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                disabled={proofStatus.uploading}
+                onChange={(event) => attachProof(event.target.files?.[0])}
+                className="mt-2 block w-full min-w-0 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-brand-purple file:px-4 file:py-2 file:text-sm file:text-brand-cream"
+              />
+              <p className="mt-2 text-sm text-lavender" aria-live="polite">
+                {proofStatus.uploading ? "Uploading…" : proof ? "Screenshot attached. Choose another file to replace it." : "JPEG or PNG, up to 10 MB."}
+              </p>
+              {proofStatus.error && (
+                <p role="alert" className="mt-1 text-sm text-rose-700">{proofStatus.error}</p>
+              )}
+              {!payment.required && <p className="mt-2 text-sm text-lavender">Prefer to pay later? Skip this and we&apos;ll sort it out when we confirm.</p>}
+            </div>
+          </div>
+        </Step>
+      )}
+
       <div className="grid gap-4">
         {ready && offering && option && (
           <p className="text-base leading-relaxed" aria-live="polite">
@@ -276,7 +335,7 @@ export function HealerBooking({
           <p role="alert" className="text-sm text-rose-700">{state.message}</p>
         )}
         <div className="flex flex-wrap items-center gap-4">
-          <button type="submit" disabled={!ready || pending || loading} className="btn-gold rounded-full px-7 py-4 text-sm font-medium disabled:opacity-50">
+          <button type="submit" disabled={!ready || pending || loading || proofStatus.uploading} className="btn-gold rounded-full px-7 py-4 text-sm font-medium disabled:opacity-50">
             {pending ? "Booking…" : "Request this time"}
           </button>
           {/* Same choices, sent as a WhatsApp message instead. Nothing is held until the team replies. */}
@@ -303,7 +362,7 @@ export function HealerBooking({
             <WhatsAppIcon /> Book on WhatsApp
           </a>
         </div>
-        {!ready && <p className="text-sm text-lavender">Choose a service{pickSessions ? ", sessions" : ""}, place, day and time to request it here, or message us on WhatsApp.</p>}
+        {!ready && <p className="text-sm text-lavender">Choose a service{pickSessions ? ", sessions" : ""}, place, day and time{payment?.required ? ", and upload your payment screenshot," : ""} to request it here, or message us on WhatsApp.</p>}
       </div>
     </form>
   );

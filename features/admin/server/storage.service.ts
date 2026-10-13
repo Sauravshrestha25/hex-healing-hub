@@ -48,15 +48,18 @@ export class R2StorageService {
     return this.config !== null;
   }
 
-  /** Validates the request, then returns where to PUT the file and the public URL to store. */
-  async createImageUpload(input: unknown) {
+  /**
+   * Validates the request, then returns where to PUT the file and the public URL to store.
+   * `folder` (e.g. "payments/") keeps a kind of upload apart from the rest.
+   */
+  async createImageUpload(input: unknown, folder = "") {
     if (!this.config) throw new StorageNotConfiguredError();
     const parsed = uploadRequestSchema.safeParse(input);
     if (!parsed.success) throw new ValidationError("Use a JPEG, PNG, WebP or AVIF image up to 10 MB.");
 
     const { contentType, size } = parsed.data;
     const now = new Date();
-    const key = `${uploadPrefix()}${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, "0")}/${randomUUID()}.${EXTENSIONS[contentType]}`;
+    const key = `${uploadPrefix()}${folder}${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, "0")}/${randomUUID()}.${EXTENSIONS[contentType]}`;
 
     // ContentType and ContentLength are signed, so the upload must match what was approved.
     const uploadUrl = await getSignedUrl(
@@ -65,6 +68,11 @@ export class R2StorageService {
       { expiresIn: 60 },
     );
     return { uploadUrl, publicUrl: `${this.config.publicUrl}/${key}` };
+  }
+
+  /** Whether a URL is one of this environment's own uploads in `folder`. */
+  ownsUrl(url: string, folder = "") {
+    return this.config !== null && url.startsWith(`${this.config.publicUrl}/${uploadPrefix()}${folder}`);
   }
 
   /**

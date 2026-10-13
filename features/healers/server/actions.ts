@@ -23,7 +23,7 @@ export type SlotBookingState = {
   status: "idle" | "booked" | "error";
   message?: string;
   /** Shown on the confirmation screen. */
-  summary?: { reference: string; healer: string; service: string; when: string; place: string; length: string; price: string; sessions: number };
+  summary?: { reference: string; healer: string; service: string; when: string; place: string; length: string; price: string; sessions: number; paid: boolean };
   /** Prefilled WhatsApp chat with the booking summary. */
   whatsapp?: string;
 };
@@ -44,6 +44,7 @@ export async function bookHealerSlot(_prev: SlotBookingState, formData: FormData
       length: `${booking.durationMinutes} minutes`,
       price: formatBookedFee(booking.price ?? 0, booking.sessions),
       sessions: booking.sessions ?? 1,
+      paid: Boolean(booking.paymentProof),
     };
     state = {
       status: "booked",
@@ -56,6 +57,7 @@ export async function bookHealerSlot(_prev: SlotBookingState, formData: FormData
           `${summary.sessions > 1 ? `Sessions: ${summary.sessions}\nFirst session` : "When"}: ${summary.when}`,
           `Where: ${summary.place}`,
           `Name: ${booking.name}`,
+          ...(summary.paid ? ["I've paid and uploaded the screenshot."] : []),
         ].join("\n"),
       ),
     };

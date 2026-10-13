@@ -7,6 +7,7 @@ import { PasswordHasher } from "@/features/auth/server/password";
 import { SessionService } from "@/features/auth/server/session.service";
 import { BookingService } from "@/features/booking/server/booking.service";
 import { BookingNotifier } from "@/features/booking/server/booking-notifier";
+import { PaymentService } from "@/features/booking/server/payment.service";
 import { PasswordResetService } from "@/features/auth/server/password-reset.service";
 import { BlogService } from "@/features/content/server/blog.service";
 import { FaqService } from "@/features/content/server/faq.service";
@@ -33,6 +34,7 @@ function createContainer() {
   const mailer = mailerFromEnv();
   const siteUrl = (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
   const sessions = new SessionService(db, new SessionCodec(process.env.SESSION_SECRET));
+  const payments = new PaymentService(db, images, storage, limiter("payment-proof", 10, 10 * 60 * 1000));
 
   return {
     sessions,
@@ -50,7 +52,9 @@ function createContainer() {
       db,
       new BookingNotifier(mailer, process.env.INQUIRY_NOTIFY_TO, `${siteUrl}/admin/bookings`),
       limiter("booking", 5, 10 * 60 * 1000),
+      payments,
     ),
+    payments,
     siteUrl,
     storage,
     dashboard: new DashboardService(db),

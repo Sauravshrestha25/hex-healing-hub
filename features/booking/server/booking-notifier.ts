@@ -43,6 +43,7 @@ export class BookingNotifier {
         when ? `${booking.startsAt ? ((booking.sessions ?? 1) > 1 ? "First session" : "Time slot") : "Preferred"}: ${when}${booking.startsAt ? " (Nepal time)" : ""}` : null,
         booking.durationMinutes ? `Length: ${booking.durationMinutes} minutes` : null,
         booking.price != null ? `Price: ${formatBookedFee(booking.price, booking.sessions)}` : null,
+        booking.paymentProof ? `Payment screenshot (please verify): ${booking.paymentProof}` : null,
         booking.note ? `\n${booking.note}` : null,
         "",
         `View in dashboard: ${this.dashboardUrl}`,
