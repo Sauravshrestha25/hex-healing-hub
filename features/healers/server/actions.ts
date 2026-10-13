@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { formatRupees, formatSlot, isDateString } from "@/features/healers/lib/slots";
+import { formatBookedFee, formatSlot, isDateString } from "@/features/healers/lib/slots";
 import { whatsappUrl } from "@/features/shared/lib/whatsapp";
 import { container } from "@/features/shared/server/container";
 import { attempt } from "@/features/shared/server/form-action";
@@ -23,7 +23,7 @@ export type SlotBookingState = {
   status: "idle" | "booked" | "error";
   message?: string;
   /** Shown on the confirmation screen. */
-  summary?: { reference: string; healer: string; service: string; when: string; place: string; length: string; price: string };
+  summary?: { reference: string; healer: string; service: string; when: string; place: string; length: string; price: string; sessions: number };
   /** Prefilled WhatsApp chat with the booking summary. */
   whatsapp?: string;
 };
@@ -42,7 +42,8 @@ export async function bookHealerSlot(_prev: SlotBookingState, formData: FormData
       when: `${formatSlot(booking.startsAt)} (Nepal time)`,
       place: booking.centre ?? "",
       length: `${booking.durationMinutes} minutes`,
-      price: formatRupees(booking.price ?? 0),
+      price: formatBookedFee(booking.price ?? 0, booking.sessions),
+      sessions: booking.sessions ?? 1,
     };
     state = {
       status: "booked",
@@ -52,7 +53,7 @@ export async function bookHealerSlot(_prev: SlotBookingState, formData: FormData
           `Hi HEX Healing Hub! I just requested a booking (${summary.reference}).`,
           `Healer: ${summary.healer}`,
           `Service: ${summary.service}`,
-          `When: ${summary.when}`,
+          `${summary.sessions > 1 ? `Sessions: ${summary.sessions}\nFirst session` : "When"}: ${summary.when}`,
           `Where: ${summary.place}`,
           `Name: ${booking.name}`,
         ].join("\n"),

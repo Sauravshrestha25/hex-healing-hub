@@ -100,3 +100,31 @@ export function formatSlot(startsAt: Date) {
 export function formatRupees(amount: number) {
   return `Rs ${amount.toLocaleString("en-IN")}`;
 }
+
+export const FEE_TYPES = ["PER_SESSION", "PACKAGE"] as const;
+export type FeeType = (typeof FEE_TYPES)[number];
+/** A healer's price for a service: per session, or one price for the whole course of sessions. */
+export type Fee = { price: number; sessions: number; feeType: FeeType };
+
+/** What the whole course costs. */
+export function totalFee({ price, sessions, feeType }: Fee) {
+  return feeType === "PACKAGE" ? price : price * sessions;
+}
+
+/** What one session works out at, so "from Rs X" compares like with like. */
+export function perSessionFee({ price, sessions, feeType }: Fee) {
+  return feeType === "PACKAGE" ? Math.round(price / sessions) : price;
+}
+
+/** "Rs 2,000", "Rs 2,000 / session · 4 sessions (Rs 8,000)" or "Rs 7,000 for 4 sessions". */
+export function formatFee(fee: Fee) {
+  if (fee.sessions === 1) return formatRupees(fee.price);
+  return fee.feeType === "PACKAGE"
+    ? `${formatRupees(fee.price)} for ${fee.sessions} sessions`
+    : `${formatRupees(fee.price)} / session · ${fee.sessions} sessions (${formatRupees(totalFee(fee))})`;
+}
+
+/** The total quoted on a booking: "Rs 8,000 for 4 sessions", or just "Rs 2,000" for a single session. */
+export function formatBookedFee(total: number, sessions: number | null | undefined) {
+  return sessions && sessions > 1 ? `${formatRupees(total)} for ${sessions} sessions` : formatRupees(total);
+}

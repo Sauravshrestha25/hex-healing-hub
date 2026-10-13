@@ -2,7 +2,7 @@ import "server-only";
 import { Prisma, type BookingStatus, type PrismaClient } from "@prisma/client";
 import { randomInt } from "node:crypto";
 import { z } from "zod";
-import { formatMinute, isDateString, nepalInstant } from "@/features/healers/lib/slots";
+import { formatMinute, isDateString, nepalInstant, totalFee } from "@/features/healers/lib/slots";
 import { findFreeSlots } from "@/features/healers/server/slot-finder";
 import { BOOKING_PLACES, TIMES_OF_DAY } from "@/features/shared/lib/data";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
@@ -69,7 +69,9 @@ export type NewBooking = Omit<z.infer<typeof bookingSchema>, "company"> & {
   healerName?: string;
   startsAt?: Date;
   durationMinutes?: number;
+  /** Total for every session. */
   price?: number;
+  sessions?: number;
 };
 
 // No 0/O/1/I: references get read out over the phone.
@@ -113,7 +115,8 @@ export class BookingService {
   }
 
   /**
-   * Books a healer's time slot. The slot is held from this moment (status NEW). A per-healer database
+   * Books a healer's time slot (the first session of a longer course; the team arranges the rest).
+   * The slot is held from this moment (status NEW). A per-healer database
    * lock plus a re-check inside the transaction means two people can never hold the same time.
    */
   async bookSlot(input: Record<string, unknown>, ip: string): Promise<NewBooking | null> {
@@ -149,7 +152,8 @@ export class BookingService {
         healerName: found.healer.name,
         startsAt: nepalInstant(date, start),
         durationMinutes: found.offering.durationMinutes,
-        price: found.offering.price,
+        price: totalFee(found.offering),
+        sessions: found.offering.sessions,
       };
       // The row links the healer by id; healerName travels only in the notification.
       const row = { ...created, healerId, preferredDate: new Date(`${date}T00:00:00Z`) };

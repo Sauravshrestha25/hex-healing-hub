@@ -67,7 +67,12 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                       <span className={cn("truncate", booking.status === "NEW" ? "font-semibold" : "font-medium")}>{booking.name}</span>
-                      {booking.service && <span className="rounded-md bg-accent px-1.5 py-0.5 text-xs text-brand">{booking.service}</span>}
+                      {booking.service && (
+                        <span className="rounded-md bg-accent px-1.5 py-0.5 text-xs text-brand">
+                          {booking.service}
+                          {(booking.sessions ?? 1) > 1 && ` · ${booking.sessions} sessions`}
+                        </span>
+                      )}
                     </div>
                     <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                       {booking.phone && <span className="inline-flex items-center gap-1"><Phone className="size-3" />{booking.phone}</span>}

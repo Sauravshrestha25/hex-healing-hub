@@ -1,5 +1,5 @@
 import "server-only";
-import { formatRupees, formatSlot } from "@/features/healers/lib/slots";
+import { formatBookedFee, formatSlot } from "@/features/healers/lib/slots";
 import type { Mailer } from "@/features/shared/server/mailer";
 import type { NewBooking } from "./booking.service";
 
@@ -13,6 +13,7 @@ type ConfirmedBooking = {
   startsAt: Date | null;
   durationMinutes: number | null;
   price: number | null;
+  sessions: number | null;
 };
 
 /** Booking emails: the team hears about each new request; the visitor hears when it's confirmed. */
@@ -39,9 +40,9 @@ export class BookingNotifier {
         `Service: ${booking.service}`,
         booking.healerName ? `Healer: ${booking.healerName}` : null,
         booking.centre ? `Place: ${booking.centre}` : null,
-        when ? `${booking.startsAt ? "Time slot" : "Preferred"}: ${when}${booking.startsAt ? " (Nepal time)" : ""}` : null,
+        when ? `${booking.startsAt ? ((booking.sessions ?? 1) > 1 ? "First session" : "Time slot") : "Preferred"}: ${when}${booking.startsAt ? " (Nepal time)" : ""}` : null,
         booking.durationMinutes ? `Length: ${booking.durationMinutes} minutes` : null,
-        booking.price != null ? `Price: ${formatRupees(booking.price)}` : null,
+        booking.price != null ? `Price: ${formatBookedFee(booking.price, booking.sessions)}` : null,
         booking.note ? `\n${booking.note}` : null,
         "",
         `View in dashboard: ${this.dashboardUrl}`,
@@ -65,10 +66,10 @@ export class BookingNotifier {
         booking.reference ? `Reference: ${booking.reference}` : null,
         booking.service ? `Service: ${booking.service}` : null,
         booking.healerName ? `Healer: ${booking.healerName}` : null,
-        booking.startsAt ? `When: ${formatSlot(booking.startsAt)} (Nepal time)` : null,
+        booking.startsAt ? `${(booking.sessions ?? 1) > 1 ? "First session" : "When"}: ${formatSlot(booking.startsAt)} (Nepal time)` : null,
         booking.durationMinutes ? `Length: ${booking.durationMinutes} minutes` : null,
         booking.centre ? `Where: ${booking.centre}` : null,
-        booking.price != null ? `Fee: ${formatRupees(booking.price)}` : null,
+        booking.price != null ? `Fee: ${formatBookedFee(booking.price, booking.sessions)}` : null,
         "",
         "If you need to change or cancel, just reply to this email or message us on WhatsApp.",
         "",

@@ -88,7 +88,7 @@ export type HealerCard = {
   services: string[];
 };
 
-export type HealerOffering = { serviceId: string; title: string; slug: string; price: number; durationMinutes: number };
+export type HealerOffering = { serviceId: string; title: string; slug: string; price: number; durationMinutes: number; sessions: number; feeType: "PER_SESSION" | "PACKAGE" };
 
 export type HealerProfile = HealerCard & {
   bio: string;

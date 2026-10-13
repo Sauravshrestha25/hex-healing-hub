@@ -3,7 +3,7 @@ import type { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import type { ImageJanitor } from "@/features/content/server/image-janitor.service";
 import { imageField, orderField, parseOrThrow, withUniqueGuard } from "@/features/content/server/validation";
-import { bookableDates, isDateString, nepalDate, nepalInstant, nepalMinuteOfDay, freeSlotStarts, weekdayOf, type MinuteRange } from "@/features/healers/lib/slots";
+import { bookableDates, FEE_TYPES, isDateString, nepalDate, nepalInstant, nepalMinuteOfDay, freeSlotStarts, perSessionFee, weekdayOf, type FeeType, type MinuteRange } from "@/features/healers/lib/slots";
 import { BOOKING_PLACES, type HealerCard, type HealerProfile } from "@/features/shared/lib/data";
 import { slugify } from "@/features/shared/lib/slugify";
 import { NotFoundError, ValidationError } from "@/features/shared/server/errors";
@@ -29,6 +29,9 @@ const healerSchema = z
         serviceId: z.string().min(1),
         price: z.coerce.number().int("Prices are whole rupees.").min(0, "A price can't be negative.").max(1_000_000),
         durationMinutes: z.coerce.number().int().min(15, "Sessions are at least 15 minutes.").max(480, "Sessions are at most 8 hours."),
+        // No defaults: a form that doesn't send these is refused rather than quietly resetting a course to one session.
+        sessions: z.coerce.number().int("Sessions are a whole number.").min(1, "A service takes at least one session.").max(50, "A service takes at most 50 sessions."),
+        feeType: z.enum(FEE_TYPES, { message: "Choose whether the price is per session or for all sessions." }),
       }),
     ),
     availability: z.array(
@@ -54,7 +57,7 @@ const cardSelect = {
   photo: true,
   experienceYears: true,
   places: true,
-  services: { select: { price: true, service: { select: { title: true, order: true } } } },
+  services: { select: { price: true, sessions: true, feeType: true, service: { select: { title: true, order: true } } } },
   testimonials: { where: { published: true }, select: { rating: true } },
 } as const;
 
@@ -66,7 +69,7 @@ type CardRow = {
   photo: string | null;
   experienceYears: number;
   places: string[];
-  services: { price: number; service: { title: string; order: number } }[];
+  services: { price: number; sessions: number; feeType: FeeType; service: { title: string; order: number } }[];
   testimonials: { rating: number }[];
 };
 
@@ -80,7 +83,7 @@ function toCard(row: CardRow): HealerCard {
     photo: row.photo,
     experienceYears: row.experienceYears,
     places: row.places,
-    fromPrice: services.length ? Math.min(...services.map((s) => s.price)) : null,
+    fromPrice: services.length ? Math.min(...services.map(perSessionFee)) : null,
     rating: average(row.testimonials.map((t) => t.rating)),
     reviewCount: row.testimonials.length,
     services: services.map((s) => s.service.title),
@@ -110,11 +113,11 @@ export class HealerService {
     const rows = await this.db.healer.findMany({
       where: { published: true, services: { some: { serviceId } } },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-      select: { ...cardSelect, services: { select: { serviceId: true, price: true, durationMinutes: true, service: { select: { title: true, order: true } } } } },
+      select: { ...cardSelect, services: { select: { serviceId: true, price: true, durationMinutes: true, sessions: true, feeType: true, service: { select: { title: true, order: true } } } } },
     });
     return rows.map((row) => {
       const offering = row.services.find((s) => s.serviceId === serviceId)!;
-      return { ...toCard(row), price: offering.price, durationMinutes: offering.durationMinutes };
+      return { ...toCard(row), price: offering.price, durationMinutes: offering.durationMinutes, sessions: offering.sessions, feeType: offering.feeType };
     });
   }
 
@@ -127,7 +130,7 @@ export class HealerService {
         qualifications: true,
         languages: true,
         services: {
-          select: { serviceId: true, price: true, durationMinutes: true, service: { select: { title: true, slug: true, order: true } } },
+          select: { serviceId: true, price: true, durationMinutes: true, sessions: true, feeType: true, service: { select: { title: true, slug: true, order: true } } },
         },
         availability: { orderBy: { weekday: "asc" }, select: { weekday: true, startMinute: true, endMinute: true } },
         testimonials: {
@@ -141,7 +144,7 @@ export class HealerService {
     if (!row) return null;
     const offerings = [...row.services]
       .sort((a, b) => a.service.order - b.service.order)
-      .map((s) => ({ serviceId: s.serviceId, title: s.service.title, slug: s.service.slug, price: s.price, durationMinutes: s.durationMinutes }));
+      .map((s) => ({ serviceId: s.serviceId, title: s.service.title, slug: s.service.slug, price: s.price, durationMinutes: s.durationMinutes, sessions: s.sessions, feeType: s.feeType }));
     return {
       ...toCard(row),
       bio: row.bio,

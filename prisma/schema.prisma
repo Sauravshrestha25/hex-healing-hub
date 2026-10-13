@@ -79,8 +79,10 @@ model Booking {
   /// Slot start (a UTC instant; shown in Nepal time).
   startsAt        DateTime?
   durationMinutes Int?
-  /// Price quoted at booking time, in Nepali rupees.
+  /// Total fee quoted at booking time, in Nepali rupees (all sessions).
   price           Int?
+  /// Sessions in the course booked; only the first holds a time slot. Empty on older bookings (one session).
+  sessions        Int?
 
   @@index([status, createdAt])
   @@index([healerId, startsAt])
@@ -116,14 +118,25 @@ model Healer {
   @@index([published, order])
 }
 
-/// A service a healer offers, with their own price and session length.
+enum FeeType {
+  /// The price is for one session.
+  PER_SESSION
+  /// The price covers every session in the course.
+  PACKAGE
+}
+
+/// A service a healer offers, with their own price, session length and number of sessions.
 model HealerService {
   id              String  @id @default(cuid())
   healerId        String
   serviceId       String
-  /// Nepali rupees.
+  /// Nepali rupees; what it covers depends on feeType.
   price           Int
+  /// Length of one session.
   durationMinutes Int
+  /// How many sessions the service takes.
+  sessions        Int     @default(1)
+  feeType         FeeType @default(PER_SESSION)
   healer          Healer  @relation(fields: [healerId], references: [id], onDelete: Cascade)
   service         Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 

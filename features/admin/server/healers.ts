@@ -13,13 +13,19 @@ const text = (formData: FormData, name: string) => {
 
 /**
  * Turns the healer form into the shape HealerService validates. Repeated rows use suffixed names:
- * `service:<id>` (ticked) with `price:<id>` / `duration:<id>`, and `day:<0-6>` with `start:` / `end:`.
+ * `service:<id>` (ticked) with `price:<id>` / `duration:<id>` / `sessions:<id>` / `feeType:<id>`, and `day:<0-6>` with `start:` / `end:`.
  */
 function healerInput(formData: FormData) {
   const services = [...formData.keys()]
     .filter((key) => key.startsWith("service:"))
     .map((key) => key.slice("service:".length))
-    .map((serviceId) => ({ serviceId, price: text(formData, `price:${serviceId}`), durationMinutes: text(formData, `duration:${serviceId}`) }));
+    .map((serviceId) => ({
+      serviceId,
+      price: text(formData, `price:${serviceId}`),
+      durationMinutes: text(formData, `duration:${serviceId}`),
+      sessions: text(formData, `sessions:${serviceId}`),
+      feeType: text(formData, `feeType:${serviceId}`),
+    }));
 
   const availability = [0, 1, 2, 3, 4, 5, 6]
     .filter((weekday) => formData.has(`day:${weekday}`))

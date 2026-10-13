@@ -28,7 +28,7 @@ export type HealerValues = {
   places: string[];
   published: boolean;
   order: number;
-  services: { serviceId: string; price: number; durationMinutes: number }[];
+  services: { serviceId: string; price: number; durationMinutes: number; sessions: number; feeType: "PER_SESSION" | "PACKAGE" }[];
   availability: { weekday: number; startMinute: number; endMinute: number }[];
   /** YYYY-MM-DD */
   timeOff: string[];
@@ -108,7 +108,7 @@ export function HealerForm({
           </div>
         </FormSection>
 
-        <FormSection title="Services and pricing" description="Tick what this healer offers, then set their price (in rupees) and how long a session takes.">
+        <FormSection title="Services and pricing" description="Tick what this healer offers, then set their price (in rupees), how long a session takes, how many sessions it needs, and whether the price is per session or for all of them. Visitors book the first session online; you arrange the rest.">
           {services.length === 0 ? (
             <p className="text-sm text-muted-foreground">Add services first (Website content → Services).</p>
           ) : (
@@ -158,6 +158,30 @@ export function HealerForm({
                         ))}
                       </select>
                     </label>
+                    <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                      <input
+                        type="number"
+                        name={`sessions:${service.id}`}
+                        min={1}
+                        max={50}
+                        required={on}
+                        disabled={!on}
+                        defaultValue={current?.sessions ?? 1}
+                        aria-label={`Number of sessions for ${service.title}`}
+                        className={`${controlClass} w-16`}
+                      />
+                      sessions
+                    </label>
+                    <select
+                      name={`feeType:${service.id}`}
+                      disabled={!on}
+                      defaultValue={current?.feeType ?? "PER_SESSION"}
+                      aria-label={`What the price for ${service.title} covers`}
+                      className={controlClass}
+                    >
+                      <option value="PER_SESSION">Price per session</option>
+                      <option value="PACKAGE">Price for all sessions</option>
+                    </select>
                   </li>
                 );
               })}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
-import { formatDate, formatMinute, formatRupees } from "@/features/healers/lib/slots";
+import { formatDate, formatFee, formatMinute } from "@/features/healers/lib/slots";
 import { bookHealerSlot, getAvailableDates, getSlots, type SlotBookingState } from "@/features/healers/server/actions";
 import { Calendar } from "@/features/shared/components/calendar";
 import { WhatsAppIcon } from "@/features/shared/components/whatsapp-link";
@@ -95,6 +95,7 @@ export function HealerBooking({
         <h3 className="font-heading text-2xl leading-snug sm:text-3xl">Your request is in.</h3>
         <p className="mt-3 max-w-xl text-base leading-relaxed text-lavender">
           We&apos;ve held this time for you. Our team will confirm it shortly by phone or WhatsApp{summary ? ", and by email if you left one" : ""}.
+          {summary && summary.sessions > 1 && ` This is the first of ${summary.sessions} sessions; we'll arrange the rest with you.`}
         </p>
         {summary && (
           <dl className="mt-8 grid gap-x-10 gap-y-5 sm:grid-cols-2">
@@ -102,7 +103,7 @@ export function HealerBooking({
               ["Booking reference", summary.reference],
               ["Healer", summary.healer],
               ["Service", summary.service],
-              ["When", summary.when],
+              [summary.sessions > 1 ? "First session" : "When", summary.when],
               ["Where", summary.place],
               ["Length", summary.length],
               ["Fee", summary.price],
@@ -143,7 +144,7 @@ export function HealerBooking({
             <button key={o.serviceId} type="button" aria-pressed={serviceId === o.serviceId} onClick={() => chooseService(o.serviceId)} className={chip(serviceId === o.serviceId)}>
               <span className="block font-heading text-base">{o.title}</span>
               <span className="mt-1 block opacity-80">
-                {o.durationMinutes} min · {formatRupees(o.price)}
+                {o.durationMinutes} min · {formatFee(o)}
               </span>
             </button>
           ))}
@@ -236,7 +237,12 @@ export function HealerBooking({
         {ready && offering && (
           <p className="text-base leading-relaxed" aria-live="polite">
             <span className="font-heading text-lg">{offering.title}</span> with {healer.name}, {formatDate(date)} at {formatMinute(start!)} ·{" "}
-            {place === "Online" ? "online" : place} · {offering.durationMinutes} min · {formatRupees(offering.price)}
+            {place === "Online" ? "online" : place} · {offering.durationMinutes} min · {formatFee(offering)}
+            {offering.sessions > 1 && (
+              <span className="mt-1 block text-sm text-lavender">
+                This books your first session. We&apos;ll arrange the other {offering.sessions - 1} with you.
+              </span>
+            )}
           </p>
         )}
         {state.status === "error" && (
@@ -257,7 +263,7 @@ export function HealerBooking({
                 healerBookingMessage(
                   healer.name,
                   {
-                    service: offering?.title,
+                    service: offering && (offering.sessions > 1 ? `${offering.title} (${offering.sessions} sessions)` : offering.title),
                     place: place === "Online" ? "Online session" : place,
                     day: date && formatDate(date),
                     time: start === null ? undefined : formatMinute(start),

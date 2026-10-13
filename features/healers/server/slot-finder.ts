@@ -20,7 +20,7 @@ export async function findFreeSlots(db: Db, healerId: string, serviceId: string,
       id: true,
       name: true,
       places: true,
-      services: { where: { serviceId }, select: { price: true, durationMinutes: true, service: { select: { title: true } } } },
+      services: { where: { serviceId }, select: { price: true, durationMinutes: true, sessions: true, feeType: true, service: { select: { title: true } } } },
       availability: { where: { weekday: weekdayOf(date) }, select: { startMinute: true, endMinute: true } },
       timeOff: { where: { date: new Date(`${date}T00:00:00Z`) }, select: { id: true } },
     },
@@ -45,7 +45,7 @@ export async function findFreeSlots(db: Db, healerId: string, serviceId: string,
 
   return {
     healer: { id: healer.id, name: healer.name, places: healer.places },
-    offering: { title: offering.service.title, price: offering.price, durationMinutes: offering.durationMinutes },
+    offering: { title: offering.service.title, price: offering.price, durationMinutes: offering.durationMinutes, sessions: offering.sessions, feeType: offering.feeType },
     starts: freeSlotStarts({ start: window.startMinute, end: window.endMinute }, offering.durationMinutes, busy),
   };
 }

@@ -7,7 +7,7 @@ import { PageHeader } from "@/features/admin/components/page-header";
 import { BookingStatusBadge } from "@/features/admin/components/status-badge";
 import { formatDateTime, formatDay, timeAgo } from "@/features/admin/lib/format";
 import { getViewer } from "@/features/admin/server/viewer";
-import { formatRupees, formatSlot } from "@/features/healers/lib/slots";
+import { formatBookedFee, formatSlot } from "@/features/healers/lib/slots";
 import { whatsappUrl } from "@/features/shared/lib/whatsapp";
 import { container } from "@/features/shared/server/container";
 
@@ -22,6 +22,8 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
   const when = booking.startsAt
     ? `${formatSlot(booking.startsAt)} (Nepal time)`
     : [booking.preferredDate && formatDay(booking.preferredDate), booking.timeOfDay].filter(Boolean).join(", ");
+  // A course of sessions: the slot is only the first; the team arranges the rest.
+  const multiSession = (booking.sessions ?? 1) > 1;
   const withHealer = booking.healer ? ` with ${booking.healer.name}` : "";
   const whatsappReply =
     booking.phone &&
@@ -39,9 +41,9 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
         booking.reference ? `Reference: ${booking.reference}` : null,
         booking.service ? `Service: ${booking.service}` : null,
         booking.healer ? `Healer: ${booking.healer.name}` : null,
-        when ? `When: ${when}` : null,
+        when ? `${multiSession ? "First session" : "When"}: ${when}` : null,
         booking.centre ? `Where: ${booking.centre}` : null,
-        booking.price != null ? `Fee: ${formatRupees(booking.price)}` : null,
+        booking.price != null ? `Fee: ${formatBookedFee(booking.price, booking.sessions)}` : null,
         "We look forward to seeing you.",
       ]
         .filter(Boolean)
@@ -55,9 +57,9 @@ export default async function BookingPage(props: PageProps<"/admin/bookings/[id]
     { icon: MapPin, label: "Place", value: booking.centre },
     ...(booking.startsAt
       ? [
-          { icon: CalendarDays, label: "Time slot", value: when },
-          { icon: Clock, label: "Length", value: booking.durationMinutes ? `${booking.durationMinutes} minutes` : null },
-          { icon: Banknote, label: "Fee", value: booking.price != null ? formatRupees(booking.price) : null },
+          { icon: CalendarDays, label: multiSession ? "First session" : "Time slot", value: when },
+          { icon: Clock, label: "Length", value: booking.durationMinutes ? `${booking.durationMinutes} minutes${multiSession ? " each" : ""}` : null },
+          { icon: Banknote, label: "Fee", value: booking.price != null ? formatBookedFee(booking.price, booking.sessions) : null },
         ]
       : [
           { icon: CalendarDays, label: "Preferred day", value: booking.preferredDate && formatDay(booking.preferredDate) },

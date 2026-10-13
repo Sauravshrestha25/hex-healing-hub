@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatRupees } from "@/features/healers/lib/slots";
+import { formatFee, formatRupees, type Fee } from "@/features/healers/lib/slots";
 import type { HealerCard as Healer } from "@/features/shared/lib/data";
 
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]!.toUpperCase()).join("");
@@ -22,7 +22,7 @@ export function HealerRating({ rating, count, className = "" }: { rating: number
  * A healer on a card. `offer` replaces the "from" price with the exact price and length for one
  * service (service pages) and carries that service into the booking link.
  */
-export function HealerCard({ healer, offer }: { healer: Healer; offer?: { price: number; durationMinutes: number; serviceSlug: string } }) {
+export function HealerCard({ healer, offer }: { healer: Healer; offer?: Fee & { durationMinutes: number; serviceSlug: string } }) {
   const href = `/healers/${healer.slug}`;
   return (
     <article className="page-reveal h-full">
@@ -58,8 +58,8 @@ export function HealerCard({ healer, offer }: { healer: Healer; offer?: { price:
             <p className="text-sm">
               {offer ? (
                 <>
-                  <span className="block font-heading text-lg">{formatRupees(offer.price)}</span>
-                  <span className="text-lavender">{offer.durationMinutes} min session</span>
+                  <span className="block font-heading text-lg">{formatFee(offer)}</span>
+                  <span className="text-lavender">{offer.durationMinutes} min session{offer.sessions > 1 ? "s" : ""}</span>
                 </>
               ) : healer.fromPrice !== null ? (
                 <>
